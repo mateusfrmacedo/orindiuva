@@ -63,9 +63,11 @@ body.dark {
 
 .title-box h1 {
   margin: 0;
-  font-size: clamp(24px, 5vw, 40px);
+  /* Fonte AUMENTADA significativamente */
+  font-size: clamp(40px, 8vw, 64px);
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: -2px; /* Letras mais juntas para visual moderno */
+  line-height: 1.1;
 }
 
 .status-badge {
@@ -78,7 +80,7 @@ body.dark {
   background: rgba(255, 59, 48, 0.1);
   padding: 4px 10px;
   border-radius: 20px;
-  margin-top: 6px;
+  margin-top: 8px;
   text-transform: uppercase;
 }
 .pulse {
@@ -89,7 +91,7 @@ body.dark {
 }
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: .4; } 100% { opacity: 1; } }
 
-/* Botão Tema (Com Emojis) */
+/* Botão Tema */
 .theme-toggle {
   width: 44px; height: 44px;
   border-radius: 50%;
@@ -250,7 +252,7 @@ body.dark .card {
 
   <header class="header">
     <div class="title-box">
-      <h1>Orindiúva ao vivo</h1>
+      <h1>Orindiúva</h1>
       <div class="status-badge">
         <div class="pulse"></div> Em Tempo Real
       </div>
