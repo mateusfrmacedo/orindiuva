@@ -226,6 +226,21 @@ body.dark .card {
 }
 .copy-feedback.show { opacity: 1; transform: translateY(0); }
 
+/* Crédito no Rodapé */
+.footer-credit {
+  display: block;
+  margin-top: 25px;
+  font-size: 11px;
+  opacity: 0.4;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.footer-credit:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 </style>
 </head>
 
@@ -250,7 +265,7 @@ body.dark .card {
   <div class="info-bar">
     <div class="card weather-chip">
       <div class="weather-content">
-        <div class="temp-big" id="chipTemp">--°</div>
+        <div class="temp-big" id="chipTemp">--°C</div>
         <div class="weather-details">
           <span id="chipCond">Carregando...</span>
         </div>
@@ -280,6 +295,8 @@ body.dark .card {
         Copiar Chave Pix
       </button>
     </div>
+
+    <a href="http://mateusfrmacedo.github.io" target="_blank" class="footer-credit">create by Mateus</a>
   </footer>
 
 </div>
@@ -336,7 +353,7 @@ async function loadWeather(){
     const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-20.18194&longitude=-49.35083&current_weather=true");
     const j = await r.json();
     const c = j.current_weather;
-    document.getElementById('chipTemp').textContent = Math.round(c.temperature) + "°";
+    document.getElementById('chipTemp').textContent = Math.round(c.temperature) + "°C";
     
     let label = "Nublado";
     if(c.weathercode === 0) label = "Céu Limpo";
