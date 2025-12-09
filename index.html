@@ -123,7 +123,12 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
   </header>
 
   <section class="video-container">
-    <iframe src="https://youtube.com/live/PQeZ6M2Cch0?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1" title="Câmera" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <iframe 
+      src="https://www.youtube.com/embed/PQeZ6M2Cch0?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1" 
+      title="Câmera ao vivo" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen>
+    </iframe>
   </section>
 
   <div class="dashboard-card">
@@ -177,7 +182,7 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
 <script>
 const CHAVE_PIX = "mateus.freitas@me.com";
 
-// --- BANCOS DE DADOS (DEFINIDOS ANTES DE TUDO) ---
+// --- BANCOS DE DADOS ---
 
 const funnyPhrases = [
   "ACORDEI CEDO PARA ME ATRASAR COM CALMA",
@@ -323,16 +328,13 @@ function stripEmojis(str) {
 /* --- MÓDULO DE DADOS --- */
 async function fetchAllData() {
   try {
-    // 1. Climas
     const lats = CITIES_LIST.map(c => c.lat).join(',');
     const lons = CITIES_LIST.map(c => c.lon).join(',');
     const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`);
     const wData = await wRes.json();
     GLOBAL_DATA.weatherList = Array.isArray(wData) ? wData : [wData];
-    
     updateDashboard(GLOBAL_DATA.weatherList[0]);
 
-    // 2. Economia
     const eRes = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
     const eData = await eRes.json();
     GLOBAL_DATA.economy = [
@@ -341,7 +343,6 @@ async function fetchAllData() {
       `BITCOIN: R$ ${(parseFloat(eData.BTCBRL.bid)/1000).toFixed(1)}K`
     ];
 
-    // 3. História
     const today = new Date();
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
@@ -351,38 +352,26 @@ async function fetchAllData() {
       const fact = hData.selected[Math.floor(Math.random() * hData.selected.length)];
       GLOBAL_DATA.history = `HOJE NA HISTORIA (${fact.year}): ${fact.text.toUpperCase()}`;
     }
-
   } catch(e) { console.error("Erro fetch", e); }
 }
 
-/* --- GERADOR DE LETREIRO (CICLO) --- */
+/* --- GERADOR DE LETREIRO --- */
 function runTickerCycle() {
   const tickerEl = document.getElementById('newsTicker');
-  
   let msgs = [];
   const now = new Date();
   const h = now.getHours();
-  
-  // 1. Saudação
   let greeting = "BOA NOITE";
-  if (h >= 5 && h < 12) greeting = "BOM DIA";
-  else if (h >= 12 && h < 18) greeting = "BOA TARDE";
+  if (h >= 5 && h < 12) greeting = "BOM DIA"; else if (h >= 12 && h < 18) greeting = "BOA TARDE";
   msgs.push(greeting);
-
-  // 2. Frase Engraçada (Nova a cada ciclo)
   msgs.push(funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)]);
-
-  // 3. Data
   msgs.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
-
-  // 4. Economia (Se houver)
+  
   if(GLOBAL_DATA.economy) msgs = msgs.concat(GLOBAL_DATA.economy);
-
-  // 5. Clima Orindiuva + Frase
+  
   if(GLOBAL_DATA.weatherList.length > 0) {
     const localW = GLOBAL_DATA.weatherList[0];
     msgs.push(`ORINDIUVA: ${Math.round(localW.current_weather.temperature)}C`);
-    
     const code = localW.current_weather.weathercode;
     const t = localW.current_weather.temperature;
     let type = 'cloudy';
@@ -390,29 +379,20 @@ function runTickerCycle() {
     msgs.push(weatherPhrases[type][Math.floor(Math.random() * weatherPhrases[type].length)]);
   }
 
-  // 6. Outras Cidades
   if(GLOBAL_DATA.weatherList.length > 0) {
-    GLOBAL_DATA.weatherList.forEach((w, i) => {
-      if(i > 0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`);
-    });
+    GLOBAL_DATA.weatherList.forEach((w, i) => { if(i > 0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`); });
   }
-
-  // 7. História
   if(GLOBAL_DATA.history) msgs.push(stripEmojis(GLOBAL_DATA.history));
-
   msgs.push("CAMERA AO VIVO 24H");
 
   const fullText = msgs.map(m => stripEmojis(m)).join("  *** ");
   tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
-
-  // Animação
   tickerEl.style.animation = 'none';
   tickerEl.offsetHeight; 
   const duration = Math.max(30, fullText.length * 0.18);
   tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
 }
 
-// Configura loop do letreiro
 document.getElementById('newsTicker').addEventListener('animationiteration', runTickerCycle);
 
 function updateDashboard(data) {
@@ -451,9 +431,8 @@ const pb = document.getElementById('pixButton');
 const pf = document.getElementById('pixFeedback');
 pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }).catch(()=>alert(CHAVE_PIX)); };
 
-// Inicia sistema
-fetchAllData().then(() => runTickerCycle()); // Dados primeiro, depois roda
-setInterval(fetchAllData, 300000); // Atualiza dados a cada 5 min
+fetchAllData().then(() => runTickerCycle());
+setInterval(fetchAllData, 300000);
 </script>
 </body>
 </html>
