@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="description" content="Acompanhe Orindiúva ao vivo.">
+<meta name="description" content="Acompanhe Orindiúva e Região ao vivo.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Orindiúva Ao Vivo">
-<meta property="og:description" content="Clima em tempo real, economia e dados da cidade.">
+<meta property="og:title" content="Orindiúva e Região Ao Vivo">
+<meta property="og:description" content="Monitoramento do clima em tempo real: Orindiúva, Rio Preto e SP.">
 <meta property="og:image" content=""> 
 
 <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
@@ -19,7 +19,7 @@
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌥️</text></svg>">
 
-<title>Orindiúva Ao Vivo</title>
+<title>Orindiúva e Região</title>
 
 <style>
 :root {
@@ -78,7 +78,7 @@ body.dark {
 
 .title-box h1 {
   margin: 0;
-  font-size: clamp(40px, 8vw, 64px);
+  font-size: clamp(32px, 6vw, 56px); /* Levemente menor para caber em mobile */
   font-weight: 800;
   letter-spacing: -2px;
   line-height: 1.1;
@@ -364,7 +364,7 @@ body.dark .donation-card {
 
     <div class="ticker-wrap">
       <div class="ticker" id="newsTicker">
-        <div class="ticker-item">CARREGANDO SISTEMA...</div>
+        <div class="ticker-item">CONECTANDO BASES REGIONAIS...</div>
       </div>
     </div>
 
@@ -485,17 +485,17 @@ function getMoonPhase(date) {
 /* --- BANCO DE FRASES CLIMÁTICAS (SEM EMOJIS) --- */
 const phrases = {
   storm: [
-    "ALERTA: TEMPESTADE SE APROXIMANDO FIQUE EM SEGURANCA",
+    "ALERTA: TEMPESTADE NA REGIAO FIQUE EM SEGURANCA",
     "TEMPO FECHADO: TIRE OS ELETRONICOS DA TOMADA",
     "ZEUS ESTA BRAVO: MUITOS RAIOS PREVISTOS",
-    "CUIDADO: RISCO DE TEMPORAL NA REGIAO"
+    "CUIDADO: RISCO DE TEMPORAL AGORA"
   ],
   rain: [
     "VAI CHOVER: CORRE TIRA A ROUPA DO VARAL",
     "TEMPO MOLHADO: NAO ESQUECA O GUARDA-CHUVA",
     "CHUVA: BOM PARA DORMIR RUIM PARA LAVAR O CARRO",
     "MOTORISTA: PISTA MOLHADA REDOBRE A ATENCAO",
-    "PREVISAO: AGUA VAI CAIR DO CEU HOJE"
+    "REGIAO MOLHADA: AGUA VAI CAIR DO CEU HOJE"
   ],
   heat: [
     "SOL FORTE: DA PRA FRITAR OVO NA CALCADA",
@@ -529,215 +529,204 @@ function getRandomPhrase(type) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-/* --- MÓDULO DE DADOS EXTERNOS (APIs) --- */
-
-// API 1: AwesomeAPI (Cotações - SEM EMOJI)
-async function getEconomy() {
-  try {
-    const r = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
-    const d = await r.json();
-    return {
-      usd: `DOLAR: R$ ${parseFloat(d.USDBRL.bid).toFixed(2)}`,
-      eur: `EURO: R$ ${parseFloat(d.EURBRL.bid).toFixed(2)}`,
-      btc: `BITCOIN: R$ ${(parseFloat(d.BTCBRL.bid)/1000).toFixed(0)}k`
-    };
-  } catch { return null; }
-}
-
-// API 2: BrasilAPI (Feriados - SEM EMOJI)
-async function getNextHoliday() {
-  try {
-    const year = new Date().getFullYear();
-    const r = await fetch(`https://brasilapi.com.br/api/feriados/v1/${year}`);
-    const holidays = await r.json();
-    
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const next = holidays.find(h => {
-      const hDate = new Date(h.date + 'T12:00:00'); 
-      return hDate >= today;
-    });
-
-    if(next) {
-      const day = next.date.split('-').reverse().slice(0,2).join('/');
-      return `PROXIMO FERIADO: ${day} - ${next.name.toUpperCase()}`;
-    }
-    return "BOAS FESTAS!";
-  } catch { return null; }
-}
-
-// API 3: ThiagoMGO (Frases Motivacionais - JSON no GitHub)
-// Nota: Busca um JSON com várias frases e escolhe uma aleatoriamente
-async function getMotivation() {
-  try {
-    const r = await fetch('https://raw.githubusercontent.com/thiagomgo/pensamentos/master/phrases.json');
-    if(!r.ok) throw new Error('Falha no GitHub');
-    const data = await r.json();
-    const randomItem = data[Math.floor(Math.random() * data.length)];
-    // O JSON tem o formato { "phrase": "...", "author": "..." }
-    // Retornamos a frase e autor, tudo em maiúsculo para combinar com o letreiro
-    return `${randomItem.phrase.toUpperCase()} - ${randomItem.author.toUpperCase()}`;
-  } catch (e) {
-    // Fallback se a API falhar
-    return "O SUCESSO E A SOMA DE PEQUENOS ESFORCOS REPETIDOS DIA APOS DIA";
-  }
-}
-
-/* --- FUNÇÃO LIMPADORA DE EMOJIS (PARA GARANTIR TEXTO PURO) --- */
 function stripEmojis(str) {
   return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
             .replace(/\s+/g, ' ').trim();
 }
 
-/* --- GERADOR DE NOTÍCIAS HÍBRIDAS --- */
-async function updateTickerNews(curr) {
-  const tickerEl = document.getElementById('newsTicker');
+/* --- DADOS EXTERNOS & REGIONAIS --- */
+
+// 1. AwesomeAPI (Economia)
+async function getEconomy() {
+  try {
+    const r = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
+    const d = await r.json();
+    return `DOLAR: R$ ${parseFloat(d.USDBRL.bid).toFixed(2)} | EURO: R$ ${parseFloat(d.EURBRL.bid).toFixed(2)}`;
+  } catch { return null; }
+}
+
+// 2. BrasilAPI (Feriados)
+async function getNextHoliday() {
+  try {
+    const year = new Date().getFullYear();
+    const r = await fetch(`https://brasilapi.com.br/api/feriados/v1/${year}`);
+    const holidays = await r.json();
+    const today = new Date(); today.setHours(0,0,0,0);
+    const next = holidays.find(h => new Date(h.date+'T12:00:00') >= today);
+    if(next) {
+      const day = next.date.split('-').reverse().slice(0,2).join('/');
+      return `PROXIMO FERIADO: ${day} - ${next.name.toUpperCase()}`;
+    }
+    return null;
+  } catch { return null; }
+}
+
+// 3. Frases Motivacionais (ThiagoMGO)
+async function getMotivation() {
+  try {
+    const r = await fetch('https://raw.githubusercontent.com/thiagomgo/pensamentos/master/phrases.json');
+    if(!r.ok) return null;
+    const data = await r.json();
+    const item = data[Math.floor(Math.random() * data.length)];
+    return `${item.phrase.toUpperCase()} - ${item.author.toUpperCase()}`;
+  } catch { return null; }
+}
+
+/* --- CLIMA MULTI-CIDADES (OPEN-METEO) --- */
+// Coordenadas: Orindiúva, Rio Preto, São Paulo
+const CITIES = {
+  orindiuva: { lat: -20.1819, lon: -49.3508 },
+  riopreto:  { lat: -20.8197, lon: -49.3797 },
+  saopaulo:  { lat: -23.5505, lon: -46.6333 }
+};
+
+// Busca clima de todas as cidades de uma vez
+async function fetchAllWeather() {
+  const latStr = `${CITIES.orindiuva.lat},${CITIES.riopreto.lat},${CITIES.saopaulo.lat}`;
+  const lonStr = `${CITIES.orindiuva.lon},${CITIES.riopreto.lon},${CITIES.saopaulo.lon}`;
   
-  // Reseta animação
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latStr}&longitude=${lonStr}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`;
+  
+  const r = await fetch(url);
+  const data = await r.json();
+  // Open-Meteo retorna array se forem varias coordenadas
+  return Array.isArray(data) ? data : [data]; 
+}
+
+/* --- GERENCIADOR PRINCIPAL --- */
+async function updateEverything() {
+  try {
+    // Carrega clima de todas
+    const weatherList = await fetchAllWeather();
+    const local = weatherList[0]; // Orindiúva
+    const region = weatherList[1]; // Rio Preto
+    const capital = weatherList[2]; // SP
+
+    // 1. Atualiza Dashboard Principal (Orindiúva)
+    updateDashboard(local);
+
+    // 2. Atualiza Ticker com Dados Regionais e Curiosidades
+    await updateTicker(local, region, capital);
+
+  } catch(e) {
+    console.error("Erro geral:", e);
+    document.getElementById('currCond').textContent = "Erro Conexao";
+  }
+}
+
+function updateDashboard(data) {
+  const curr = data.current_weather;
+  const daily = data.daily;
+
+  updateData('currTemp', Math.round(curr.temperature) + "°C");
+  updateData('windSpeed', Math.round(curr.windspeed) + " km/h");
+  updateData('maxTemp', Math.round(daily.temperature_2m_max[0]) + "°C");
+  updateData('minTemp', Math.round(daily.temperature_2m_min[0]) + "°C");
+
+  let label = "Nublado";
+  const c = curr.weathercode;
+  if(c === 0) label = "Céu Limpo";
+  else if([1,2,3].includes(c)) label = "Parc. Nublado";
+  else if([45,48].includes(c)) label = "Neblina";
+  else if([51,53,55,61,63,65,80,81,82].includes(c)) label = "Chuva";
+  else if([95,96,99].includes(c)) label = "Tempestade";
+  
+  updateData('currCond', label);
+
+  const sunriseFull = daily.sunrise[0];
+  const sunsetFull = daily.sunset[0];
+  updateData('sunriseTime', sunriseFull.split('T')[1]);
+  updateData('sunsetTime', sunsetFull.split('T')[1]);
+
+  const moon = getMoonPhase(new Date());
+  updateData('moonPhase', moon.text);
+  const labelEl = document.getElementById('moonLabel');
+  if(labelEl) labelEl.textContent = moon.icon + " Lua"; // Ícone só aqui, não no ticker
+
+  // Previsão 3 dias
+  const forecastBox = document.getElementById('forecastBox');
+  forecastBox.innerHTML = ''; 
+  for(let i=1; i<=3; i++){
+    const date = new Date(daily.time[i] + "T00:00:00"); 
+    const dayName = date.toLocaleDateString('pt-BR', {weekday:'short'}).replace('.','');
+    const max = Math.round(daily.temperature_2m_max[i]);
+    const min = Math.round(daily.temperature_2m_min[i]);
+    const code = daily.weathercode[i];
+    let icon = "⛅";
+    if(code === 0) icon = "☀️";
+    else if([51,53,55,61,63,65,80,81,82].includes(code)) icon = "🌧️";
+    else if([95,96,99].includes(code)) icon = "⛈️";
+
+    forecastBox.innerHTML += `
+      <div class="forecast-item">
+        <div class="f-day">${dayName}</div>
+        <div class="f-icon">${icon}</div>
+        <div><span class="f-temp">${max}°C</span> <span class="f-min">${min}°C</span></div>
+      </div>`;
+  }
+}
+
+async function updateTicker(local, region, capital) {
+  const tickerEl = document.getElementById('newsTicker');
   tickerEl.style.animation = 'none';
   tickerEl.offsetHeight; 
 
-  // Dados Climáticos
-  const temp = Math.round(curr.temperature);
-  const code = curr.weathercode;
-  const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  const todayStr = new Date().toLocaleDateString('pt-BR', dateOptions);
+  const dateStr = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long'});
+  
+  let msgs = [];
+  msgs.push(`HOJE: ${dateStr.toUpperCase()}`);
+  
+  // Clima Regional
+  const tempRio = Math.round(region.current_weather.temperature);
+  const tempSP = Math.round(capital.current_weather.temperature);
+  msgs.push(`RIO PRETO: ${tempRio}C`);
+  msgs.push(`SAO PAULO: ${tempSP}C`);
 
-  let messages = [];
-
-  // 1. Cabeçalho Básico
-  messages.push(`AGORA: ${temp}C`); 
-  messages.push(`DATA: ${todayStr.toUpperCase()}`);
-
-  // 2. Dados de APIs Externas
+  // Economia
   const econ = await getEconomy();
-  if(econ) messages.push(`${econ.usd}  |  ${econ.eur}  |  ${econ.btc}`);
+  if(econ) msgs.push(econ);
 
+  // Feriado
   const holiday = await getNextHoliday();
-  if(holiday) messages.push(stripEmojis(holiday)); // Garante sem emojis
+  if(holiday) msgs.push(stripEmojis(holiday));
 
-  // 3. Humor Climático (Lógica do Tempo)
-  let weatherType = 'cloudy'; // Padrão
+  // Frase Climática baseada em Orindiúva
+  const code = local.current_weather.weathercode;
+  const temp = local.current_weather.temperature;
+  let type = 'cloudy';
+  if (code >= 95) type = 'storm';
+  else if (code >= 51) type = 'rain';
+  else if (temp >= 30) type = 'heat';
+  else if (temp <= 15) type = 'cold';
+  else if (code === 0) type = 'clear';
+  msgs.push(getRandomPhrase(type));
 
-  if (code >= 95) weatherType = 'storm';
-  else if (code >= 51) weatherType = 'rain';
-  else if (temp >= 30) weatherType = 'heat';
-  else if (temp <= 15) weatherType = 'cold';
-  else if (code === 0) weatherType = 'clear';
+  // Motivação
+  const motiv = await getMotivation();
+  if(motiv) msgs.push(stripEmojis(motiv));
 
-  // Adiciona frase baseada no clima
-  messages.push(getRandomPhrase(weatherType));
+  msgs.push("CAMERA AO VIVO 24H");
 
-  // 4. Frase Motivacional da API do ThiagoMGO
-  const motivation = await getMotivation();
-  messages.push(stripEmojis(motivation));
-
-  messages.push("CAMERA AO VIVO 24H");
-
-  // Monta Letreiro (Separador simples)
-  const fullText = messages.map(msg => `*** ${msg} ***`).join("      ");
+  const fullText = msgs.map(m => `*** ${m} ***`).join("      ");
+  tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
   
-  // Limpeza Final de Emojis (Segurança extra)
-  const cleanText = stripEmojis(fullText);
-  
-  tickerEl.innerHTML = `<span class="ticker-item">${cleanText}</span>`;
-
-  // Velocidade Ajustada
-  const totalPixels = cleanText.length * 14; 
-  const duration = Math.max(30, totalPixels / 60);
-
+  // Velocidade
+  const duration = Math.max(30, fullText.length * 14 / 60);
   tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
 }
 
-/* 4. Carregamento Principal */
 function updateData(id, text) {
   const el = document.getElementById(id);
-  if (el) {
-    el.textContent = text;
-    el.classList.remove('skeleton'); 
-  }
+  if (el) { el.textContent = text; el.classList.remove('skeleton'); }
 }
 
-async function loadWeather(){
-  try {
-    const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-20.18194&longitude=-49.35083&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo");
-    const j = await r.json();
-    
-    const curr = j.current_weather;
-    const daily = j.daily;
+// Inicia
+updateEverything();
+setInterval(updateEverything, 600000); // A cada 10 min
 
-    updateTickerNews(curr);
-
-    updateData('currTemp', Math.round(curr.temperature) + "°C");
-    updateData('windSpeed', Math.round(curr.windspeed) + " km/h");
-    updateData('maxTemp', Math.round(daily.temperature_2m_max[0]) + "°C");
-    updateData('minTemp', Math.round(daily.temperature_2m_min[0]) + "°C");
-
-    let label = "Nublado";
-    const c = curr.weathercode;
-    if(c === 0) label = "Céu Limpo";
-    else if([1,2,3].includes(c)) label = "Parc. Nublado";
-    else if([45,48].includes(c)) label = "Neblina";
-    else if([51,53,55,61,63,65,80,81,82].includes(c)) label = "Chuva";
-    else if([95,96,99].includes(c)) label = "Tempestade";
-    
-    updateData('currCond', label);
-
-    const sunriseFull = daily.sunrise[0];
-    const sunsetFull = daily.sunset[0];
-    updateData('sunriseTime', sunriseFull.split('T')[1]);
-    updateData('sunsetTime', sunsetFull.split('T')[1]);
-    
-    const moon = getMoonPhase(new Date());
-    updateData('moonPhase', moon.text);
-    const labelEl = document.getElementById('moonLabel');
-    if(labelEl) labelEl.textContent = moon.icon + " Lua";
-
-    const forecastBox = document.getElementById('forecastBox');
-    forecastBox.innerHTML = ''; 
-
-    for(let i=1; i<=3; i++){
-      const date = new Date(daily.time[i] + "T00:00:00"); 
-      const dayName = date.toLocaleDateString('pt-BR', {weekday:'short'}).replace('.','');
-      const max = Math.round(daily.temperature_2m_max[i]);
-      const min = Math.round(daily.temperature_2m_min[i]);
-      const code = daily.weathercode[i];
-
-      let icon = "⛅";
-      if(code === 0) icon = "☀️";
-      else if([1,2,3].includes(code)) icon = "⛅";
-      else if([45,48].includes(code)) icon = "🌫️";
-      else if([51,53,55,61,63,65,80,81,82].includes(code)) icon = "🌧️";
-      else if([95,96,99].includes(code)) icon = "⛈️";
-
-      const html = `
-        <div class="forecast-item">
-          <div class="f-day">${dayName}</div>
-          <div class="f-icon">${icon}</div>
-          <div>
-            <span class="f-temp">${max}°C</span>
-            <span class="f-min">${min}°C</span>
-          </div>
-        </div>
-      `;
-      forecastBox.innerHTML += html;
-    }
-
-  } catch(e) {
-    console.error(e);
-    document.getElementById('currTemp').classList.remove('skeleton');
-    document.getElementById('currTemp').textContent = "--";
-    document.getElementById('currCond').classList.remove('skeleton');
-    document.getElementById('currCond').textContent = "Erro";
-  }
-}
-loadWeather();
-setInterval(loadWeather, 600000);
-
-/* 5. Pix */
+/* Pix */
 const pixBtn = document.getElementById('pixButton');
 const feedback = document.getElementById('pixFeedback');
-
 pixBtn.onclick = () => {
   navigator.clipboard.writeText(CHAVE_PIX).then(() => {
     feedback.classList.add('show');
