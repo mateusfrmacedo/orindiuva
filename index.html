@@ -69,11 +69,17 @@ body.dark .dashboard-card { background: var(--glass-dark); border: 1px solid var
 .clock-time { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .clock-date { font-size: 14px; opacity: 0.6; margin-top: 4px; text-transform: capitalize; }
 
-/* --- LETREIRO DIGITAL --- */
+/* --- LETREIRO DIGITAL DINÂMICO --- */
 .ticker-wrap { width: 100%; overflow: hidden; background-color: #000; padding: 12px 0; border-radius: 8px; border: 2px solid #333; white-space: nowrap; box-sizing: border-box; margin-top: -10px; margin-bottom: 5px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.9); }
-.ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
+/* Removemos a animação infinita do CSS, agora o JS controla cada ciclo */
+.ticker { display: inline-block; white-space: nowrap; padding-left: 100%; } 
 .ticker-item { display: inline-block; padding: 0 30px; font-family: 'VT323', monospace; font-size: 26px; letter-spacing: 1.5px; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.7); text-transform: uppercase; }
-@keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+/* A animação será injetada dinamicamente pelo JS */
+@keyframes ticker-run { 
+  0% { transform: translate3d(0, 0, 0); } 
+  100% { transform: translate3d(-100%, 0, 0); } 
+}
 
 .dash-details { display: flex; gap: 12px; }
 .detail-pill { flex: 1; background: var(--detail-bg-light); padding: 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -140,7 +146,7 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
 
     <div class="ticker-wrap">
       <div class="ticker" id="newsTicker">
-        <div class="ticker-item">BUSCANDO DADOS GLOBAIS...</div>
+        <div class="ticker-item">INICIALIZANDO SISTEMA DE DADOS...</div>
       </div>
     </div>
 
@@ -177,6 +183,14 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
 <script>
 const CHAVE_PIX = "mateus.freitas@me.com";
 
+// --- GLOBAL STORAGE ---
+let GLOBAL_DATA = {
+  weatherList: [],
+  economy: null,
+  history: null,
+  motivation: null
+};
+
 // TEMA E RELÓGIO
 const themeBtn = document.getElementById('themeToggle');
 const sun = document.getElementById('sunIcon');
@@ -209,27 +223,8 @@ function getMoonPhase(date) {
 function stripEmojis(str) {
   return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim();
 }
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
 
-/* --- LISTA DE CIDADES --- */
-const CITIES_LIST = [
-  { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 },
-  { name: "SAO JOSE DO RIO PRETO", lat: -20.8197, lon: -49.3797 },
-  { name: "SAO PAULO", lat: -23.5505, lon: -46.6333 },
-  { name: "RIO DE JANEIRO", lat: -22.9068, lon: -43.1729 },
-  { name: "BRASILIA", lat: -15.7801, lon: -47.9292 },
-  { name: "NOVA YORK", lat: 40.7128, lon: -74.0060 },
-  { name: "LONDRES", lat: 51.5074, lon: -0.1278 },
-  { name: "TOQUIO", lat: 35.6895, lon: 139.6917 }
-];
-
-/* --- BANCO DE HUMOR (Novas frases adicionadas) --- */
+/* --- BANCO DE HUMOR --- */
 const funnyPhrases = [
   "ACORDEI CEDO PARA ME ATRASAR COM CALMA",
   "O FINAL DE SEMANA DEVERIA LEVAR MULTA POR EXCESSO DE VELOCIDADE",
@@ -322,121 +317,133 @@ const weatherPhrases = {
   ]
 };
 
-/* --- MÓDULO DE DADOS EXTERNOS --- */
+// LISTA CIDADES
+const CITIES_LIST = [
+  { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 },
+  { name: "SAO JOSE DO RIO PRETO", lat: -20.8197, lon: -49.3797 },
+  { name: "SAO PAULO", lat: -23.5505, lon: -46.6333 },
+  { name: "RIO DE JANEIRO", lat: -22.9068, lon: -43.1729 },
+  { name: "BRASILIA", lat: -15.7801, lon: -47.9292 },
+  { name: "NOVA YORK", lat: 40.7128, lon: -74.0060 },
+  { name: "LONDRES", lat: 51.5074, lon: -0.1278 },
+  { name: "TOQUIO", lat: 35.6895, lon: 139.6917 }
+];
 
-async function getHistoryFact() {
+/* --- MÓDULO DE FETCH DE DADOS (Executa a cada 5 min) --- */
+async function fetchAllData() {
   try {
+    // 1. Climas
+    const lats = CITIES_LIST.map(c => c.lat).join(',');
+    const lons = CITIES_LIST.map(c => c.lon).join(',');
+    const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`);
+    const wData = await wRes.json();
+    GLOBAL_DATA.weatherList = Array.isArray(wData) ? wData : [wData];
+    
+    // Atualiza Painel Principal (Orindiúva)
+    updateDashboard(GLOBAL_DATA.weatherList[0]);
+
+    // 2. Economia
+    const eRes = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
+    const eData = await eRes.json();
+    GLOBAL_DATA.economy = {
+      dolar: `DOLAR: R$ ${parseFloat(eData.USDBRL.bid).toFixed(2)}`,
+      euro: `EURO: R$ ${parseFloat(eData.EURBRL.bid).toFixed(2)}`,
+      btc: `BITCOIN: R$ ${(parseFloat(eData.BTCBRL.bid)/1000).toFixed(1)}K`
+    };
+
+    // 3. História
     const today = new Date();
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
-    const r = await fetch(`https://pt.wikipedia.org/api/rest_v1/feed/onthisday/selected/${mm}/${dd}`);
-    const data = await r.json();
-    if(data && data.selected && data.selected.length > 0) {
-      const fact = data.selected[Math.floor(Math.random() * data.selected.length)];
-      return [`HOJE NA HISTORIA (${fact.year}): ${fact.text.toUpperCase()}`];
+    const hRes = await fetch(`https://pt.wikipedia.org/api/rest_v1/feed/onthisday/selected/${mm}/${dd}`);
+    const hData = await hRes.json();
+    if(hData && hData.selected && hData.selected.length > 0) {
+      const fact = hData.selected[Math.floor(Math.random() * hData.selected.length)];
+      GLOBAL_DATA.history = `HOJE NA HISTORIA (${fact.year}): ${fact.text.toUpperCase()}`;
     }
-    return [];
-  } catch { return []; }
+
+  } catch(e) { console.error("Erro fetch", e); }
 }
 
-async function getEconomy() {
-  try {
-    const r = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
-    const d = await r.json();
-    return [
-      `DOLAR: R$ ${parseFloat(d.USDBRL.bid).toFixed(2)}`,
-      `EURO: R$ ${parseFloat(d.EURBRL.bid).toFixed(2)}`,
-      `BITCOIN: R$ ${(parseFloat(d.BTCBRL.bid)/1000).toFixed(1)}K`
-    ];
-  } catch { return []; }
+/* --- GERADOR DE TEXTO DO TICKER (Roda a cada ciclo de animação) --- */
+function runTickerCycle() {
+  const tickerEl = document.getElementById('newsTicker');
+  
+  // Se ainda não carregou dados, espera
+  if(!GLOBAL_DATA.weatherList.length) {
+    setTimeout(runTickerCycle, 1000);
+    return;
+  }
+
+  let msgs = [];
+  const now = new Date();
+  const h = now.getHours();
+  
+  // 1. Saudação
+  let greeting = "BOA NOITE";
+  if (h >= 5 && h < 12) greeting = "BOM DIA";
+  else if (h >= 12 && h < 18) greeting = "BOA TARDE";
+  msgs.push(greeting);
+
+  // 2. Frase Engraçada (Sorteia uma nova a cada ciclo)
+  msgs.push(funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)]);
+
+  // 3. Data
+  msgs.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
+
+  // 4. Economia (Em sequência)
+  if(GLOBAL_DATA.economy) {
+    msgs.push(GLOBAL_DATA.economy.dolar);
+    msgs.push(GLOBAL_DATA.economy.euro);
+    msgs.push(GLOBAL_DATA.economy.btc);
+  }
+
+  // 5. Clima Orindiuva + Frase
+  const localW = GLOBAL_DATA.weatherList[0];
+  msgs.push(`ORINDIUVA: ${Math.round(localW.current_weather.temperature)}C`);
+  
+  // Sorteia frase do clima
+  const code = localW.current_weather.weathercode;
+  const t = localW.current_weather.temperature;
+  let type = 'cloudy';
+  if(code >= 95) type = 'storm'; else if(code >= 51) type = 'rain'; else if(t >= 30) type = 'heat'; else if(t <= 15) type = 'cold'; else if(code === 0) type = 'clear';
+  msgs.push(weatherPhrases[type][Math.floor(Math.random() * weatherPhrases[type].length)]);
+
+  // 6. Outras Cidades
+  GLOBAL_DATA.weatherList.forEach((w, i) => {
+    if(i > 0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`);
+  });
+
+  // 7. História
+  if(GLOBAL_DATA.history) msgs.push(stripEmojis(GLOBAL_DATA.history));
+
+  msgs.push("CAMERA AO VIVO 24H");
+
+  // Monta Texto
+  const fullText = msgs.map(m => stripEmojis(m)).join("  *** ");
+  tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
+
+  // Define Animação
+  // Remove animação anterior para reiniciar
+  tickerEl.style.animation = 'none';
+  tickerEl.offsetHeight; // Trigger reflow
+  
+  // Calcula tempo (0.18s por caractere = velocidade de leitura boa)
+  const duration = Math.max(30, fullText.length * 0.18);
+  tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
+
+  // Agenda próxima atualização de texto quando a animação estiver perto do fim?
+  // Na verdade, 'animationiteration' é melhor.
 }
 
-async function getMotivation() {
-  try {
-    const r = await fetch('https://raw.githubusercontent.com/thiagomgo/pensamentos/master/phrases.json');
-    if(!r.ok) return null;
-    const data = await r.json();
-    const item = data[Math.floor(Math.random() * data.length)];
-    return `${item.phrase.toUpperCase()} - ${item.author.toUpperCase()}`;
-  } catch { return null; }
-}
+// Configura o loop do ticker
+const tickerElement = document.getElementById('newsTicker');
+tickerElement.addEventListener('animationiteration', runTickerCycle);
 
-/* --- ORQUESTRADOR --- */
-async function updateSystem() {
-  try {
-    const lats = CITIES_LIST.map(c => c.lat).join(',');
-    const lons = CITIES_LIST.map(c => c.lon).join(',');
-    
-    const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`);
-    const wData = await wRes.json();
-    const wList = Array.isArray(wData) ? wData : [wData];
-
-    updateDashboard(wList[0]); // Orindiúva
-
-    let tickerMessages = [];
-
-    // 1. Saudação
-    const now = new Date();
-    const h = now.getHours();
-    let greeting = "BOA NOITE";
-    if (h >= 5 && h < 12) greeting = "BOM DIA";
-    else if (h >= 12 && h < 18) greeting = "BOA TARDE";
-    tickerMessages.push(greeting);
-
-    // 2. Frase Engraçada
-    const randomFunny = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
-    tickerMessages.push(randomFunny);
-
-    // 3. Data
-    tickerMessages.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
-
-    // 4. Climas
-    wList.forEach((data, index) => {
-      const cityName = CITIES_LIST[index].name;
-      const temp = Math.round(data.current_weather.temperature);
-      tickerMessages.push(`${cityName}: ${temp}C`);
-    });
-
-    // 5. Frase do Clima Local (Com o novo banco engraçado)
-    const localCode = wList[0].current_weather.weathercode;
-    const localTemp = wList[0].current_weather.temperature;
-    let wType = 'cloudy';
-    if(localCode >= 95) wType = 'storm'; else if(localCode >= 51) wType = 'rain'; else if(localTemp >= 30) wType = 'heat'; else if(localTemp <= 15) wType = 'cold'; else if(localCode === 0) wType = 'clear';
-    tickerMessages.push(weatherPhrases[wType][Math.floor(Math.random() * weatherPhrases[wType].length)]);
-
-    // 6. Dados Externos
-    const econ = await getEconomy();
-    tickerMessages = tickerMessages.concat(econ);
-
-    const history = await getHistoryFact();
-    if(history.length) tickerMessages = tickerMessages.concat(history);
-
-    const motiv = await getMotivation();
-    if(motiv) tickerMessages.push(motiv);
-
-    tickerMessages.push("CAMERA AO VIVO 24H");
-
-    const fixedMsgs = tickerMessages.slice(0, 3 + CITIES_LIST.length); 
-    const randomMsgs = shuffle(tickerMessages.slice(3 + CITIES_LIST.length));
-    const finalMsgs = fixedMsgs.concat(randomMsgs);
-
-    const fullText = finalMsgs.map(m => stripEmojis(m)).join("  *** ");
-    
-    const tickerEl = document.getElementById('newsTicker');
-    tickerEl.style.animation = 'none';
-    tickerEl.offsetHeight; 
-    tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
-    
-    const duration = Math.max(30, fullText.length * 0.18); 
-    tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
-
-  } catch(e) { console.error(e); }
-}
-
+/* --- PAINEL PRINCIPAL --- */
 function updateDashboard(data) {
   const curr = data.current_weather;
   const daily = data.daily;
-  
   const el = (id, txt) => { const e = document.getElementById(id); if(e) { e.textContent = txt; e.classList.remove('skeleton'); }};
   
   el('currTemp', Math.round(curr.temperature) + "°C");
@@ -446,11 +453,7 @@ function updateDashboard(data) {
   
   let cond = "Nublado";
   const c = curr.weathercode;
-  if(c === 0) cond = "Céu Limpo";
-  else if([1,2,3].includes(c)) cond = "Parc. Nublado";
-  else if([45,48].includes(c)) cond = "Neblina";
-  else if([51,53,55,61,63,65,80,81,82].includes(c)) cond = "Chuva";
-  else if([95,96,99].includes(c)) cond = "Tempestade";
+  if(c === 0) cond = "Céu Limpo"; else if([1,2,3].includes(c)) cond = "Parc. Nublado"; else if([45,48].includes(c)) cond = "Neblina"; else if([51,53,55,61,63,65,80,81,82].includes(c)) cond = "Chuva"; else if([95,96,99].includes(c)) cond = "Tempestade";
   el('currCond', cond);
 
   el('sunriseTime', daily.sunrise[0].split('T')[1]);
@@ -473,8 +476,11 @@ const pb = document.getElementById('pixButton');
 const pf = document.getElementById('pixFeedback');
 pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }).catch(()=>alert(CHAVE_PIX)); };
 
-updateSystem();
-setInterval(updateSystem, 600000);
+// Inicialização
+fetchAllData().then(() => {
+  runTickerCycle(); // Inicia o letreiro assim que tiver dados
+});
+setInterval(fetchAllData, 300000); // Atualiza dados da API a cada 5 min
 </script>
 </body>
 </html>
