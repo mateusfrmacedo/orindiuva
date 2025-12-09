@@ -4,6 +4,15 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="description" content="Acompanhe Orindiúva ao vivo.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Orindiúva Ao Vivo">
+<meta property="og:description" content="Clima em tempo real e câmera ao vivo da cidade.">
+<meta property="og:image" content=""> 
+
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
+
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌥️</text></svg>">
 
 <title>Orindiúva Ao Vivo</title>
@@ -20,10 +29,10 @@
   --shadow-light: 0 4px 12px rgba(0,0,0,0.06);
   --detail-bg-light: rgba(0,0,0,0.04);
 
-  /* Cores Dark */
-  --bg-dark: #000000;
+  /* Cores Dark (Atualizado para Cinza Elegante) */
+  --bg-dark: #141414;  /* Era #000000 */
   --text-dark: #f2f2f7;
-  --glass-dark: #1c1c1e;
+  --glass-dark: #1c1c1e; /* Cards um pouco mais claros que o fundo */
   --border-dark: rgba(255, 255, 255, 0.1);
   --shadow-dark: 0 4px 12px rgba(0,0,0,0.5);
   --detail-bg-dark: rgba(255,255,255,0.06);
@@ -112,6 +121,19 @@ body.dark .theme-toggle {
 .theme-toggle:active { transform: scale(0.92); }
 .theme-toggle span { user-select: none; }
 
+/* --- VÍDEO --- */
+.video-container {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  aspect-ratio: 16/9;
+  background: #000;
+  margin-bottom: 24px;
+}
+.video-container iframe { width: 100%; height: 100%; border: 0; }
+
 /* --- DASHBOARD --- */
 .dashboard-card {
   background: var(--glass-light);
@@ -162,7 +184,34 @@ body.dark .detail-pill { background: var(--detail-bg-dark); }
 .detail-label { font-size: 11px; opacity: 0.5; font-weight: 500; text-transform: uppercase; }
 .detail-value { display: flex; align-items: center; gap: 6px; }
 
-/* Baixo: Previsão com Emojis */
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, 
+      var(--detail-bg-light) 25%, 
+      rgba(0,0,0,0.1) 50%, 
+      var(--detail-bg-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  color: transparent !important;
+  border-radius: 4px;
+  display: inline-block;
+  min-width: 40px;
+  user-select: none;
+}
+body.dark .skeleton {
+  background: linear-gradient(90deg, 
+      var(--detail-bg-dark) 25%, 
+      rgba(255,255,255,0.1) 50%, 
+      var(--detail-bg-dark) 75%
+  );
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Baixo: Previsão */
 .forecast-row {
   display: flex;
   justify-content: space-between;
@@ -182,18 +231,6 @@ body.dark .forecast-row { border-top: 1px solid var(--border-dark); }
 .f-icon { font-size: 26px; line-height: 1.2; margin-bottom: 2px; } 
 .f-temp { font-size: 16px; font-weight: 700; }
 .f-min { font-size: 12px; opacity: 0.5; margin-left: 4px; }
-
-/* Vídeo */
-.video-container {
-  position: relative;
-  width: 100%;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-  aspect-ratio: 16/9;
-  background: #000;
-}
-.video-container iframe { width: 100%; height: 100%; border: 0; }
 
 /* Footer */
 .site-footer {
@@ -261,12 +298,21 @@ body.dark .donation-card {
     </button>
   </header>
 
+  <section class="video-container">
+    <iframe
+      src="https://www.youtube.com/embed/VIDEO_ID_AQUI?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1"
+      title="Câmera ao vivo"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </section>
+
   <div class="dashboard-card">
     
     <div class="dash-top">
       <div class="current-weather">
-        <h2 id="currTemp">--°C</h2>
-        <p id="currCond">Carregando...</p>
+        <h2 id="currTemp" class="skeleton">--°C</h2>
+        <p id="currCond" class="skeleton">Carregando...</p>
       </div>
       <div class="clock-area">
         <div class="clock-time" id="clockTime">--:--:--</div>
@@ -277,49 +323,40 @@ body.dark .donation-card {
     <div class="dash-details">
       <div class="detail-pill">
         <span class="detail-label">Vento</span>
-        <span id="windSpeed">-- km/h</span>
+        <span id="windSpeed" class="skeleton">-- km/h</span>
       </div>
       <div class="detail-pill">
         <span class="detail-label">Máx</span>
-        <span id="maxTemp">--°C</span>
+        <span id="maxTemp" class="skeleton">--°C</span>
       </div>
       <div class="detail-pill">
         <span class="detail-label">Mín</span>
-        <span id="minTemp">--°C</span>
+        <span id="minTemp" class="skeleton">--°C</span>
       </div>
     </div>
 
     <div class="dash-details">
       <div class="detail-pill">
         <span class="detail-label">Nascer Sol</span>
-        <span id="sunriseTime" class="detail-value">--:--</span>
+        <span id="sunriseTime" class="detail-value skeleton">--:--</span>
       </div>
       <div class="detail-pill">
         <span class="detail-label">Pôr do Sol</span>
-        <span id="sunsetTime" class="detail-value">--:--</span>
+        <span id="sunsetTime" class="detail-value skeleton">--:--</span>
       </div>
       <div class="detail-pill">
         <span class="detail-label">Lua</span>
-        <span id="moonPhase" class="detail-value">--</span>
+        <span id="moonPhase" class="detail-value skeleton">--</span>
       </div>
     </div>
 
     <div class="forecast-row" id="forecastBox">
-      <div class="forecast-item">...</div>
-      <div class="forecast-item">...</div>
-      <div class="forecast-item">...</div>
+      <div class="forecast-item skeleton">...</div>
+      <div class="forecast-item skeleton">...</div>
+      <div class="forecast-item skeleton">...</div>
     </div>
 
   </div>
-
-  <section class="video-container">
-    <iframe
-      src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1"
-      title="Câmera ao vivo"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
-  </section>
 
   <footer class="site-footer">
     <div class="donation-card">
@@ -402,6 +439,14 @@ function getMoonPhase(date) {
 }
 
 /* 4. Clima + Astro + Previsão */
+function updateData(id, text) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.textContent = text;
+    el.classList.remove('skeleton'); 
+  }
+}
+
 async function loadWeather(){
   try {
     const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-20.18194&longitude=-49.35083&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo");
@@ -410,13 +455,10 @@ async function loadWeather(){
     const curr = j.current_weather;
     const daily = j.daily;
 
-    // --- Atual (com C) ---
-    document.getElementById('currTemp').textContent = Math.round(curr.temperature) + "°C";
-    document.getElementById('windSpeed').textContent = Math.round(curr.windspeed) + " km/h";
-    
-    // --- Max e Min Hoje (com C) ---
-    document.getElementById('maxTemp').textContent = Math.round(daily.temperature_2m_max[0]) + "°C";
-    document.getElementById('minTemp').textContent = Math.round(daily.temperature_2m_min[0]) + "°C";
+    updateData('currTemp', Math.round(curr.temperature) + "°C");
+    updateData('windSpeed', Math.round(curr.windspeed) + " km/h");
+    updateData('maxTemp', Math.round(daily.temperature_2m_max[0]) + "°C");
+    updateData('minTemp', Math.round(daily.temperature_2m_min[0]) + "°C");
 
     let label = "Nublado";
     const c = curr.weathercode;
@@ -425,16 +467,15 @@ async function loadWeather(){
     else if([45,48].includes(c)) label = "Neblina";
     else if([51,53,55,61,63,65,80,81,82].includes(c)) label = "Chuva";
     else if([95,96,99].includes(c)) label = "Tempestade";
-    document.getElementById('currCond').textContent = label;
+    
+    updateData('currCond', label);
 
-    // --- Sol e Lua ---
     const sunriseFull = daily.sunrise[0];
     const sunsetFull = daily.sunset[0];
-    document.getElementById('sunriseTime').textContent = sunriseFull.split('T')[1];
-    document.getElementById('sunsetTime').textContent = sunsetFull.split('T')[1];
-    document.getElementById('moonPhase').textContent = getMoonPhase(new Date());
+    updateData('sunriseTime', sunriseFull.split('T')[1]);
+    updateData('sunsetTime', sunsetFull.split('T')[1]);
+    updateData('moonPhase', getMoonPhase(new Date()));
 
-    // --- Previsão Próximos 3 Dias (com C) ---
     const forecastBox = document.getElementById('forecastBox');
     forecastBox.innerHTML = ''; 
 
@@ -467,8 +508,10 @@ async function loadWeather(){
 
   } catch(e) {
     console.error(e);
+    document.getElementById('currTemp').classList.remove('skeleton');
     document.getElementById('currTemp').textContent = "--";
-    document.getElementById('currCond').textContent = "Erro";
+    document.getElementById('currCond').classList.remove('skeleton');
+    document.getElementById('currCond').textContent = "Erro na rede";
   }
 }
 loadWeather();
