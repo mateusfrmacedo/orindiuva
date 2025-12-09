@@ -17,215 +17,114 @@
 <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌥️</text></svg>">
 
 <title>Orindiúva Ao Vivo</title>
 
 <style>
 :root {
   --sf: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
-  /* Cores do Vidro (Glassmorphism) */
-  --glass-bg: rgba(255, 255, 255, 0.15);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  --text-color: #ffffff;
-  
-  /* Paletas de Céu */
-  --sky-day: linear-gradient(180deg, #2980b9 0%, #6dd5fa 100%);
-  --sky-night: linear-gradient(180deg, #020024 0%, #090979 35%, #00d4ff 100%); 
-  --sky-storm: linear-gradient(180deg, #141E30 0%, #243B55 100%); 
-  --sky-rain: linear-gradient(180deg, #3a404d 0%, #4b5260 100%);
-  
-  --cloud-color: #ffffff;
-  
-  /* Detalhes do Dashboard */
-  --detail-bg-light: rgba(255,255,255,0.1); 
-  --detail-bg-dark: rgba(0,0,0,0.3);
+  --bg-light: #f2f2f7; --text-light: #1c1c1e; --glass-light: #ffffff;
+  --border-light: rgba(0, 0, 0, 0.05); --shadow-light: 0 4px 12px rgba(0,0,0,0.06);
+  --detail-bg-light: rgba(0,0,0,0.04);
+  --bg-dark: #141414; --text-dark: #f2f2f7; --glass-dark: #1c1c1e;
+  --border-dark: rgba(255, 255, 255, 0.1); --shadow-dark: 0 4px 12px rgba(0,0,0,0.5);
+  --detail-bg-dark: rgba(255,255,255,0.06);
 }
 
 * { box-sizing: border-box; }
 
-body {
+html, body {
   margin: 0; padding: 0; height: 100%;
   font-family: var(--sf);
-  color: var(--text-color);
-  background: #111;
+  background-color: var(--bg-light);
+  color: var(--text-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
 }
 
-/* --- CAMADA 1: O CÉU (VÍDEO BACKGROUND) --- */
-.video-wrapper {
-  position: fixed; inset: 0; z-index: -10;
-  background: #000;
-}
+body.dark { background-color: var(--bg-dark); color: var(--text-dark); }
 
-#bgVideo {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  transition: opacity 1s ease;
-  opacity: 1;
-}
-
-.video-overlay {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,0.3); /* Escurece para o texto aparecer */
-  z-index: 1; pointer-events: none;
-}
-
-/* --- UI DO SITE --- */
-.site {
-  position: relative; z-index: 10;
-  max-width: 1000px; margin: 0 auto; padding: 40px 24px;
-  min-height: 100vh; display: flex; flex-direction: column;
-}
-
+.site { max-width: 1000px; margin: 0 auto; padding: 40px 24px; min-height: 100vh; display: flex; flex-direction: column; }
 .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
-.title-box h1 {
-  margin: 0; font-size: clamp(40px, 8vw, 64px);
-  font-weight: 800; letter-spacing: -2px; line-height: 1.1;
-  text-shadow: 0 4px 30px rgba(0,0,0,0.5);
-}
-.status-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 700; color: #fff;
-  background: rgba(255, 59, 48, 0.8);
-  padding: 4px 10px; border-radius: 20px; margin-top: 8px; text-transform: uppercase;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-.pulse {
-  width: 8px; height: 8px; background: #fff; border-radius: 50%;
-  animation: pulse 1.5s infinite;
-}
+.title-box h1 { margin: 0; font-size: clamp(32px, 6vw, 56px); font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
+.status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #ff3b30; background: rgba(255, 59, 48, 0.1); padding: 4px 10px; border-radius: 20px; margin-top: 8px; text-transform: uppercase; }
+.pulse { width: 8px; height: 8px; background: currentColor; border-radius: 50%; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: .4; } 100% { opacity: 1; } }
 
-/* Cards */
-.dashboard-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-radius: 30px; padding: 30px; margin-bottom: 24px;
-  display: flex; flex-direction: column; gap: 24px;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-}
+.theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); cursor: pointer; background: var(--glass-light); box-shadow: var(--shadow-light); display: grid; place-items: center; padding: 0; font-size: 22px; line-height: 1; transition: all 0.3s; }
+body.dark .theme-toggle { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
+.theme-toggle:active { transform: scale(0.92); } .theme-toggle span { user-select: none; }
+
+.video-container { position: relative; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12); aspect-ratio: 16/9; background: #000; margin-bottom: 24px; }
+.video-container iframe { width: 100%; height: 100%; border: 0; }
+
+.dashboard-card { background: var(--glass-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-light); border-radius: 24px; padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 20px; }
+body.dark .dashboard-card { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
 
 .dash-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.current-weather h2 { margin: 0; font-size: 56px; font-weight: 700; letter-spacing: -2px; }
-.current-weather p { margin: 0; font-size: 20px; font-weight: 500; opacity: 0.9; }
-
+.current-weather h2 { margin: 0; font-size: 42px; font-weight: 700; letter-spacing: -1px; }
+.current-weather p { margin: 4px 0 0; font-size: 18px; font-weight: 500; opacity: 0.8; }
 .clock-area { text-align: right; }
-.clock-time { font-size: 32px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.clock-date { font-size: 14px; opacity: 0.8; margin-top: 2px; text-transform: capitalize; }
+.clock-time { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.clock-date { font-size: 14px; opacity: 0.6; margin-top: 4px; text-transform: capitalize; }
 
-/* Letreiro Digital */
-.ticker-wrap { width: 100%; overflow: hidden; background-color: rgba(0,0,0,0.6); padding: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); white-space: nowrap; box-sizing: border-box; margin-top: -10px; margin-bottom: 5px; position: relative; backdrop-filter: blur(10px); }
+/* --- LETREIRO DIGITAL --- */
+.ticker-wrap { width: 100%; overflow: hidden; background-color: #000; padding: 12px 0; border-radius: 8px; border: 2px solid #333; white-space: nowrap; box-sizing: border-box; margin-top: -10px; margin-bottom: 5px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.9); }
 .ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
-.ticker-item { display: inline-block; padding: 0 30px; font-family: 'VT323', monospace; font-size: 24px; letter-spacing: 1.5px; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.7); text-transform: uppercase; }
+.ticker-item { display: inline-block; padding: 0 30px; font-family: 'VT323', monospace; font-size: 26px; letter-spacing: 1.5px; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.7); text-transform: uppercase; }
 @keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
 .dash-details { display: flex; gap: 12px; }
-.detail-pill {
-  flex: 1; background: rgba(255,255,255,0.1);
-  padding: 16px; border-radius: 18px; text-align: center;
-  font-size: 15px; font-weight: 600;
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  transition: transform 0.2s, background 0.2s;
-  border: 1px solid rgba(255,255,255,0.05);
-}
-.detail-pill:hover { transform: scale(1.02); background: rgba(255,255,255,0.2); }
-.detail-label { font-size: 11px; opacity: 0.7; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.detail-pill { flex: 1; background: var(--detail-bg-light); padding: 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+body.dark .detail-pill { background: var(--detail-bg-dark); }
+.detail-label { font-size: 11px; opacity: 0.5; font-weight: 500; text-transform: uppercase; }
+.detail-value { display: flex; align-items: center; gap: 6px; }
 
-.skeleton { animation: shimmer 1.5s infinite; opacity: 0.7; }
-@keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+.skeleton { background: linear-gradient(90deg, var(--detail-bg-light) 25%, rgba(0,0,0,0.1) 50%, var(--detail-bg-light) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; color: transparent !important; border-radius: 4px; display: inline-block; min-width: 40px; user-select: none; }
+body.dark .skeleton { background: linear-gradient(90deg, var(--detail-bg-dark) 25%, rgba(255,255,255,0.1) 50%, var(--detail-bg-dark) 75%); }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-.forecast-row {
-  display: flex; justify-content: space-between;
-  border-top: 1px solid rgba(255,255,255,0.15);
-  padding-top: 24px; margin-top: 8px;
-}
+.forecast-row { display: flex; justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 20px; }
+body.dark .forecast-row { border-top: 1px solid var(--border-dark); }
 .forecast-item { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; }
-.f-day { font-size: 14px; font-weight: 700; opacity: 0.9; margin-bottom: 4px; text-transform: uppercase; }
-.f-icon { font-size: 32px; line-height: 1.2; margin-bottom: 4px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); } 
-.f-temp { font-size: 18px; font-weight: 700; }
-.f-min { font-size: 14px; opacity: 0.7; margin-left: 6px; }
+.f-day { font-size: 13px; font-weight: 600; opacity: 0.7; margin-bottom: 2px; text-transform: uppercase; }
+.f-icon { font-size: 26px; line-height: 1.2; margin-bottom: 2px; } 
+.f-temp { font-size: 16px; font-weight: 700; }
+.f-min { font-size: 12px; opacity: 0.5; margin-left: 4px; }
 
-/* Video Player (Live Cam) */
-.video-container {
-  position: relative; width: 100%; border-radius: 30px; overflow: hidden;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.6); aspect-ratio: 16/9; background: #000;
-  border: 1px solid rgba(255,255,255,0.2); margin-bottom: 24px;
-}
-.video-container iframe { width: 100%; height: 100%; border: 0; }
-
-/* Footer */
 .site-footer { margin-top: auto; padding-top: 60px; text-align: center; padding-bottom: 20px; }
-.donation-card {
-  display: inline-flex; flex-direction: column; align-items: center;
-  padding: 24px 40px; margin: 0 auto;
-  background: var(--glass-bg); border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow); backdrop-filter: blur(25px);
-  border-radius: 24px;
-}
+.donation-card { display: inline-flex; flex-direction: column; align-items: center; padding: 24px 40px; margin: 0 auto; background: var(--glass-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-light); border-radius: 20px; }
+body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
 .donation-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.donation-desc { font-size: 14px; opacity: 0.9; margin-bottom: 18px; line-height: 1.4; }
-
-.btn-donate {
-  position: relative; display: flex; align-items: center; gap: 8px;
-  padding: 12px 24px; border-radius: 14px; border: none;
-  background: #fff; color: #111;
-  font-size: 16px; font-weight: 700; cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-.btn-donate:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+.donation-desc { font-size: 14px; opacity: 0.7; margin-bottom: 18px; line-height: 1.4; }
+.btn-donate { position: relative; display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 12px; border: none; background: linear-gradient(135deg, #32bcad 0%, #229a8e 100%); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(50, 188, 173, 0.3); }
+.btn-donate:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(50, 188, 173, 0.4); }
 .btn-donate:active { transform: translateY(0); }
-
-.copy-feedback {
-  position: absolute; top: -40px; background: #fff; color: #111;
-  padding: 6px 12px; border-radius: 8px; font-size: 12px; opacity: 0;
-  pointer-events: none; transform: translateY(10px); transition: all 0.2s; font-weight: 800;
-}
+.copy-feedback { position: absolute; top: -35px; background: #333; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: all 0.2s; }
 .copy-feedback.show { opacity: 1; transform: translateY(0); }
-
-.footer-credit {
-  display: block; margin-top: 30px; font-size: 12px; opacity: 0.5;
-  color: #fff; text-decoration: none; transition: opacity 0.2s;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-}
+.footer-credit { display: block; margin-top: 25px; font-size: 11px; opacity: 0.4; color: inherit; text-decoration: none; transition: opacity 0.2s; }
 .footer-credit:hover { opacity: 1; text-decoration: underline; }
-
-.theme-toggle { display: none; } /* Oculto pois o fundo é vídeo automático */
 
 </style>
 </head>
 
 <body>
 
-<div class="video-wrapper">
-  <div class="video-overlay"></div>
-  <video id="bgVideo" autoplay muted loop playsinline>
-    <source src="" type="video/mp4">
-  </video>
-</div>
-
 <div class="site">
-
   <header class="header">
     <div class="title-box">
       <h1>Orindiúva</h1>
       <div class="status-badge"><div class="pulse"></div> Ao Vivo</div>
     </div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">
+      <span id="moonIcon">🌙</span><span id="sunIcon" style="display:none">☀️</span>
+    </button>
   </header>
 
   <section class="video-container">
-    <iframe 
-      src="https://www.youtube.com/embed/RBrOmuGw6Mg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1" 
-      title="Câmera ao vivo" 
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-      allowfullscreen>
-    </iframe>
+     <iframe src="https://www.youtube.com/embed/RBrOmuGw6Mg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1" title="Câmera" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  
   </section>
 
   <div class="dashboard-card">
@@ -251,13 +150,11 @@ body {
       <div class="detail-pill"><span class="detail-label">🔺 Máx</span><span id="maxTemp" class="skeleton">--°C</span></div>
       <div class="detail-pill"><span class="detail-label">🔻 Mín</span><span id="minTemp" class="skeleton">--°C</span></div>
     </div>
-
     <div class="dash-details">
       <div class="detail-pill"><span class="detail-label">🌅 Nascer Sol</span><span id="sunriseTime" class="detail-value skeleton">--:--</span></div>
       <div class="detail-pill"><span class="detail-label">🌇 Pôr do Sol</span><span id="sunsetTime" class="detail-value skeleton">--:--</span></div>
       <div class="detail-pill"><span class="detail-label" id="moonLabel">🌙 Lua</span><span id="moonPhase" class="detail-value skeleton">--</span></div>
     </div>
-
     <div class="forecast-row" id="forecastBox">
       <div class="forecast-item skeleton">...</div>
       <div class="forecast-item skeleton">...</div>
@@ -268,79 +165,143 @@ body {
   <footer class="site-footer">
     <div class="donation-card">
       <div class="donation-title">Gostou?</div>
-      <div class="donation-desc">Ajude a manter a câmera online. Qualquer valor é bem-vindo! 😁</div>
+      <div class="donation-desc">Ajude a manter a câmera online. Qualquer valor é bem-vindo!</div>
       <button class="btn-donate" id="pixButton">
         <div class="copy-feedback" id="pixFeedback">Copiado!</div>
-        <span style="font-size: 20px; line-height: 1;">💵</span>
-        Copiar Chave Pix
+        <span>💵</span> Copiar Chave Pix
       </button>
     </div>
     <a href="http://mateusfrmacedo.github.io" target="_blank" class="footer-credit">create by Mateus</a>
   </footer>
-
 </div>
 
 <script>
-/* --- CONFIG --- */
 const CHAVE_PIX = "mateus.freitas@me.com";
 
-/* LINKS DOS VÍDEOS DE FUNDO (HD) */
-const VIDEOS = {
-  clearDay: "https://videos.pexels.com/video-files/855018/855018-hd_1920_1080_30fps.mp4",
-  clearNight: "https://videos.pexels.com/video-files/3205777/3205777-hd_1920_1080_25fps.mp4",
-  cloudyDay: "https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_30fps.mp4",
-  cloudyNight: "https://videos.pexels.com/video-files/2715412/2715412-hd_1920_1080_30fps.mp4",
-  rain: "https://videos.pexels.com/video-files/4800346/4800346-hd_1920_1080_30fps.mp4",
-  storm: "https://videos.pexels.com/video-files/2529853/2529853-hd_1920_1080_30fps.mp4",
-  fog: "https://videos.pexels.com/video-files/1893623/1893623-hd_1920_1080_30fps.mp4"
-};
+// --- BANCOS DE DADOS (DEFINIDOS ANTES DE TUDO) ---
 
-// Frases
 const funnyPhrases = [
-  "ACORDEI CEDO PARA ME ATRASAR COM CALMA", "O FINAL DE SEMANA DEVERIA LEVAR MULTA POR EXCESSO DE VELOCIDADE",
-  "SE A VIDA TE DER LIMOES FACA UMA CAIPIRINHA", "ESTADO CIVIL COM FOME", "SORRIA ISSO CONFUNDE AS PESSOAS",
-  "NAO SOU PREGUICOSO ESTOU EM MODO DE ECONOMIA DE ENERGIA", "HOJE ESTOU MAIS PERDIDO QUE CEGO EM TIROTEIO",
-  "MINHA DIETA COMECA SEMPRE AMANHA", "DINHEIRO NAO TRAZ FELICIDADE MAS COMPRA PIZZA", "TO NEM AI PRO CLIMA MAIS",
-  "QUEM CEDO MADRUGA FICA COM SONO O DIA TODO", "HOJE EU SO FUNCIONO A BASE DE ODIO E CAFEINA",
-  "VOU FAZER CHURRASCO HJ", "TO COM SONO", "A ATMOSFERA HOJE ESTA ESTAVEL DIFERENTE DE VOCE",
-  "O CLIMA ESTA MENOS TOXICO QUE SUA ROTINA MAS NAO POR MUITO", "TEMPERATURA EM ALTA SUA UTILIDADE EM BAIXA"
+  "ACORDEI CEDO PARA ME ATRASAR COM CALMA",
+  "O FINAL DE SEMANA DEVERIA LEVAR MULTA POR EXCESSO DE VELOCIDADE",
+  "SE A VIDA TE DER LIMOES FACA UMA CAIPIRINHA",
+  "ESTADO CIVIL COM FOME",
+  "SORRIA ISSO CONFUNDE AS PESSOAS",
+  "NAO SOU PREGUICOSO ESTOU EM MODO DE ECONOMIA DE ENERGIA",
+  "HOJE ESTOU MAIS PERDIDO QUE CEGO EM TIROTEIO",
+  "MINHA DIETA COMECA SEMPRE AMANHA",
+  "DINHEIRO NAO TRAZ FELICIDADE MAS COMPRA PIZZA",
+  "O MUNDO DA VOLTAS E EU FICO TONTO",
+  "PRECISO DE 6 MESES DE FERIAS 2 VEZES POR ANO",
+  "TO NEM AI PRO CLIMA MAIS",
+  "CORRER ATRAS DE BALAO E PRA QUEM TEM FOLEGO",
+  "QUEM CEDO MADRUGA FICA COM SONO O DIA TODO",
+  "ACORDAR CEDO E UM CRIME E EU SOU A VITIMA",
+  "MEU BOM HUMOR FOI DEMITIDO POR JUSTA CAUSA",
+  "HOJE EU SO FUNCIONO A BASE DE ODIO E CAFEINA",
+  "ME ESFORCO PARA SER UMA PESSOA MELHOR MAS O MUNDO NAO AJUDA",
+  "A REALIDADE CHEGA SEMPRE ATRASADA MAS CHEGA PRA ESTRAGAR TUDO",
+  "SE A SEMANA TIVESSE UM ROSTO EU DARIA UM TAPA",
+  "MINHA PACIENCIA JA FOI PROCURADA NO GOOGLE E CONTINUA DESAPARECIDA",
+  "MEUS PLANOS DO DIA FORAM CANCELADOS POR FALTA DE VONTADE",
+  "HOJE ESTOU SENDO PATROCINADO PELO DESANIMO",
+  "VOU FAZER CHURRASCO HJ",
+  "TO COM SONO",
+  "ESTOU FUNCIONANDO NO MODO STANLEY APENAS ESPERANDO A HORA DE IR EMBORA",
+  "PARABENS VOCE SOBREVIVEU A NOITE AGORA FALTA SOBREVIVER AO RESTO DA SUA VIDA",
+  "A ATMOSFERA HOJE ESTA ESTAVEL DIFERENTE DE VOCE",
+  "O CLIMA ESTA MENOS TOXICO QUE SUA ROTINA MAS NAO POR MUITO",
+  "TEMPERATURA EM ALTA SUA UTILIDADE EM BAIXA",
+  "O SOL ESTA FORTE SUA VONTADE DE EXISTIR NAO",
+  "VENTOS FRACOS HOJE IGUAL A SUA DISCIPLINA",
+  "CHANCE DE CHUVA BAIXA CHANCE DE VOCE SE ORGANIZAR ZERO",
+  "HA UMA FRENTE FRIA CHEGANDO MAIS FRIA SO A SUA MOTIVACAO",
+  "CEU PARCIALMENTE NUBLADO SEU FUTURO TAMBEM",
+  "SE A PRESSAO ATMOSFERICA SUBIR MAIS UM POUCO AINDA VAI SER MENOR QUE SUA PRESSAO PARA PRODUZIR ALGO",
+  "NIVEL DE RADIACAO UV ELEVADO OTIMO PARA JUSTIFICAR FICAR DENTRO DE CASA SEM FAZER NADA",
+  "O DIA PROMETE SER LIMPO INFELIZMENTE SEUS RESULTADOS NAO",
+  "UMIDADE ALTA PROVAVELMENTE A MESMA QUE SUA CAPACIDADE DE DESAPONTAR",
+  "CONDICOES IDEAIS PARA CAMINHAR MAS VOCE VAI CONTINUAR SENTADO",
+  "ESTATISTICAS CLIMATICAS ATUALIZADAS SUAS CONTINUAM DECEPCIONANTES",
+  "HOJE O DIA PROMETE VOCE INFELIZMENTE NAO",
+  "SORRIR PRA QUE SE O CAOS JA FAZ ISSO POR MIM"
 ];
+
 const weatherPhrases = {
-  storm: ["TEMPESTADE CHEGANDO", "RAIOS POR PERTO", "VENTANIA FORTE", "TROVOES"],
-  rain: ["CHUVA CHEGANDO", "PISTA MOLHADA", "GAROA", "CHUVARADA"],
-  heat: ["CALOR INTENSO", "SOL FORTE", "AR SECO", "CALORAO"],
-  cold: ["FRIO NA REGIAO", "BAIXA TEMPERATURA", "SENSACAO TERMICA BAIXA", "GELO NO AR"],
-  clear: ["CEU LIMPO", "SOL SUAVE", "VISIBILIDADE ALTA", "DIA LIMPO"],
-  cloudy: ["TEMPO NUBLADO", "NUVENS DENSAS", "CLIMA CINZA", "NEBULOSO"]
+  storm: [
+    "TEMPESTADE CHEGANDO: A NATUREZA TEVE UM SURTO",
+    "RAIOS POR PERTO: HOJE O CEU ESTA TIRANDO FAISCA DE QUALQUER COISA",
+    "VENTANIA FORTE: SE VOAR LEMBRE DE CAIR COM ESTILO",
+    "TROVOES: O CEU ESTA BATENDO PORTA DE MAL HUMOR",
+    "ALERTA: QUALQUER GUARDA CHUVA VIROU PARA RAIOS AMBULANTE"
+  ],
+  rain: [
+    "CHUVA CHEGANDO: O CEU VIU A CONTA DE LUZ E DESABOU",
+    "PISTA MOLHADA: FREOU TARDE VIROU CARRO NAUTICO",
+    "GAROA: A CHUVA QUE NAO TEM CORAGEM DE SER CHUVA",
+    "CHUVARADA: DEUS LIGOU O MODO LAVA RAPIDO",
+    "PRECIPITACAO: A UNICA COISA QUE CAI MAIS QUE PROMESSA DE ANO NOVO"
+  ],
+  heat: [
+    "CALOR INTENSO: SUA SOMBRA TA PEDINDO AGUA",
+    "SOL FORTE: O ASFALTO ESTA FRITANDO ATE PENSAMENTO",
+    "AR SECO: PISCAR VIROU EXERCICIO DE RISCO",
+    "CALORAO: QUALQUER UM VIROU CHURRASCO EM POTENCIAL",
+    "TEMPERATURA ALTA: HOJE O AR CONDICIONADO E SOBERANO"
+  ],
+  cold: [
+    "FRIO NA REGIAO: QUALQUER VENTO E UMA AGRESSAO PESSOAL",
+    "BAIXA TEMPERATURA: DEDOS EM MODO ICEBERG",
+    "SENSACAO TERMICA: CONGELANDO ATE A VONTADE DE VIVER",
+    "GELO NO AR: O CLIMA ESTA FAZENDO COSPLAY DE SIBERIA",
+    "FRIO INTENSO: ATE PINGUIM PEDIU UM COBERTOR"
+  ],
+  clear: [
+    "CEU LIMPO: O CLIMA ESTA EM MODO TURBO PREMIUM",
+    "SOL SUAVE: HOJE O CEU TA NO SEU MELHOR COMPORTAMENTO",
+    "VISIBILIDADE ALTA: PERFEITO PRA VER SEU DESTINO ERRADO DE LONGE",
+    "CLIMA BOM: ATE A PREGUICA FICA MAIS LEVE",
+    "DIA LIMPO: HOJE O UNIVERSO DECIDIU NAO TE SABOTAR"
+  ],
+  cloudy: [
+    "TEMPO NUBLADO: O CEU TA PENSANDO EM ALGO SOMBRIO",
+    "NUVENS DENSAS: O SOL TA FAZENDO HORA EXTRA ESCONDIDO",
+    "CLIMA CINZA: FILTRO FEIO ATIVADO",
+    "NUBLADO: O CEU FINGINDO QUE E INTROSPECTIVO",
+    "NEBULOSO: PARECE QUE O CLIMA NAO DORMIU BEM"
+  ]
 };
+
 const CITIES_LIST = [
-  { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 }, { name: "RIO PRETO", lat: -20.8197, lon: -49.3797 },
-  { name: "SAO PAULO", lat: -23.5505, lon: -46.6333 }, { name: "RIO", lat: -22.9068, lon: -43.1729 },
-  { name: "BRASILIA", lat: -15.7801, lon: -47.9292 }, { name: "NOVA YORK", lat: 40.7128, lon: -74.0060 }
+  { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 },
+  { name: "SAO JOSE DO RIO PRETO", lat: -20.8197, lon: -49.3797 },
+  { name: "SAO PAULO", lat: -23.5505, lon: -46.6333 },
+  { name: "RIO DE JANEIRO", lat: -22.9068, lon: -43.1729 },
+  { name: "BRASILIA", lat: -15.7801, lon: -47.9292 },
+  { name: "NOVA YORK", lat: 40.7128, lon: -74.0060 },
+  { name: "LONDRES", lat: 51.5074, lon: -0.1278 },
+  { name: "TOQUIO", lat: 35.6895, lon: 139.6917 }
 ];
 
-/* --- ENGINE DE VÍDEO --- */
-function updateBackgroundVideo(weatherCode, isDay) {
-  const video = document.getElementById('bgVideo');
-  let source = VIDEOS.clearDay;
-  if ([0, 1].includes(weatherCode)) source = isDay ? VIDEOS.clearDay : VIDEOS.clearNight;
-  else if ([2, 3].includes(weatherCode)) source = isDay ? VIDEOS.cloudyDay : VIDEOS.cloudyNight;
-  else if ([45, 48].includes(weatherCode)) source = VIDEOS.fog;
-  else if ([51,53,55,61,63,65,80,81,82].includes(weatherCode)) source = VIDEOS.rain;
-  else if ([95,96,99].includes(weatherCode)) source = VIDEOS.storm;
+// --- ARMAZENAMENTO GLOBAL ---
+let GLOBAL_DATA = {
+  weatherList: [],
+  economy: null,
+  history: null
+};
 
-  if (video.dataset.src !== source) {
-    video.dataset.src = source;
-    video.style.opacity = 0;
-    setTimeout(() => {
-      video.src = source; video.load();
-      video.play().catch(e => console.log("Autoplay bloqueado"));
-      video.style.opacity = 1;
-    }, 500);
-  }
+// TEMA E RELÓGIO
+const themeBtn = document.getElementById('themeToggle');
+const sun = document.getElementById('sunIcon');
+const moon = document.getElementById('moonIcon');
+let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+function updateThemeUI(t){
+  if(t === 'dark'){ document.body.classList.add('dark'); sun.style.display='block'; moon.style.display='none'; }
+  else { document.body.classList.remove('dark'); sun.style.display='none'; moon.style.display='block'; }
 }
+updateThemeUI(currentTheme);
+themeBtn.onclick = () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; updateThemeUI(currentTheme); localStorage.setItem('theme', currentTheme); };
 
-/* RELÓGIO */
 function updateClock(){
   const n = new Date();
   document.getElementById('clockTime').textContent = n.toLocaleTimeString('pt-BR');
@@ -348,64 +309,127 @@ function updateClock(){
 }
 setInterval(updateClock, 1000); updateClock();
 
-/* LUA */
 function getMoonPhase(date) {
   const diff = (date.getTime() - new Date('2000-01-06T18:14:00Z').getTime()) / 86400000;
   const idx = (diff % 29.5305882) / 29.5305882;
-  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; 
-  if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
-  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; 
-  if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
+  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
+  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
   return {icon:'🌑', t:'Nova'};
 }
 
-function stripEmojis(str) { return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim(); }
+function stripEmojis(str) {
+  return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim();
+}
 
-/* --- DADOS --- */
-let GLOBAL_DATA = { weatherList: [], economy: null, history: null };
-
+/* --- MÓDULO DE DADOS --- */
 async function fetchAllData() {
   try {
+    // 1. Climas
     const lats = CITIES_LIST.map(c => c.lat).join(',');
     const lons = CITIES_LIST.map(c => c.lon).join(',');
     const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`);
     const wData = await wRes.json();
     GLOBAL_DATA.weatherList = Array.isArray(wData) ? wData : [wData];
     
-    // Atualiza Dashboard Principal
     updateDashboard(GLOBAL_DATA.weatherList[0]);
 
+    // 2. Economia
     const eRes = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
     const eData = await eRes.json();
-    GLOBAL_DATA.economy = [`DOLAR: R$${parseFloat(eData.USDBRL.bid).toFixed(2)}`, `EURO: R$${parseFloat(eData.EURBRL.bid).toFixed(2)}`];
+    GLOBAL_DATA.economy = [
+      `DOLAR: R$ ${parseFloat(eData.USDBRL.bid).toFixed(2)}`,
+      `EURO: R$ ${parseFloat(eData.EURBRL.bid).toFixed(2)}`,
+      `BITCOIN: R$ ${(parseFloat(eData.BTCBRL.bid)/1000).toFixed(1)}K`
+    ];
 
+    // 3. História
     const today = new Date();
-    const hRes = await fetch(`https://pt.wikipedia.org/api/rest_v1/feed/onthisday/selected/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`);
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const hRes = await fetch(`https://pt.wikipedia.org/api/rest_v1/feed/onthisday/selected/${mm}/${dd}`);
     const hData = await hRes.json();
-    if(hData?.selected?.length) {
+    if(hData && hData.selected && hData.selected.length > 0) {
       const fact = hData.selected[Math.floor(Math.random() * hData.selected.length)];
       GLOBAL_DATA.history = `HOJE NA HISTORIA (${fact.year}): ${fact.text.toUpperCase()}`;
     }
-  } catch(e) { console.error(e); }
+
+  } catch(e) { console.error("Erro fetch", e); }
 }
+
+/* --- GERADOR DE LETREIRO (CICLO) --- */
+function runTickerCycle() {
+  const tickerEl = document.getElementById('newsTicker');
+  
+  let msgs = [];
+  const now = new Date();
+  const h = now.getHours();
+  
+  // 1. Saudação
+  let greeting = "BOA NOITE";
+  if (h >= 5 && h < 12) greeting = "BOM DIA";
+  else if (h >= 12 && h < 18) greeting = "BOA TARDE";
+  msgs.push(greeting);
+
+  // 2. Frase Engraçada (Nova a cada ciclo)
+  msgs.push(funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)]);
+
+  // 3. Data
+  msgs.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
+
+  // 4. Economia (Se houver)
+  if(GLOBAL_DATA.economy) msgs = msgs.concat(GLOBAL_DATA.economy);
+
+  // 5. Clima Orindiuva + Frase
+  if(GLOBAL_DATA.weatherList.length > 0) {
+    const localW = GLOBAL_DATA.weatherList[0];
+    msgs.push(`ORINDIUVA: ${Math.round(localW.current_weather.temperature)}C`);
+    
+    const code = localW.current_weather.weathercode;
+    const t = localW.current_weather.temperature;
+    let type = 'cloudy';
+    if(code >= 95) type = 'storm'; else if(code >= 51) type = 'rain'; else if(t >= 30) type = 'heat'; else if(t <= 15) type = 'cold'; else if(code === 0) type = 'clear';
+    msgs.push(weatherPhrases[type][Math.floor(Math.random() * weatherPhrases[type].length)]);
+  }
+
+  // 6. Outras Cidades
+  if(GLOBAL_DATA.weatherList.length > 0) {
+    GLOBAL_DATA.weatherList.forEach((w, i) => {
+      if(i > 0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`);
+    });
+  }
+
+  // 7. História
+  if(GLOBAL_DATA.history) msgs.push(stripEmojis(GLOBAL_DATA.history));
+
+  msgs.push("CAMERA AO VIVO 24H");
+
+  const fullText = msgs.map(m => stripEmojis(m)).join("  *** ");
+  tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
+
+  // Animação
+  tickerEl.style.animation = 'none';
+  tickerEl.offsetHeight; 
+  const duration = Math.max(30, fullText.length * 0.18);
+  tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
+}
+
+// Configura loop do letreiro
+document.getElementById('newsTicker').addEventListener('animationiteration', runTickerCycle);
 
 function updateDashboard(data) {
   if(!data) return;
   const curr = data.current_weather;
   const daily = data.daily;
-  const el = (id, txt) => { const e = document.getElementById(id); if(e){ e.textContent = txt; e.classList.remove('skeleton'); }};
-
-  // Video Background
-  updateBackgroundVideo(curr.weathercode, curr.is_day);
-
+  const el = (id, txt) => { const e = document.getElementById(id); if(e) { e.textContent = txt; e.classList.remove('skeleton'); }};
+  
   el('currTemp', Math.round(curr.temperature) + "°C");
   el('windSpeed', Math.round(curr.windspeed) + " km/h");
   el('maxTemp', Math.round(daily.temperature_2m_max[0]) + "°C");
   el('minTemp', Math.round(daily.temperature_2m_min[0]) + "°C");
-
+  
   let cond = "Nublado";
   const c = curr.weathercode;
-  if(c === 0) cond = "Céu Limpo"; else if([1,2,3].includes(c)) cond = "Nublado"; else if([45,48].includes(c)) cond = "Neblina"; else if([51,53,55,61,63,65,80,81,82].includes(c)) cond = "Chuva"; else if([95,96,99].includes(c)) cond = "Tempestade";
+  if(c === 0) cond = "Céu Limpo"; else if([1,2,3].includes(c)) cond = "Parc. Nublado"; else if([45,48].includes(c)) cond = "Neblina"; else if([51,53,55,61,63,65,80,81,82].includes(c)) cond = "Chuva"; else if([95,96,99].includes(c)) cond = "Tempestade";
   el('currCond', cond);
 
   el('sunriseTime', daily.sunrise[0].split('T')[1]);
@@ -424,47 +448,13 @@ function updateDashboard(data) {
   }
 }
 
-/* --- LETREIRO --- */
-function runTickerCycle() {
-  const tickerEl = document.getElementById('newsTicker');
-  let msgs = [];
-  const now = new Date();
-  
-  msgs.push(now.getHours() < 12 ? "BOM DIA" : "BOA TARDE");
-  msgs.push(funnyPhrases[Math.floor(Math.random()*funnyPhrases.length)]);
-  
-  if(GLOBAL_DATA.economy) msgs = msgs.concat(GLOBAL_DATA.economy);
-  
-  if(GLOBAL_DATA.weatherList.length > 0) {
-    const w = GLOBAL_DATA.weatherList[0];
-    msgs.push(`ORINDIUVA: ${Math.round(w.current_weather.temperature)}C`);
-    const code = w.current_weather.weathercode;
-    let type = code >= 95 ? 'storm' : code >= 51 ? 'rain' : w.current_weather.temperature >= 30 ? 'heat' : 'cloudy';
-    msgs.push(weatherPhrases[type][Math.floor(Math.random()*weatherPhrases[type].length)]);
-  }
-  
-  if(GLOBAL_DATA.weatherList.length > 0) {
-    GLOBAL_DATA.weatherList.forEach((w, i) => { if(i>0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`); });
-  }
-  
-  if(GLOBAL_DATA.history) msgs.push(stripEmojis(GLOBAL_DATA.history));
-  msgs.push("CAMERA AO VIVO 24H");
-
-  const txt = msgs.map(m => stripEmojis(m)).join("  *** ");
-  tickerEl.innerHTML = `<span class="ticker-item">${txt}</span>`;
-  tickerEl.style.animation = 'none';
-  tickerEl.offsetHeight; 
-  tickerEl.style.animation = `ticker-scroll ${Math.max(30, txt.length * 0.18)}s linear infinite`;
-}
-document.getElementById('newsTicker').addEventListener('animationiteration', runTickerCycle);
-
-/* PIX */
 const pb = document.getElementById('pixButton');
 const pf = document.getElementById('pixFeedback');
-pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }); };
+pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }).catch(()=>alert(CHAVE_PIX)); };
 
-fetchAllData().then(() => runTickerCycle());
-setInterval(fetchAllData, 300000);
+// Inicia sistema
+fetchAllData().then(() => runTickerCycle()); // Dados primeiro, depois roda
+setInterval(fetchAllData, 300000); // Atualiza dados a cada 5 min
 </script>
 </body>
 </html>
