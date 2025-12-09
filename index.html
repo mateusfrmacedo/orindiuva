@@ -69,17 +69,11 @@ body.dark .dashboard-card { background: var(--glass-dark); border: 1px solid var
 .clock-time { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .clock-date { font-size: 14px; opacity: 0.6; margin-top: 4px; text-transform: capitalize; }
 
-/* --- LETREIRO DIGITAL DINÂMICO --- */
+/* --- LETREIRO DIGITAL --- */
 .ticker-wrap { width: 100%; overflow: hidden; background-color: #000; padding: 12px 0; border-radius: 8px; border: 2px solid #333; white-space: nowrap; box-sizing: border-box; margin-top: -10px; margin-bottom: 5px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.9); }
-/* Removemos a animação infinita do CSS, agora o JS controla cada ciclo */
-.ticker { display: inline-block; white-space: nowrap; padding-left: 100%; } 
+.ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
 .ticker-item { display: inline-block; padding: 0 30px; font-family: 'VT323', monospace; font-size: 26px; letter-spacing: 1.5px; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.7); text-transform: uppercase; }
-
-/* A animação será injetada dinamicamente pelo JS */
-@keyframes ticker-run { 
-  0% { transform: translate3d(0, 0, 0); } 
-  100% { transform: translate3d(-100%, 0, 0); } 
-}
+@keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
 .dash-details { display: flex; gap: 12px; }
 .detail-pill { flex: 1; background: var(--detail-bg-light); padding: 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -146,7 +140,7 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
 
     <div class="ticker-wrap">
       <div class="ticker" id="newsTicker">
-        <div class="ticker-item">INICIALIZANDO SISTEMA DE DADOS...</div>
+        <div class="ticker-item">INICIANDO SISTEMA...</div>
       </div>
     </div>
 
@@ -183,48 +177,8 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
 <script>
 const CHAVE_PIX = "mateus.freitas@me.com";
 
-// --- GLOBAL STORAGE ---
-let GLOBAL_DATA = {
-  weatherList: [],
-  economy: null,
-  history: null,
-  motivation: null
-};
+// --- BANCOS DE DADOS (DEFINIDOS ANTES DE TUDO) ---
 
-// TEMA E RELÓGIO
-const themeBtn = document.getElementById('themeToggle');
-const sun = document.getElementById('sunIcon');
-const moon = document.getElementById('moonIcon');
-let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-function updateThemeUI(t){
-  if(t === 'dark'){ document.body.classList.add('dark'); sun.style.display='block'; moon.style.display='none'; }
-  else { document.body.classList.remove('dark'); sun.style.display='none'; moon.style.display='block'; }
-}
-updateThemeUI(currentTheme);
-themeBtn.onclick = () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; updateThemeUI(currentTheme); localStorage.setItem('theme', currentTheme); };
-
-function updateClock(){
-  const n = new Date();
-  document.getElementById('clockTime').textContent = n.toLocaleTimeString('pt-BR');
-  document.getElementById('clockDate').textContent = n.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
-}
-setInterval(updateClock, 1000); updateClock();
-
-function getMoonPhase(date) {
-  const diff = (date.getTime() - new Date('2000-01-06T18:14:00Z').getTime()) / 86400000;
-  const idx = (diff % 29.5305882) / 29.5305882;
-  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
-  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
-  return {icon:'🌑', t:'Nova'};
-}
-
-// UTILS
-function stripEmojis(str) {
-  return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim();
-}
-
-/* --- BANCO DE HUMOR --- */
 const funnyPhrases = [
   "ACORDEI CEDO PARA ME ATRASAR COM CALMA",
   "O FINAL DE SEMANA DEVERIA LEVAR MULTA POR EXCESSO DE VELOCIDADE",
@@ -251,7 +205,7 @@ const funnyPhrases = [
   "HOJE ESTOU SENDO PATROCINADO PELO DESANIMO",
   "VOU FAZER CHURRASCO HJ",
   "TO COM SONO",
-  "ESTOU FUNCIONANDO NO MODO STANLEY: APENAS ESPERANDO A HORA DE IR EMBORA",
+  "ESTOU FUNCIONANDO NO MODO STANLEY APENAS ESPERANDO A HORA DE IR EMBORA",
   "PARABENS VOCE SOBREVIVEU A NOITE AGORA FALTA SOBREVIVER AO RESTO DA SUA VIDA",
   "A ATMOSFERA HOJE ESTA ESTAVEL DIFERENTE DE VOCE",
   "O CLIMA ESTA MENOS TOXICO QUE SUA ROTINA MAS NAO POR MUITO",
@@ -271,7 +225,6 @@ const funnyPhrases = [
   "SORRIR PRA QUE SE O CAOS JA FAZ ISSO POR MIM"
 ];
 
-/* --- FRASES CLIMÁTICAS (NOVAS - COM EMOÇÃO) --- */
 const weatherPhrases = {
   storm: [
     "TEMPESTADE CHEGANDO: A NATUREZA TEVE UM SURTO",
@@ -317,7 +270,6 @@ const weatherPhrases = {
   ]
 };
 
-// LISTA CIDADES
 const CITIES_LIST = [
   { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 },
   { name: "SAO JOSE DO RIO PRETO", lat: -20.8197, lon: -49.3797 },
@@ -329,7 +281,46 @@ const CITIES_LIST = [
   { name: "TOQUIO", lat: 35.6895, lon: 139.6917 }
 ];
 
-/* --- MÓDULO DE FETCH DE DADOS (Executa a cada 5 min) --- */
+// --- ARMAZENAMENTO GLOBAL ---
+let GLOBAL_DATA = {
+  weatherList: [],
+  economy: null,
+  history: null
+};
+
+// TEMA E RELÓGIO
+const themeBtn = document.getElementById('themeToggle');
+const sun = document.getElementById('sunIcon');
+const moon = document.getElementById('moonIcon');
+let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+function updateThemeUI(t){
+  if(t === 'dark'){ document.body.classList.add('dark'); sun.style.display='block'; moon.style.display='none'; }
+  else { document.body.classList.remove('dark'); sun.style.display='none'; moon.style.display='block'; }
+}
+updateThemeUI(currentTheme);
+themeBtn.onclick = () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; updateThemeUI(currentTheme); localStorage.setItem('theme', currentTheme); };
+
+function updateClock(){
+  const n = new Date();
+  document.getElementById('clockTime').textContent = n.toLocaleTimeString('pt-BR');
+  document.getElementById('clockDate').textContent = n.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
+}
+setInterval(updateClock, 1000); updateClock();
+
+function getMoonPhase(date) {
+  const diff = (date.getTime() - new Date('2000-01-06T18:14:00Z').getTime()) / 86400000;
+  const idx = (diff % 29.5305882) / 29.5305882;
+  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
+  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
+  return {icon:'🌑', t:'Nova'};
+}
+
+function stripEmojis(str) {
+  return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim();
+}
+
+/* --- MÓDULO DE DADOS --- */
 async function fetchAllData() {
   try {
     // 1. Climas
@@ -339,17 +330,16 @@ async function fetchAllData() {
     const wData = await wRes.json();
     GLOBAL_DATA.weatherList = Array.isArray(wData) ? wData : [wData];
     
-    // Atualiza Painel Principal (Orindiúva)
     updateDashboard(GLOBAL_DATA.weatherList[0]);
 
     // 2. Economia
     const eRes = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
     const eData = await eRes.json();
-    GLOBAL_DATA.economy = {
-      dolar: `DOLAR: R$ ${parseFloat(eData.USDBRL.bid).toFixed(2)}`,
-      euro: `EURO: R$ ${parseFloat(eData.EURBRL.bid).toFixed(2)}`,
-      btc: `BITCOIN: R$ ${(parseFloat(eData.BTCBRL.bid)/1000).toFixed(1)}K`
-    };
+    GLOBAL_DATA.economy = [
+      `DOLAR: R$ ${parseFloat(eData.USDBRL.bid).toFixed(2)}`,
+      `EURO: R$ ${parseFloat(eData.EURBRL.bid).toFixed(2)}`,
+      `BITCOIN: R$ ${(parseFloat(eData.BTCBRL.bid)/1000).toFixed(1)}K`
+    ];
 
     // 3. História
     const today = new Date();
@@ -365,16 +355,10 @@ async function fetchAllData() {
   } catch(e) { console.error("Erro fetch", e); }
 }
 
-/* --- GERADOR DE TEXTO DO TICKER (Roda a cada ciclo de animação) --- */
+/* --- GERADOR DE LETREIRO (CICLO) --- */
 function runTickerCycle() {
   const tickerEl = document.getElementById('newsTicker');
   
-  // Se ainda não carregou dados, espera
-  if(!GLOBAL_DATA.weatherList.length) {
-    setTimeout(runTickerCycle, 1000);
-    return;
-  }
-
   let msgs = [];
   const now = new Date();
   const h = now.getHours();
@@ -385,63 +369,54 @@ function runTickerCycle() {
   else if (h >= 12 && h < 18) greeting = "BOA TARDE";
   msgs.push(greeting);
 
-  // 2. Frase Engraçada (Sorteia uma nova a cada ciclo)
+  // 2. Frase Engraçada (Nova a cada ciclo)
   msgs.push(funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)]);
 
   // 3. Data
   msgs.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
 
-  // 4. Economia (Em sequência)
-  if(GLOBAL_DATA.economy) {
-    msgs.push(GLOBAL_DATA.economy.dolar);
-    msgs.push(GLOBAL_DATA.economy.euro);
-    msgs.push(GLOBAL_DATA.economy.btc);
-  }
+  // 4. Economia (Se houver)
+  if(GLOBAL_DATA.economy) msgs = msgs.concat(GLOBAL_DATA.economy);
 
   // 5. Clima Orindiuva + Frase
-  const localW = GLOBAL_DATA.weatherList[0];
-  msgs.push(`ORINDIUVA: ${Math.round(localW.current_weather.temperature)}C`);
-  
-  // Sorteia frase do clima
-  const code = localW.current_weather.weathercode;
-  const t = localW.current_weather.temperature;
-  let type = 'cloudy';
-  if(code >= 95) type = 'storm'; else if(code >= 51) type = 'rain'; else if(t >= 30) type = 'heat'; else if(t <= 15) type = 'cold'; else if(code === 0) type = 'clear';
-  msgs.push(weatherPhrases[type][Math.floor(Math.random() * weatherPhrases[type].length)]);
+  if(GLOBAL_DATA.weatherList.length > 0) {
+    const localW = GLOBAL_DATA.weatherList[0];
+    msgs.push(`ORINDIUVA: ${Math.round(localW.current_weather.temperature)}C`);
+    
+    const code = localW.current_weather.weathercode;
+    const t = localW.current_weather.temperature;
+    let type = 'cloudy';
+    if(code >= 95) type = 'storm'; else if(code >= 51) type = 'rain'; else if(t >= 30) type = 'heat'; else if(t <= 15) type = 'cold'; else if(code === 0) type = 'clear';
+    msgs.push(weatherPhrases[type][Math.floor(Math.random() * weatherPhrases[type].length)]);
+  }
 
   // 6. Outras Cidades
-  GLOBAL_DATA.weatherList.forEach((w, i) => {
-    if(i > 0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`);
-  });
+  if(GLOBAL_DATA.weatherList.length > 0) {
+    GLOBAL_DATA.weatherList.forEach((w, i) => {
+      if(i > 0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`);
+    });
+  }
 
   // 7. História
   if(GLOBAL_DATA.history) msgs.push(stripEmojis(GLOBAL_DATA.history));
 
   msgs.push("CAMERA AO VIVO 24H");
 
-  // Monta Texto
   const fullText = msgs.map(m => stripEmojis(m)).join("  *** ");
   tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
 
-  // Define Animação
-  // Remove animação anterior para reiniciar
+  // Animação
   tickerEl.style.animation = 'none';
-  tickerEl.offsetHeight; // Trigger reflow
-  
-  // Calcula tempo (0.18s por caractere = velocidade de leitura boa)
+  tickerEl.offsetHeight; 
   const duration = Math.max(30, fullText.length * 0.18);
   tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
-
-  // Agenda próxima atualização de texto quando a animação estiver perto do fim?
-  // Na verdade, 'animationiteration' é melhor.
 }
 
-// Configura o loop do ticker
-const tickerElement = document.getElementById('newsTicker');
-tickerElement.addEventListener('animationiteration', runTickerCycle);
+// Configura loop do letreiro
+document.getElementById('newsTicker').addEventListener('animationiteration', runTickerCycle);
 
-/* --- PAINEL PRINCIPAL --- */
 function updateDashboard(data) {
+  if(!data) return;
   const curr = data.current_weather;
   const daily = data.daily;
   const el = (id, txt) => { const e = document.getElementById(id); if(e) { e.textContent = txt; e.classList.remove('skeleton'); }};
@@ -476,11 +451,9 @@ const pb = document.getElementById('pixButton');
 const pf = document.getElementById('pixFeedback');
 pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }).catch(()=>alert(CHAVE_PIX)); };
 
-// Inicialização
-fetchAllData().then(() => {
-  runTickerCycle(); // Inicia o letreiro assim que tiver dados
-});
-setInterval(fetchAllData, 300000); // Atualiza dados da API a cada 5 min
+// Inicia sistema
+fetchAllData().then(() => runTickerCycle()); // Dados primeiro, depois roda
+setInterval(fetchAllData, 300000); // Atualiza dados a cada 5 min
 </script>
 </body>
 </html>
