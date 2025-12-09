@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="description" content="Acompanhe Orindiúva e Região ao vivo.">
+<meta name="description" content="Acompanhe Orindiúva ao vivo.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Orindiúva e Região Ao Vivo">
-<meta property="og:description" content="Monitoramento do clima em tempo real: Orindiúva, Rio Preto e SP.">
+<meta property="og:title" content="Orindiúva Ao Vivo">
+<meta property="og:description" content="Clima em tempo real, notícias e câmera ao vivo.">
 <meta property="og:image" content=""> 
 
 <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
@@ -19,26 +19,16 @@
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌥️</text></svg>">
 
-<title>Orindiúva e Região</title>
+<title>Orindiúva Ao Vivo</title>
 
 <style>
 :root {
   --sf: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
-  /* Cores Light */
-  --bg-light: #f2f2f7;
-  --text-light: #1c1c1e;
-  --glass-light: #ffffff;
-  --border-light: rgba(0, 0, 0, 0.05);
-  --shadow-light: 0 4px 12px rgba(0,0,0,0.06);
+  --bg-light: #f2f2f7; --text-light: #1c1c1e; --glass-light: #ffffff;
+  --border-light: rgba(0, 0, 0, 0.05); --shadow-light: 0 4px 12px rgba(0,0,0,0.06);
   --detail-bg-light: rgba(0,0,0,0.04);
-
-  /* Cores Dark */
-  --bg-dark: #141414;
-  --text-dark: #f2f2f7;
-  --glass-dark: #1c1c1e;
-  --border-dark: rgba(255, 255, 255, 0.1);
-  --shadow-dark: 0 4px 12px rgba(0,0,0,0.5);
+  --bg-dark: #141414; --text-dark: #f2f2f7; --glass-dark: #1c1c1e;
+  --border-dark: rgba(255, 255, 255, 0.1); --shadow-dark: 0 4px 12px rgba(0,0,0,0.5);
   --detail-bg-dark: rgba(255,255,255,0.06);
 }
 
@@ -53,270 +43,67 @@ html, body {
   overflow-x: hidden;
 }
 
-body.dark {
-  background-color: var(--bg-dark);
-  color: var(--text-dark);
-}
+body.dark { background-color: var(--bg-dark); color: var(--text-dark); }
 
-/* Layout */
-.site {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 40px 24px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Header */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 25px;
-}
-
-.title-box h1 {
-  margin: 0;
-  font-size: clamp(32px, 6vw, 56px); /* Levemente menor para caber em mobile */
-  font-weight: 800;
-  letter-spacing: -2px;
-  line-height: 1.1;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #ff3b30;
-  background: rgba(255, 59, 48, 0.1);
-  padding: 4px 10px;
-  border-radius: 20px;
-  margin-top: 8px;
-  text-transform: uppercase;
-}
-.pulse {
-  width: 8px; height: 8px;
-  background: currentColor;
-  border-radius: 50%;
-  animation: pulse 1.5s infinite;
-}
+.site { max-width: 1000px; margin: 0 auto; padding: 40px 24px; min-height: 100vh; display: flex; flex-direction: column; }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+.title-box h1 { margin: 0; font-size: clamp(32px, 6vw, 56px); font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
+.status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #ff3b30; background: rgba(255, 59, 48, 0.1); padding: 4px 10px; border-radius: 20px; margin-top: 8px; text-transform: uppercase; }
+.pulse { width: 8px; height: 8px; background: currentColor; border-radius: 50%; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: .4; } 100% { opacity: 1; } }
 
-/* Botão Tema */
-.theme-toggle {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--border-light);
-  cursor: pointer;
-  background: var(--glass-light);
-  box-shadow: var(--shadow-light);
-  display: grid; place-items: center;
-  padding: 0; font-size: 22px; line-height: 1;
-  transition: all 0.3s;
-}
-body.dark .theme-toggle {
-  background: var(--glass-dark);
-  border: 1px solid var(--border-dark);
-  box-shadow: var(--shadow-dark);
-}
-.theme-toggle:active { transform: scale(0.92); }
-.theme-toggle span { user-select: none; }
+.theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); cursor: pointer; background: var(--glass-light); box-shadow: var(--shadow-light); display: grid; place-items: center; padding: 0; font-size: 22px; line-height: 1; transition: all 0.3s; }
+body.dark .theme-toggle { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
+.theme-toggle:active { transform: scale(0.92); } .theme-toggle span { user-select: none; }
 
-/* --- VÍDEO --- */
-.video-container {
-  position: relative;
-  width: 100%;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-  aspect-ratio: 16/9;
-  background: #000;
-  margin-bottom: 24px;
-}
+.video-container { position: relative; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12); aspect-ratio: 16/9; background: #000; margin-bottom: 24px; }
 .video-container iframe { width: 100%; height: 100%; border: 0; }
 
-/* --- DASHBOARD --- */
-.dashboard-card {
-  background: var(--glass-light);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-light);
-  border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-body.dark .dashboard-card {
-  background: var(--glass-dark);
-  border: 1px solid var(--border-dark);
-  box-shadow: var(--shadow-dark);
-}
+.dashboard-card { background: var(--glass-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-light); border-radius: 24px; padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 20px; }
+body.dark .dashboard-card { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
 
-/* Topo: Clima Atual + Relógio */
-.dash-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
+.dash-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .current-weather h2 { margin: 0; font-size: 42px; font-weight: 700; letter-spacing: -1px; }
 .current-weather p { margin: 4px 0 0; font-size: 18px; font-weight: 500; opacity: 0.8; }
-
 .clock-area { text-align: right; }
 .clock-time { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .clock-date { font-size: 14px; opacity: 0.6; margin-top: 4px; text-transform: capitalize; }
 
-/* --- LETREIRO DE NOTÍCIAS (ESTILO DIGITAL/LED) --- */
-.ticker-wrap {
-  width: 100%;
-  overflow: hidden;
-  background-color: #000;
-  padding: 12px 0;
-  border-radius: 8px;
-  border: 2px solid #333;
-  white-space: nowrap;
-  box-sizing: border-box;
-  margin-top: -10px;
-  margin-bottom: 5px;
-  position: relative;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
-}
+/* --- LETREIRO DIGITAL --- */
+.ticker-wrap { width: 100%; overflow: hidden; background-color: #000; padding: 12px 0; border-radius: 8px; border: 2px solid #333; white-space: nowrap; box-sizing: border-box; margin-top: -10px; margin-bottom: 5px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.9); }
+.ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
+.ticker-item { display: inline-block; padding: 0 30px; font-family: 'VT323', monospace; font-size: 26px; letter-spacing: 1.5px; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.7); text-transform: uppercase; }
+@keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-.ticker {
-  display: inline-block;
-  white-space: nowrap;
-  padding-left: 100%;
-}
-
-.ticker-item {
-  display: inline-block;
-  padding: 0 20px;
-  font-family: 'VT323', monospace;
-  font-size: 26px; 
-  letter-spacing: 1.5px;
-  color: #00ff41;
-  text-shadow: 0 0 8px rgba(0, 255, 65, 0.7);
-  text-transform: uppercase;
-}
-
-@keyframes ticker-scroll {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-100%, 0, 0); }
-}
-
-/* Meio: Detalhes */
-.dash-details {
-  display: flex;
-  gap: 12px;
-}
-.detail-pill {
-  flex: 1;
-  background: var(--detail-bg-light);
-  padding: 12px;
-  border-radius: 12px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-}
+.dash-details { display: flex; gap: 12px; }
+.detail-pill { flex: 1; background: var(--detail-bg-light); padding: 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 body.dark .detail-pill { background: var(--detail-bg-dark); }
 .detail-label { font-size: 11px; opacity: 0.5; font-weight: 500; text-transform: uppercase; }
 .detail-value { display: flex; align-items: center; gap: 6px; }
 
-/* Skeleton Loading */
-.skeleton {
-  background: linear-gradient(90deg, 
-      var(--detail-bg-light) 25%, 
-      rgba(0,0,0,0.1) 50%, 
-      var(--detail-bg-light) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  color: transparent !important;
-  border-radius: 4px;
-  display: inline-block;
-  min-width: 40px;
-  user-select: none;
-}
-body.dark .skeleton {
-  background: linear-gradient(90deg, 
-      var(--detail-bg-dark) 25%, 
-      rgba(255,255,255,0.1) 50%, 
-      var(--detail-bg-dark) 75%
-  );
-}
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+.skeleton { background: linear-gradient(90deg, var(--detail-bg-light) 25%, rgba(0,0,0,0.1) 50%, var(--detail-bg-light) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; color: transparent !important; border-radius: 4px; display: inline-block; min-width: 40px; user-select: none; }
+body.dark .skeleton { background: linear-gradient(90deg, var(--detail-bg-dark) 25%, rgba(255,255,255,0.1) 50%, var(--detail-bg-dark) 75%); }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-/* Baixo: Previsão */
-.forecast-row {
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid var(--border-light);
-  padding-top: 20px;
-}
+.forecast-row { display: flex; justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 20px; }
 body.dark .forecast-row { border-top: 1px solid var(--border-dark); }
-
-.forecast-item {
-  text-align: center;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+.forecast-item { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; }
 .f-day { font-size: 13px; font-weight: 600; opacity: 0.7; margin-bottom: 2px; text-transform: uppercase; }
 .f-icon { font-size: 26px; line-height: 1.2; margin-bottom: 2px; } 
 .f-temp { font-size: 16px; font-weight: 700; }
 .f-min { font-size: 12px; opacity: 0.5; margin-left: 4px; }
 
-/* Footer */
-.site-footer {
-  margin-top: auto; padding-top: 60px; text-align: center; padding-bottom: 20px;
-}
-.donation-card {
-  display: inline-flex; flex-direction: column; align-items: center;
-  padding: 24px 40px; margin: 0 auto;
-  background: var(--glass-light);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-light);
-  border-radius: 20px;
-}
-body.dark .donation-card {
-  background: var(--glass-dark);
-  border: 1px solid var(--border-dark);
-  box-shadow: var(--shadow-dark);
-}
-
+.site-footer { margin-top: auto; padding-top: 60px; text-align: center; padding-bottom: 20px; }
+.donation-card { display: inline-flex; flex-direction: column; align-items: center; padding: 24px 40px; margin: 0 auto; background: var(--glass-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-light); border-radius: 20px; }
+body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
 .donation-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
 .donation-desc { font-size: 14px; opacity: 0.7; margin-bottom: 18px; line-height: 1.4; }
-
-.btn-donate {
-  position: relative; display: flex; align-items: center; gap: 8px;
-  padding: 10px 20px; border-radius: 12px; border: none;
-  background: linear-gradient(135deg, #32bcad 0%, #229a8e 100%);
-  color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 12px rgba(50, 188, 173, 0.3);
-}
+.btn-donate { position: relative; display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 12px; border: none; background: linear-gradient(135deg, #32bcad 0%, #229a8e 100%); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(50, 188, 173, 0.3); }
 .btn-donate:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(50, 188, 173, 0.4); }
 .btn-donate:active { transform: translateY(0); }
-
-.copy-feedback {
-  position: absolute; top: -35px; background: #333; color: #fff;
-  padding: 4px 10px; border-radius: 6px; font-size: 12px; opacity: 0;
-  pointer-events: none; transform: translateY(10px); transition: all 0.2s;
-}
+.copy-feedback { position: absolute; top: -35px; background: #333; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: all 0.2s; }
 .copy-feedback.show { opacity: 1; transform: translateY(0); }
-
-.footer-credit {
-  display: block; margin-top: 25px; font-size: 11px; opacity: 0.4;
-  color: inherit; text-decoration: none; transition: opacity 0.2s;
-}
+.footer-credit { display: block; margin-top: 25px; font-size: 11px; opacity: 0.4; color: inherit; text-decoration: none; transition: opacity 0.2s; }
 .footer-credit:hover { opacity: 1; text-decoration: underline; }
 
 </style>
@@ -325,32 +112,21 @@ body.dark .donation-card {
 <body>
 
 <div class="site">
-
   <header class="header">
     <div class="title-box">
       <h1>Orindiúva</h1>
-      <div class="status-badge">
-        <div class="pulse"></div> Em Tempo Real
-      </div>
+      <div class="status-badge"><div class="pulse"></div> Ao Vivo</div>
     </div>
-
     <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">
-      <span id="moonIcon">🌙</span>
-      <span id="sunIcon" style="display:none">☀️</span>
+      <span id="moonIcon">🌙</span><span id="sunIcon" style="display:none">☀️</span>
     </button>
   </header>
 
   <section class="video-container">
-    <iframe
-      src="https://www.youtube.com/embed/VIDEO_ID_AQUI?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1"
-      title="Câmera ao vivo"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+    <iframe src="https://www.youtube.com/embed/VIDEO_ID_AQUI?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1" title="Câmera" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </section>
 
   <div class="dashboard-card">
-    
     <div class="dash-top">
       <div class="current-weather">
         <h2 id="currTemp" class="skeleton">--°C</h2>
@@ -364,204 +140,153 @@ body.dark .donation-card {
 
     <div class="ticker-wrap">
       <div class="ticker" id="newsTicker">
-        <div class="ticker-item">CONECTANDO BASES REGIONAIS...</div>
+        <div class="ticker-item">BUSCANDO DADOS GLOBAIS...</div>
       </div>
     </div>
 
     <div class="dash-details">
-      <div class="detail-pill">
-        <span class="detail-label">💨 Vento</span>
-        <span id="windSpeed" class="skeleton">-- km/h</span>
-      </div>
-      <div class="detail-pill">
-        <span class="detail-label">🔺 Máx</span>
-        <span id="maxTemp" class="skeleton">--°C</span>
-      </div>
-      <div class="detail-pill">
-        <span class="detail-label">🔻 Mín</span>
-        <span id="minTemp" class="skeleton">--°C</span>
-      </div>
+      <div class="detail-pill"><span class="detail-label">💨 Vento</span><span id="windSpeed" class="skeleton">-- km/h</span></div>
+      <div class="detail-pill"><span class="detail-label">🔺 Máx</span><span id="maxTemp" class="skeleton">--°C</span></div>
+      <div class="detail-pill"><span class="detail-label">🔻 Mín</span><span id="minTemp" class="skeleton">--°C</span></div>
     </div>
-
     <div class="dash-details">
-      <div class="detail-pill">
-        <span class="detail-label">🌅 Nascer Sol</span>
-        <span id="sunriseTime" class="detail-value skeleton">--:--</span>
-      </div>
-      <div class="detail-pill">
-        <span class="detail-label">🌇 Pôr do Sol</span>
-        <span id="sunsetTime" class="detail-value skeleton">--:--</span>
-      </div>
-      <div class="detail-pill">
-        <span class="detail-label" id="moonLabel">🌙 Lua</span>
-        <span id="moonPhase" class="detail-value skeleton">--</span>
-      </div>
+      <div class="detail-pill"><span class="detail-label">🌅 Nascer Sol</span><span id="sunriseTime" class="detail-value skeleton">--:--</span></div>
+      <div class="detail-pill"><span class="detail-label">🌇 Pôr do Sol</span><span id="sunsetTime" class="detail-value skeleton">--:--</span></div>
+      <div class="detail-pill"><span class="detail-label" id="moonLabel">🌙 Lua</span><span id="moonPhase" class="detail-value skeleton">--</span></div>
     </div>
-
     <div class="forecast-row" id="forecastBox">
       <div class="forecast-item skeleton">...</div>
       <div class="forecast-item skeleton">...</div>
       <div class="forecast-item skeleton">...</div>
     </div>
-
   </div>
 
   <footer class="site-footer">
     <div class="donation-card">
       <div class="donation-title">Gostou?</div>
-      <div class="donation-desc">Ajude a manter a câmera online. Qualquer valor é bem-vindo! 😁</div>
-      
+      <div class="donation-desc">Ajude a manter a câmera online. Qualquer valor é bem-vindo!</div>
       <button class="btn-donate" id="pixButton">
         <div class="copy-feedback" id="pixFeedback">Copiado!</div>
-        <span style="font-size: 20px; line-height: 1;">💵</span>
-        Copiar Chave Pix
+        <span>💵</span> Copiar Chave Pix
       </button>
     </div>
-
     <a href="http://mateusfrmacedo.github.io" target="_blank" class="footer-credit">create by Mateus</a>
   </footer>
-
 </div>
 
 <script>
-/* --- CONFIG --- */
 const CHAVE_PIX = "mateus.freitas@me.com";
 
-/* 1. Tema Inteligente */
+// TEMA E RELÓGIO
 const themeBtn = document.getElementById('themeToggle');
 const sun = document.getElementById('sunIcon');
 const moon = document.getElementById('moonIcon');
-const userPref = localStorage.getItem('theme');
-const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-let currentTheme = userPref || (systemDark ? 'dark' : 'light');
+let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
 function updateThemeUI(t){
-  if(t === 'dark'){
-    document.body.classList.add('dark');
-    sun.style.display = 'block'; 
-    moon.style.display = 'none'; 
-  } else {
-    document.body.classList.remove('dark');
-    sun.style.display = 'none';  
-    moon.style.display = 'block';
-  }
+  if(t === 'dark'){ document.body.classList.add('dark'); sun.style.display='block'; moon.style.display='none'; }
+  else { document.body.classList.remove('dark'); sun.style.display='none'; moon.style.display='block'; }
 }
 updateThemeUI(currentTheme);
-themeBtn.onclick = () => {
-  currentTheme = (currentTheme === 'dark') ? 'light' : 'dark';
-  updateThemeUI(currentTheme);
-  localStorage.setItem('theme', currentTheme);
-};
+themeBtn.onclick = () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; updateThemeUI(currentTheme); localStorage.setItem('theme', currentTheme); };
 
-/* 2. Relógio */
 function updateClock(){
   const n = new Date();
-  const t = n.toLocaleTimeString('pt-BR', {hour:"2-digit", minute:"2-digit", second:"2-digit"});
-  const d = n.toLocaleDateString('pt-BR', {weekday:"long", day:"numeric", month:"long"});
-  document.getElementById('clockTime').textContent = t;
-  document.getElementById('clockDate').textContent = d;
+  document.getElementById('clockTime').textContent = n.toLocaleTimeString('pt-BR');
+  document.getElementById('clockDate').textContent = n.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
 }
-setInterval(updateClock, 1000);
-updateClock();
+setInterval(updateClock, 1000); updateClock();
 
-/* 3. Função de Fase da Lua */
 function getMoonPhase(date) {
-  const cycles = 29.5305882;
-  const knownNewMoon = new Date('2000-01-06T18:14:00Z');
-  const diffDays = (date.getTime() - knownNewMoon.getTime()) / 86400000;
-  const phaseIndex = (diffDays % cycles) / cycles;
-
-  if(phaseIndex < 0.03) return { icon: '🌑', text: 'Nova' };
-  if(phaseIndex < 0.22) return { icon: '🌒', text: 'Crescente' };
-  if(phaseIndex < 0.28) return { icon: '🌓', text: 'Q. Cresc.' };
-  if(phaseIndex < 0.47) return { icon: '🌔', text: 'Gibosa' };
-  if(phaseIndex < 0.53) return { icon: '🌕', text: 'Cheia' };
-  if(phaseIndex < 0.72) return { icon: '🌖', text: 'Gibosa' };
-  if(phaseIndex < 0.78) return { icon: '🌗', text: 'Q. Ming.' };
-  if(phaseIndex < 0.97) return { icon: '🌘', text: 'Minguante' };
-  return { icon: '🌑', text: 'Nova' };
+  const diff = (date.getTime() - new Date('2000-01-06T18:14:00Z').getTime()) / 86400000;
+  const idx = (diff % 29.5305882) / 29.5305882;
+  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
+  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
+  return {icon:'🌑', t:'Nova'};
 }
 
-/* --- BANCO DE FRASES CLIMÁTICAS (SEM EMOJIS) --- */
-const phrases = {
-  storm: [
-    "ALERTA: TEMPESTADE NA REGIAO FIQUE EM SEGURANCA",
-    "TEMPO FECHADO: TIRE OS ELETRONICOS DA TOMADA",
-    "ZEUS ESTA BRAVO: MUITOS RAIOS PREVISTOS",
-    "CUIDADO: RISCO DE TEMPORAL AGORA"
-  ],
-  rain: [
-    "VAI CHOVER: CORRE TIRA A ROUPA DO VARAL",
-    "TEMPO MOLHADO: NAO ESQUECA O GUARDA-CHUVA",
-    "CHUVA: BOM PARA DORMIR RUIM PARA LAVAR O CARRO",
-    "MOTORISTA: PISTA MOLHADA REDOBRE A ATENCAO",
-    "REGIAO MOLHADA: AGUA VAI CAIR DO CEU HOJE"
-  ],
-  heat: [
-    "SOL FORTE: DA PRA FRITAR OVO NA CALCADA",
-    "ALERTA DE CALOR: O AR CONDICIONADO E SEU MELHOR AMIGO",
-    "TEMPERATURA ALTA: BEBA MUITA AGUA",
-    "MUITO QUENTE: USE PROTETOR SOLAR SE SAIR",
-    "CALOR: A CONTA DE LUZ VAI VIR ALTA"
-  ],
-  cold: [
-    "FRIO: TIRE O CASACO DO ARMARIO",
-    "TEMPERATURA BAIXA: ACEITA-SE DOACAO DE CAFE",
-    "FRIOZINHO: BOM PARA FICAR EM BAIXO DAS COBERTAS",
-    "GELADO: HORA DE TOMAR SOPA QUENTE"
-  ],
-  clear: [
-    "CEU AZUL: DIA PERFEITO PARA PASSEAR",
-    "SOL BRILHANDO: APROVEITE O DIA LA FORA",
-    "TEMPO BOM: OTIMO PARA LAVAR O CARRO",
-    "CLIMA AGRADAVEL: VAMOS PARA A PRACA?"
-  ],
-  cloudy: [
-    "NUBLADO: O SOL ESTA TIMIDO HOJE",
-    "NUVENS NO CEU: NEM LA NEM CA",
-    "CLIMA CINZA: BOM PARA LER UM LIVRO",
-    "TEMPO FECHADO MAS SEM CHUVA POR ENQUANTO"
-  ]
+// UTILS
+function stripEmojis(str) {
+  return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim();
+}
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+/* --- LISTA DE CIDADES --- */
+const CITIES_LIST = [
+  { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 },
+  { name: "SAO JOSE DO RIO PRETO", lat: -20.8197, lon: -49.3797 },
+  { name: "SAO PAULO", lat: -23.5505, lon: -46.6333 },
+  { name: "RIO DE JANEIRO", lat: -22.9068, lon: -43.1729 },
+  { name: "BRASILIA", lat: -15.7801, lon: -47.9292 },
+  { name: "NOVA YORK", lat: 40.7128, lon: -74.0060 },
+  { name: "LONDRES", lat: 51.5074, lon: -0.1278 },
+  { name: "TOQUIO", lat: 35.6895, lon: 139.6917 }
+];
+
+/* --- BANCO DE HUMOR --- */
+const funnyPhrases = [
+  "ACORDEI CEDO PARA ME ATRASAR COM CALMA",
+  "O FINAL DE SEMANA DEVERIA LEVAR MULTA POR EXCESSO DE VELOCIDADE",
+  "SE A VIDA TE DER LIMOES FACA UMA CAIPIRINHA",
+  "ESTADO CIVIL COM FOME",
+  "SORRIA ISSO CONFUNDE AS PESSOAS",
+  "NAO SOU PREGUICOSO ESTOU EM MODO DE ECONOMIA DE ENERGIA",
+  "HOJE ESTOU MAIS PERDIDO QUE CEGO EM TIROTEIO",
+  "MINHA DIETA COMECA SEMPRE AMANHA",
+  "DINHEIRO NAO TRAZ FELICIDADE MAS COMPRA PIZZA",
+  "O MUNDO DA VOLTAS E EU FICO TONTO",
+  "PRECISO DE 6 MESES DE FERIAS 2 VEZES POR ANO",
+  "EU IA DOMINAR O MUNDO MAS JA ESTOU DE PIJAMA",
+  "SE CINDERELA VOLTOU PARA PEGAR O SAPATO ELA QUERIA O PRINCIPE OU O SAPATO",
+  "CORRER ATRAS DE BALAO E PRA QUEM TEM FOLEGO",
+  "QUEM CEDO MADRUGA FICA COM SONO O DIA TODO"
+];
+
+/* --- FRASES CLIMÁTICAS --- */
+const weatherPhrases = {
+  storm: ["TEMPESTADE NA AREA: FIQUE ATENTO", "RISCO DE RAIOS: EVITE AREAS ABERTAS"],
+  rain: ["PISTA MOLHADA: MOTORISTAS CUIDADO", "PREVISAO DE CHUVA: GUARDA-CHUVA NA MAO"],
+  heat: ["CALOR INTENSO: HIDRATE-SE BEM", "SOL FORTE: USE PROTETOR SOLAR", "AR SECO: EVITE EXERCICIOS AO SOL"],
+  cold: ["TEMPERATURA EM QUEDA: AGASALHE-SE", "FRIO NA REGIAO: TIRE O CASACO DO ARMARIO"],
+  clear: ["CEU LIMPO: OTIMA VISIBILIDADE", "CLIMA BOM PARA ATIVIDADES AO AR LIVRE"],
+  cloudy: ["TEMPO NUBLADO: SOL TIMIDO HOJE", "CLIMA ESTAVEL NO MOMENTO"]
 };
 
-function getRandomPhrase(type) {
-  const list = phrases[type];
-  return list[Math.floor(Math.random() * list.length)];
+/* --- MÓDULO DE DADOS EXTERNOS --- */
+
+async function getHistoryFact() {
+  try {
+    const today = new Date();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const r = await fetch(`https://pt.wikipedia.org/api/rest_v1/feed/onthisday/selected/${mm}/${dd}`);
+    const data = await r.json();
+    if(data && data.selected && data.selected.length > 0) {
+      const fact = data.selected[Math.floor(Math.random() * data.selected.length)];
+      return [`HOJE NA HISTORIA (${fact.year}): ${fact.text.toUpperCase()}`];
+    }
+    return [];
+  } catch { return []; }
 }
 
-function stripEmojis(str) {
-  return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
-            .replace(/\s+/g, ' ').trim();
-}
-
-/* --- DADOS EXTERNOS & REGIONAIS --- */
-
-// 1. AwesomeAPI (Economia)
 async function getEconomy() {
   try {
     const r = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
     const d = await r.json();
-    return `DOLAR: R$ ${parseFloat(d.USDBRL.bid).toFixed(2)} | EURO: R$ ${parseFloat(d.EURBRL.bid).toFixed(2)}`;
-  } catch { return null; }
+    return [
+      `DOLAR: R$ ${parseFloat(d.USDBRL.bid).toFixed(2)}`,
+      `EURO: R$ ${parseFloat(d.EURBRL.bid).toFixed(2)}`,
+      `BITCOIN: R$ ${(parseFloat(d.BTCBRL.bid)/1000).toFixed(1)}K`
+    ];
+  } catch { return []; }
 }
 
-// 2. BrasilAPI (Feriados)
-async function getNextHoliday() {
-  try {
-    const year = new Date().getFullYear();
-    const r = await fetch(`https://brasilapi.com.br/api/feriados/v1/${year}`);
-    const holidays = await r.json();
-    const today = new Date(); today.setHours(0,0,0,0);
-    const next = holidays.find(h => new Date(h.date+'T12:00:00') >= today);
-    if(next) {
-      const day = next.date.split('-').reverse().slice(0,2).join('/');
-      return `PROXIMO FERIADO: ${day} - ${next.name.toUpperCase()}`;
-    }
-    return null;
-  } catch { return null; }
-}
-
-// 3. Frases Motivacionais (ThiagoMGO)
 async function getMotivation() {
   try {
     const r = await fetch('https://raw.githubusercontent.com/thiagomgo/pensamentos/master/phrases.json');
@@ -572,168 +297,120 @@ async function getMotivation() {
   } catch { return null; }
 }
 
-/* --- CLIMA MULTI-CIDADES (OPEN-METEO) --- */
-// Coordenadas: Orindiúva, Rio Preto, São Paulo
-const CITIES = {
-  orindiuva: { lat: -20.1819, lon: -49.3508 },
-  riopreto:  { lat: -20.8197, lon: -49.3797 },
-  saopaulo:  { lat: -23.5505, lon: -46.6333 }
-};
-
-// Busca clima de todas as cidades de uma vez
-async function fetchAllWeather() {
-  const latStr = `${CITIES.orindiuva.lat},${CITIES.riopreto.lat},${CITIES.saopaulo.lat}`;
-  const lonStr = `${CITIES.orindiuva.lon},${CITIES.riopreto.lon},${CITIES.saopaulo.lon}`;
-  
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latStr}&longitude=${lonStr}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`;
-  
-  const r = await fetch(url);
-  const data = await r.json();
-  // Open-Meteo retorna array se forem varias coordenadas
-  return Array.isArray(data) ? data : [data]; 
-}
-
-/* --- GERENCIADOR PRINCIPAL --- */
-async function updateEverything() {
+/* --- ORQUESTRADOR --- */
+async function updateSystem() {
   try {
-    // Carrega clima de todas
-    const weatherList = await fetchAllWeather();
-    const local = weatherList[0]; // Orindiúva
-    const region = weatherList[1]; // Rio Preto
-    const capital = weatherList[2]; // SP
+    const lats = CITIES_LIST.map(c => c.lat).join(',');
+    const lons = CITIES_LIST.map(c => c.lon).join(',');
+    
+    const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`);
+    const wData = await wRes.json();
+    const wList = Array.isArray(wData) ? wData : [wData];
 
-    // 1. Atualiza Dashboard Principal (Orindiúva)
-    updateDashboard(local);
+    updateDashboard(wList[0]); // Orindiúva
 
-    // 2. Atualiza Ticker com Dados Regionais e Curiosidades
-    await updateTicker(local, region, capital);
+    let tickerMessages = [];
 
-  } catch(e) {
-    console.error("Erro geral:", e);
-    document.getElementById('currCond').textContent = "Erro Conexao";
-  }
+    // 1. Saudação
+    const now = new Date();
+    const h = now.getHours();
+    let greeting = "BOA NOITE";
+    if (h >= 5 && h < 12) greeting = "BOM DIA";
+    else if (h >= 12 && h < 18) greeting = "BOA TARDE";
+    tickerMessages.push(greeting);
+
+    // 2. Frase Engraçada
+    const randomFunny = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
+    tickerMessages.push(randomFunny);
+
+    // 3. Data
+    tickerMessages.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
+
+    // 4. Climas
+    wList.forEach((data, index) => {
+      const cityName = CITIES_LIST[index].name;
+      const temp = Math.round(data.current_weather.temperature);
+      tickerMessages.push(`${cityName}: ${temp}C`);
+    });
+
+    // 5. Frase do Clima Local
+    const localCode = wList[0].current_weather.weathercode;
+    const localTemp = wList[0].current_weather.temperature;
+    let wType = 'cloudy';
+    if(localCode >= 95) wType = 'storm'; else if(localCode >= 51) wType = 'rain'; else if(localTemp >= 30) wType = 'heat'; else if(localTemp <= 15) wType = 'cold'; else if(localCode === 0) wType = 'clear';
+    tickerMessages.push(weatherPhrases[wType][Math.floor(Math.random() * weatherPhrases[wType].length)]);
+
+    // 6. Dados Externos
+    const econ = await getEconomy();
+    tickerMessages = tickerMessages.concat(econ);
+
+    const history = await getHistoryFact();
+    if(history.length) tickerMessages = tickerMessages.concat(history);
+
+    const motiv = await getMotivation();
+    if(motiv) tickerMessages.push(motiv);
+
+    tickerMessages.push("CAMERA AO VIVO 24H");
+
+    const fixedMsgs = tickerMessages.slice(0, 3 + CITIES_LIST.length); 
+    const randomMsgs = shuffle(tickerMessages.slice(3 + CITIES_LIST.length));
+    const finalMsgs = fixedMsgs.concat(randomMsgs);
+
+    const fullText = finalMsgs.map(m => stripEmojis(m)).join("  *** ");
+    
+    const tickerEl = document.getElementById('newsTicker');
+    tickerEl.style.animation = 'none';
+    tickerEl.offsetHeight; 
+    tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
+    
+    const duration = Math.max(30, fullText.length * 0.18); 
+    tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
+
+  } catch(e) { console.error(e); }
 }
 
 function updateDashboard(data) {
   const curr = data.current_weather;
   const daily = data.daily;
-
-  updateData('currTemp', Math.round(curr.temperature) + "°C");
-  updateData('windSpeed', Math.round(curr.windspeed) + " km/h");
-  updateData('maxTemp', Math.round(daily.temperature_2m_max[0]) + "°C");
-  updateData('minTemp', Math.round(daily.temperature_2m_min[0]) + "°C");
-
-  let label = "Nublado";
-  const c = curr.weathercode;
-  if(c === 0) label = "Céu Limpo";
-  else if([1,2,3].includes(c)) label = "Parc. Nublado";
-  else if([45,48].includes(c)) label = "Neblina";
-  else if([51,53,55,61,63,65,80,81,82].includes(c)) label = "Chuva";
-  else if([95,96,99].includes(c)) label = "Tempestade";
   
-  updateData('currCond', label);
+  const el = (id, txt) => { const e = document.getElementById(id); if(e) { e.textContent = txt; e.classList.remove('skeleton'); }};
+  
+  el('currTemp', Math.round(curr.temperature) + "°C");
+  el('windSpeed', Math.round(curr.windspeed) + " km/h");
+  el('maxTemp', Math.round(daily.temperature_2m_max[0]) + "°C");
+  el('minTemp', Math.round(daily.temperature_2m_min[0]) + "°C");
+  
+  let cond = "Nublado";
+  const c = curr.weathercode;
+  if(c === 0) cond = "Céu Limpo";
+  else if([1,2,3].includes(c)) cond = "Parc. Nublado";
+  else if([45,48].includes(c)) cond = "Neblina";
+  else if([51,53,55,61,63,65,80,81,82].includes(c)) cond = "Chuva";
+  else if([95,96,99].includes(c)) cond = "Tempestade";
+  el('currCond', cond);
 
-  const sunriseFull = daily.sunrise[0];
-  const sunsetFull = daily.sunset[0];
-  updateData('sunriseTime', sunriseFull.split('T')[1]);
-  updateData('sunsetTime', sunsetFull.split('T')[1]);
-
+  el('sunriseTime', daily.sunrise[0].split('T')[1]);
+  el('sunsetTime', daily.sunset[0].split('T')[1]);
+  
   const moon = getMoonPhase(new Date());
-  updateData('moonPhase', moon.text);
-  const labelEl = document.getElementById('moonLabel');
-  if(labelEl) labelEl.textContent = moon.icon + " Lua"; // Ícone só aqui, não no ticker
+  el('moonPhase', moon.t);
+  document.getElementById('moonLabel').textContent = moon.icon + " Lua";
 
-  // Previsão 3 dias
-  const forecastBox = document.getElementById('forecastBox');
-  forecastBox.innerHTML = ''; 
+  const box = document.getElementById('forecastBox');
+  box.innerHTML = '';
   for(let i=1; i<=3; i++){
-    const date = new Date(daily.time[i] + "T00:00:00"); 
-    const dayName = date.toLocaleDateString('pt-BR', {weekday:'short'}).replace('.','');
-    const max = Math.round(daily.temperature_2m_max[i]);
-    const min = Math.round(daily.temperature_2m_min[i]);
-    const code = daily.weathercode[i];
-    let icon = "⛅";
-    if(code === 0) icon = "☀️";
-    else if([51,53,55,61,63,65,80,81,82].includes(code)) icon = "🌧️";
-    else if([95,96,99].includes(code)) icon = "⛈️";
-
-    forecastBox.innerHTML += `
-      <div class="forecast-item">
-        <div class="f-day">${dayName}</div>
-        <div class="f-icon">${icon}</div>
-        <div><span class="f-temp">${max}°C</span> <span class="f-min">${min}°C</span></div>
-      </div>`;
+    const dName = new Date(daily.time[i]+'T00:00').toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','');
+    const ico = daily.weathercode[i] === 0 ? '☀️' : daily.weathercode[i] >= 51 ? '🌧️' : '⛅';
+    box.innerHTML += `<div class="forecast-item"><div class="f-day">${dName}</div><div class="f-icon">${ico}</div><div><span class="f-temp">${Math.round(daily.temperature_2m_max[i])}°C</span> <span class="f-min">${Math.round(daily.temperature_2m_min[i])}°C</span></div></div>`;
   }
 }
 
-async function updateTicker(local, region, capital) {
-  const tickerEl = document.getElementById('newsTicker');
-  tickerEl.style.animation = 'none';
-  tickerEl.offsetHeight; 
+const pb = document.getElementById('pixButton');
+const pf = document.getElementById('pixFeedback');
+pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }).catch(()=>alert(CHAVE_PIX)); };
 
-  const dateStr = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long'});
-  
-  let msgs = [];
-  msgs.push(`HOJE: ${dateStr.toUpperCase()}`);
-  
-  // Clima Regional
-  const tempRio = Math.round(region.current_weather.temperature);
-  const tempSP = Math.round(capital.current_weather.temperature);
-  msgs.push(`RIO PRETO: ${tempRio}C`);
-  msgs.push(`SAO PAULO: ${tempSP}C`);
-
-  // Economia
-  const econ = await getEconomy();
-  if(econ) msgs.push(econ);
-
-  // Feriado
-  const holiday = await getNextHoliday();
-  if(holiday) msgs.push(stripEmojis(holiday));
-
-  // Frase Climática baseada em Orindiúva
-  const code = local.current_weather.weathercode;
-  const temp = local.current_weather.temperature;
-  let type = 'cloudy';
-  if (code >= 95) type = 'storm';
-  else if (code >= 51) type = 'rain';
-  else if (temp >= 30) type = 'heat';
-  else if (temp <= 15) type = 'cold';
-  else if (code === 0) type = 'clear';
-  msgs.push(getRandomPhrase(type));
-
-  // Motivação
-  const motiv = await getMotivation();
-  if(motiv) msgs.push(stripEmojis(motiv));
-
-  msgs.push("CAMERA AO VIVO 24H");
-
-  const fullText = msgs.map(m => `*** ${m} ***`).join("      ");
-  tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
-  
-  // Velocidade
-  const duration = Math.max(30, fullText.length * 14 / 60);
-  tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
-}
-
-function updateData(id, text) {
-  const el = document.getElementById(id);
-  if (el) { el.textContent = text; el.classList.remove('skeleton'); }
-}
-
-// Inicia
-updateEverything();
-setInterval(updateEverything, 600000); // A cada 10 min
-
-/* Pix */
-const pixBtn = document.getElementById('pixButton');
-const feedback = document.getElementById('pixFeedback');
-pixBtn.onclick = () => {
-  navigator.clipboard.writeText(CHAVE_PIX).then(() => {
-    feedback.classList.add('show');
-    setTimeout(() => feedback.classList.remove('show'), 2000);
-  }).catch(() => alert("Pix: " + CHAVE_PIX));
-};
+updateSystem();
+setInterval(updateSystem, 600000);
 </script>
-
 </body>
 </html>
