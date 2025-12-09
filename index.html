@@ -7,7 +7,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Orindiúva Ao Vivo">
@@ -15,101 +16,248 @@
 <meta property="og:image" content=""> 
 
 <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌥️</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 
 <title>Orindiúva Ao Vivo</title>
 
 <style>
 :root {
-  --sf: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --bg-light: #f2f2f7; --text-light: #1c1c1e; --glass-light: #ffffff;
-  --border-light: rgba(0, 0, 0, 0.05); --shadow-light: 0 4px 12px rgba(0,0,0,0.06);
-  --detail-bg-light: rgba(0,0,0,0.04);
-  --bg-dark: #141414; --text-dark: #f2f2f7; --glass-dark: #1c1c1e;
-  --border-dark: rgba(255, 255, 255, 0.1); --shadow-dark: 0 4px 12px rgba(0,0,0,0.5);
-  --detail-bg-dark: rgba(255,255,255,0.06);
+  --sf: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* --- TEMA CLARO (LIGHT) --- */
+  --bg-body: #f2f2f7; 
+  --text-color: #1c1c1e;
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.05);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --pill-bg: #f5f5f7;
+  --pill-border: transparent;
+}
+
+/* --- TEMA ESCURO (DARK) --- */
+body.dark {
+  --bg-body: #121212; 
+  --text-color: #ffffff;
+  --card-bg: #1c1c1e;
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --pill-bg: rgba(255, 255, 255, 0.1);
+  --pill-border: transparent;
 }
 
 * { box-sizing: border-box; }
 
-html, body {
+body {
   margin: 0; padding: 0; height: 100%;
   font-family: var(--sf);
-  background-color: var(--bg-light);
-  color: var(--text-light);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--bg-body);
+  color: var(--text-color);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body.dark { background-color: var(--bg-dark); color: var(--text-dark); }
-
+/* LAYOUT */
 .site { max-width: 1000px; margin: 0 auto; padding: 40px 24px; min-height: 100vh; display: flex; flex-direction: column; }
 .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
 .title-box h1 { margin: 0; font-size: clamp(32px, 6vw, 56px); font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
-.status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #ff3b30; background: rgba(255, 59, 48, 0.1); padding: 4px 10px; border-radius: 20px; margin-top: 8px; text-transform: uppercase; }
-.pulse { width: 8px; height: 8px; background: currentColor; border-radius: 50%; animation: pulse 1.5s infinite; }
+.status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #fff; background: #ff3b30; padding: 4px 10px; border-radius: 20px; margin-top: 8px; text-transform: uppercase; }
+.pulse { width: 8px; height: 8px; background: #fff; border-radius: 50%; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: .4; } 100% { opacity: 1; } }
 
-.theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); cursor: pointer; background: var(--glass-light); box-shadow: var(--shadow-light); display: grid; place-items: center; padding: 0; font-size: 22px; line-height: 1; transition: all 0.3s; }
-body.dark .theme-toggle { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
-.theme-toggle:active { transform: scale(0.92); } .theme-toggle span { user-select: none; }
+/* BOTÃO TEMA */
+.theme-toggle {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  display: grid; place-items: center; padding: 0; font-size: 22px; line-height: 1;
+  transition: all 0.3s; color: var(--text-color);
+}
+.theme-toggle:hover { transform: scale(1.05); }
+.theme-toggle:active { transform: scale(0.95); }
 
-.video-container { position: relative; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12); aspect-ratio: 16/9; background: #000; margin-bottom: 24px; }
+/* VIDEO PLAYER */
+.video-container { position: relative; width: 100%; border-radius: 30px; overflow: hidden; box-shadow: var(--card-shadow); aspect-ratio: 16/9; background: #000; border: 1px solid var(--card-border); margin-bottom: 24px; }
 .video-container iframe { width: 100%; height: 100%; border: 0; }
 
-.dashboard-card { background: var(--glass-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-light); border-radius: 24px; padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 20px; }
-body.dark .dashboard-card { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
+/* DASHBOARD */
+.dashboard-card { 
+  background: var(--card-bg); 
+  border: 1px solid var(--card-border); 
+  box-shadow: var(--card-shadow); 
+  border-radius: 30px; padding: 30px; margin-bottom: 24px; 
+  display: flex; flex-direction: column; gap: 24px; 
+  transition: background-color 0.3s ease, border 0.3s ease; 
+}
 
 .dash-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.current-weather h2 { margin: 0; font-size: 42px; font-weight: 700; letter-spacing: -1px; }
-.current-weather p { margin: 4px 0 0; font-size: 18px; font-weight: 500; opacity: 0.8; }
+.current-weather h2 { margin: 0; font-size: 56px; font-weight: 700; letter-spacing: -2px; }
+.current-weather p { margin: 0; font-size: 20px; font-weight: 500; opacity: 0.8; }
 .clock-area { text-align: right; }
-.clock-time { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.clock-date { font-size: 14px; opacity: 0.6; margin-top: 4px; text-transform: capitalize; }
+.clock-time { font-size: 32px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.clock-date { font-size: 14px; opacity: 0.8; margin-top: 2px; text-transform: capitalize; }
 
-/* --- LETREIRO DIGITAL --- */
-.ticker-wrap { width: 100%; overflow: hidden; background-color: #000; padding: 12px 0; border-radius: 8px; border: 2px solid #333; white-space: nowrap; box-sizing: border-box; margin-top: -10px; margin-bottom: 5px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.9); }
+.ticker-wrap { width: 100%; overflow: hidden; background-color: #000; color: #fff; padding: 10px 0; border-radius: 12px; border: 2px solid #333; white-space: nowrap; box-sizing: border-box; margin-top: -10px; margin-bottom: 5px; position: relative; }
 .ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
-.ticker-item { display: inline-block; padding: 0 30px; font-family: 'VT323', monospace; font-size: 26px; letter-spacing: 1.5px; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.7); text-transform: uppercase; }
+.ticker-item { display: inline-block; padding: 0 30px; font-family: 'VT323', monospace; font-size: 24px; letter-spacing: 1.5px; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.7); text-transform: uppercase; }
 @keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
 .dash-details { display: flex; gap: 12px; }
-.detail-pill { flex: 1; background: var(--detail-bg-light); padding: 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-body.dark .detail-pill { background: var(--detail-bg-dark); }
-.detail-label { font-size: 11px; opacity: 0.5; font-weight: 500; text-transform: uppercase; }
-.detail-value { display: flex; align-items: center; gap: 6px; }
+.detail-pill { 
+  flex: 1; background: var(--pill-bg); 
+  border: 1px solid var(--pill-border); 
+  padding: 16px; border-radius: 18px; text-align: center; font-size: 15px; font-weight: 600; 
+  display: flex; flex-direction: column; align-items: center; gap: 6px; 
+  transition: background-color 0.3s;
+}
+.detail-label { font-size: 11px; opacity: 0.6; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-.skeleton { background: linear-gradient(90deg, var(--detail-bg-light) 25%, rgba(0,0,0,0.1) 50%, var(--detail-bg-light) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; color: transparent !important; border-radius: 4px; display: inline-block; min-width: 40px; user-select: none; }
-body.dark .skeleton { background: linear-gradient(90deg, var(--detail-bg-dark) 25%, rgba(255,255,255,0.1) 50%, var(--detail-bg-dark) 75%); }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-.forecast-row { display: flex; justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 20px; }
-body.dark .forecast-row { border-top: 1px solid var(--border-dark); }
+.forecast-row { display: flex; justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 24px; margin-top: 8px; }
 .forecast-item { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; }
-.f-day { font-size: 13px; font-weight: 600; opacity: 0.7; margin-bottom: 2px; text-transform: uppercase; }
-.f-icon { font-size: 26px; line-height: 1.2; margin-bottom: 2px; } 
-.f-temp { font-size: 16px; font-weight: 700; }
-.f-min { font-size: 12px; opacity: 0.5; margin-left: 4px; }
+.f-day { font-size: 14px; font-weight: 700; opacity: 0.9; margin-bottom: 4px; text-transform: uppercase; }
+.f-icon { font-size: 32px; line-height: 1.2; margin-bottom: 4px; } 
+.f-temp { font-size: 18px; font-weight: 700; }
+.f-min { font-size: 14px; opacity: 0.7; margin-left: 6px; }
 
-.site-footer { margin-top: auto; padding-top: 60px; text-align: center; padding-bottom: 20px; }
-.donation-card { display: inline-flex; flex-direction: column; align-items: center; padding: 24px 40px; margin: 0 auto; background: var(--glass-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-light); border-radius: 20px; }
-body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(--border-dark); box-shadow: var(--shadow-dark); }
+/* --- BOTÃO COMPARTILHAR --- */
+.share-container { width: fit-content; margin: 0 auto 24px auto; position: relative; z-index: 50; }
+.btn-share-main {
+  background: #007AFF; border: none; color: #fff; padding: 12px 28px; border-radius: 30px; font-size: 15px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4); transition: 0.2s;
+}
+.btn-share-main:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 122, 255, 0.6); }
+
+/* Menu de Compartilhamento */
+.share-modal {
+  position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); width: auto;
+  background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 50px; padding: 10px 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: none; flex-direction: row; gap: 15px; z-index: 100; animation: fadeUp 0.2s ease-out;
+}
+.share-modal.active { display: flex; }
+@keyframes fadeUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); }}
+
+/* Botões de Ícone */
+.share-option {
+  display: flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px; border-radius: 50%; 
+  background: var(--pill-bg); 
+  cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: var(--text-color); border: 1px solid var(--card-border);
+}
+
+/* HOVER EFFECTS - CORES OFICIAIS (SEM BORDA) */
+.share-option.insta:hover {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  color: #fff; transform: scale(1.15); border: none;
+}
+.share-option.whatsapp:hover {
+  background: #25D366; color: #fff; transform: scale(1.15); border: none;
+}
+.share-option.x:hover {
+  background: #000; color: #fff; transform: scale(1.15); border: none;
+}
+body.dark .share-option.x:hover { border: 1px solid #333; } 
+
+/* --- CARD OCULTO (SNAPSHOT 1080x1920) --- */
+#shareCapture {
+  position: fixed; left: -9999px; top: 0;
+  width: 1080px; height: 1920px; 
+  box-sizing: border-box; display: flex; flex-direction: column; 
+  padding: 100px 80px; font-family: var(--sf);
+  /* Background via JS */
+}
+
+.sc-header { display: flex; align-items: center; margin-bottom: 40px; }
+.sc-title { font-size: 64px; font-weight: 800; margin: 0; letter-spacing: -2px; }
+
+/* Imagem do Vídeo */
+.sc-video-box {
+  width: 100%; aspect-ratio: 16/9; border-radius: 40px; overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.2); margin-bottom: 40px;
+  background-size: cover; background-position: center; background-color: #000;
+  border: 2px solid rgba(128,128,128,0.2);
+}
+
+/* Dados */
+.sc-info-container { display: flex; flex-direction: column; gap: 40px; }
+.sc-main-data { display: flex; align-items: baseline; gap: 30px; margin-bottom: 20px; }
+.sc-temp { font-size: 180px; font-weight: 800; line-height: 1; letter-spacing: -5px; }
+.sc-cond { font-size: 48px; opacity: 0.7; font-weight: 500; text-transform: uppercase; }
+
+.sc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.sc-item { background: rgba(128,128,128,0.1); padding: 40px; border-radius: 30px; display: flex; flex-direction: column; gap: 10px; }
+.sc-lbl { font-size: 24px; opacity: 0.5; font-weight: 700; text-transform: uppercase; }
+.sc-val { font-size: 42px; font-weight: 700; }
+
+/* CAIXA DA FRASE VERDE NEON (EM BAIXO) */
+.sc-phrase-box {
+  margin-top: 50px; /* Separado do resto */
+  background: #000;
+  color: #00ff41; /* Verde Matrix */
+  border: 4px solid #1a1a1a;
+  border-radius: 30px;
+  padding: 40px;
+  text-align: center;
+  font-family: 'VT323', monospace;
+  font-size: 56px; /* Bem grande no print */
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(0, 255, 65, 0.7); /* Glow */
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  align-self: center; /* Centralizado horizontalmente */
+  width: auto;
+  max-width: 100%;
+}
+
+.sc-footer { margin-top: auto; text-align: center; opacity: 0.4; font-size: 28px; font-weight: 600; }
+
+/* FOOTER SITE */
+.site-footer { margin-top: auto; padding-top: 20px; text-align: center; padding-bottom: 20px; }
+.donation-card { display: inline-flex; flex-direction: column; align-items: center; padding: 24px 40px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow); border-radius: 24px; transition: background-color 0.3s; }
 .donation-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.donation-desc { font-size: 14px; opacity: 0.7; margin-bottom: 18px; line-height: 1.4; }
-.btn-donate { position: relative; display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 12px; border: none; background: linear-gradient(135deg, #32bcad 0%, #229a8e 100%); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(50, 188, 173, 0.3); }
-.btn-donate:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(50, 188, 173, 0.4); }
+.donation-desc { font-size: 14px; opacity: 0.9; margin-bottom: 18px; line-height: 1.4; }
+.btn-donate { position: relative; display: flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 14px; border: none; background: #32bcad; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(50, 188, 173, 0.4); }
+.btn-donate:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(50, 188, 173, 0.6); }
 .btn-donate:active { transform: translateY(0); }
-.copy-feedback { position: absolute; top: -35px; background: #333; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: all 0.2s; }
+.copy-feedback { position: absolute; top: -40px; background: #333; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: all 0.2s; font-weight: 800; }
 .copy-feedback.show { opacity: 1; transform: translateY(0); }
-.footer-credit { display: block; margin-top: 25px; font-size: 11px; opacity: 0.4; color: inherit; text-decoration: none; transition: opacity 0.2s; }
+.footer-credit { display: block; margin-top: 30px; font-size: 12px; opacity: 0.5; color: var(--text-color); text-decoration: none; transition: opacity 0.2s; }
 .footer-credit:hover { opacity: 1; text-decoration: underline; }
+.skeleton { animation: shimmer 1.5s infinite; opacity: 0.7; } @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
 </style>
 </head>
 
 <body>
+
+<div id="shareCapture">
+  <div class="sc-header">
+    <div class="sc-title">ORINDIÚVA</div>
+  </div>
+  
+  <div class="sc-video-box" id="scVideoThumb"></div>
+  
+  <div class="sc-info-container">
+    <div class="sc-main-data">
+      <div class="sc-temp" id="scTemp">--°</div>
+      <div class="sc-cond" id="scCond">--</div>
+    </div>
+    <div class="sc-grid">
+      <div class="sc-item"><div class="sc-lbl">MÁXIMA</div><div class="sc-val" id="scMax">--°C</div></div>
+      <div class="sc-item"><div class="sc-lbl">MÍNIMA</div><div class="sc-val" id="scMin">--°C</div></div>
+      <div class="sc-item"><div class="sc-lbl">VENTO</div><div class="sc-val" id="scWind">-- km/h</div></div>
+      <div class="sc-item"><div class="sc-lbl">LUA</div><div class="sc-val" id="scMoon">--</div></div>
+    </div>
+  </div>
+
+  <div class="sc-phrase-box" id="scPhrase">"FRASE ALEATÓRIA AQUI"</div>
+
+  <div class="sc-footer">mateusfrmacedo.github.io/orindiuva</div>
+</div>
 
 <div class="site">
   <header class="header">
@@ -123,7 +271,7 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
   </header>
 
   <section class="video-container">
-    <iframe src="https://www.youtube.com/embed/RBrOmuGw6Mg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1" title="Câmera" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <iframe src="https://www.youtube.com/embed/RBrOmuGw6Mg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1" title="Câmera ao vivo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </section>
 
   <div class="dashboard-card">
@@ -139,9 +287,7 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
     </div>
 
     <div class="ticker-wrap">
-      <div class="ticker" id="newsTicker">
-        <div class="ticker-item">INICIANDO SISTEMA...</div>
-      </div>
+      <div class="ticker" id="newsTicker"><div class="ticker-item">INICIANDO SISTEMA...</div></div>
     </div>
 
     <div class="dash-details">
@@ -155,16 +301,32 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
       <div class="detail-pill"><span class="detail-label" id="moonLabel">🌙 Lua</span><span id="moonPhase" class="detail-value skeleton">--</span></div>
     </div>
     <div class="forecast-row" id="forecastBox">
-      <div class="forecast-item skeleton">...</div>
-      <div class="forecast-item skeleton">...</div>
-      <div class="forecast-item skeleton">...</div>
+      <div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div>
+    </div>
+  </div>
+
+  <div class="share-container">
+    <button class="btn-share-main" onclick="toggleShareMenu()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      Compartilhar
+    </button>
+    <div class="share-modal" id="shareModal">
+      <div class="share-option insta" onclick="shareTo('instagram')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/></svg>
+      </div>
+      <div class="share-option whatsapp" onclick="shareTo('whatsapp')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.9 7.01 8.48 7.01 9.69C7.01 10.9 7.9 12.06 8.03 12.23C8.16 12.4 9.78 14.98 12.3 16.01C14.82 17.04 14.82 16.7 15.36 16.65C15.9 16.6 17.1 15.93 17.35 15.23C17.6 14.53 17.6 13.94 17.53 13.82C17.47 13.71 17.3 13.64 17.03 13.51C16.77 13.37 15.48 12.73 15.23 12.65C14.99 12.56 14.82 12.51 14.65 12.76C14.48 13 13.99 13.58 13.84 13.75C13.7 13.92 13.56 13.94 13.29 13.81C13 13.68 12.1 13.38 11.03 12.42C10.2 11.68 9.64 10.77 9.5 10.53C9.36 10.29 9.49 10.16 9.62 10.03C9.74 9.91 9.89 9.72 10.03 9.56C10.16 9.4 10.21 9.28 10.3 9.11C10.38 8.94 10.34 8.79 10.27 8.66C10.21 8.53 9.7 7.28 9.49 6.76C9.28 6.26 9.07 6.33 8.91 6.33C8.77 6.33 8.62 6.33 8.53 6.33Z"/></svg>
+      </div>
+      <div class="share-option x" onclick="shareTo('twitter')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+      </div>
     </div>
   </div>
 
   <footer class="site-footer">
     <div class="donation-card">
       <div class="donation-title">Gostou?</div>
-      <div class="donation-desc">Ajude a manter a câmera online. Qualquer valor é bem-vindo!</div>
+      <div class="donation-desc">Ajude a manter a câmera online. Qualquer valor é bem-vindo! 😁</div>
       <button class="btn-donate" id="pixButton">
         <div class="copy-feedback" id="pixFeedback">Copiado!</div>
         <span>💵</span> Copiar Chave Pix
@@ -176,130 +338,171 @@ body.dark .donation-card { background: var(--glass-dark); border: 1px solid var(
 
 <script>
 const CHAVE_PIX = "mateus.freitas@me.com";
+const LIVE_ID = "RBrOmuGw6Mg";
 
-// --- BANCOS DE DADOS (DEFINIDOS ANTES DE TUDO) ---
+// --- SISTEMA DE COMPARTILHAMENTO ---
+let currentShareData = { temp: "", cond: "", max: "", min: "", wind: "", moon: "", weatherType: "clear", phrase: "" };
 
+// Frases
+function updateRandomPhrase() {
+  const phrases = weatherPhrases[currentShareData.weatherType] || funnyPhrases;
+  currentShareData.phrase = phrases[Math.floor(Math.random() * phrases.length)];
+}
+
+function toggleShareMenu() {
+  updateRandomPhrase();
+  const modal = document.getElementById('shareModal');
+  modal.classList.toggle('active');
+}
+
+document.addEventListener('click', (e) => {
+  const container = document.querySelector('.share-container');
+  if (!container.contains(e.target)) document.getElementById('shareModal').classList.remove('active');
+});
+
+async function shareTo(platform) {
+  // Frase agora incluída no texto
+  const text = `${currentShareData.phrase} - Confira o tempo em Orindiúva! 🌡️ Agora: ${currentShareData.temp} | ${currentShareData.cond} | Veja ao vivo: https://mateusfrmacedo.github.io/orindiuva/`;
+  
+  if (platform === 'twitter') {
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+  } 
+  else if (platform === 'whatsapp') {
+    await generateScreenshot();
+    setTimeout(() => {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }, 1500);
+  } 
+  else if (platform === 'instagram') {
+    await generateScreenshot();
+    alert("Imagem gerada! Abra o Instagram e poste nos Stories. 📸");
+  }
+}
+
+async function generateScreenshot() {
+  const captureDiv = document.getElementById('shareCapture');
+  
+  // Atualiza Dados
+  document.getElementById('scTemp').innerText = currentShareData.temp;
+  document.getElementById('scCond').innerText = currentShareData.cond;
+  document.getElementById('scMax').innerText = currentShareData.max;
+  document.getElementById('scMin').innerText = currentShareData.min;
+  document.getElementById('scWind').innerText = currentShareData.wind;
+  document.getElementById('scMoon').innerText = currentShareData.moon;
+  
+  // Coloca a frase sorteada no print (CAIXA PRETA/VERDE)
+  document.getElementById('scPhrase').innerText = `"${currentShareData.phrase}"`;
+
+  // Imagem HD + Cache Buster
+  const timeNow = new Date().getTime();
+  const thumbUrl = `https://img.youtube.com/vi/${LIVE_ID}/hqdefault.jpg?t=${timeNow}`;
+  document.getElementById('scVideoThumb').style.backgroundImage = `url('${thumbUrl}')`;
+
+  // Cor do Print
+  const isDark = document.body.classList.contains('dark');
+  if(isDark) {
+    captureDiv.style.backgroundColor = '#121212';
+    captureDiv.style.color = '#fff';
+  } else {
+    captureDiv.style.backgroundColor = '#f2f2f7';
+    captureDiv.style.color = '#1c1c1e';
+  }
+
+  try {
+    const canvas = await html2canvas(captureDiv, { useCORS: true, scale: 1 });
+    const link = document.createElement('a');
+    link.download = `Orindiuva_Story_${Date.now()}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  } catch (err) {
+    console.error("Erro print:", err);
+    alert("Erro ao criar imagem.");
+  }
+}
+
+/* --- TEMA --- */
+const themeBtn = document.getElementById('themeToggle');
+const sun = document.getElementById('sunIcon');
+const moon = document.getElementById('moonIcon');
+let currentTheme = localStorage.getItem('theme') || 'light';
+
+function updateThemeUI(t){
+  if(t === 'dark'){
+    document.body.classList.add('dark');
+    sun.style.display = 'block'; moon.style.display = 'none';
+  } else {
+    document.body.classList.remove('dark');
+    sun.style.display = 'none'; moon.style.display = 'block';
+  }
+}
+updateThemeUI(currentTheme);
+
+themeBtn.onclick = () => {
+  currentTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+  updateThemeUI(currentTheme);
+  localStorage.setItem('theme', currentTheme);
+};
+
+/* --- DADOS --- */
 const funnyPhrases = [
-  "ACORDEI CEDO PARA ME ATRASAR COM CALMA",
-  "O FINAL DE SEMANA DEVERIA LEVAR MULTA POR EXCESSO DE VELOCIDADE",
-  "SE A VIDA TE DER LIMOES FACA UMA CAIPIRINHA",
-  "ESTADO CIVIL COM FOME",
-  "SORRIA ISSO CONFUNDE AS PESSOAS",
-  "NAO SOU PREGUICOSO ESTOU EM MODO DE ECONOMIA DE ENERGIA",
-  "HOJE ESTOU MAIS PERDIDO QUE CEGO EM TIROTEIO",
-  "MINHA DIETA COMECA SEMPRE AMANHA",
-  "DINHEIRO NAO TRAZ FELICIDADE MAS COMPRA PIZZA",
-  "O MUNDO DA VOLTAS E EU FICO TONTO",
-  "PRECISO DE 6 MESES DE FERIAS 2 VEZES POR ANO",
-  "TO NEM AI PRO CLIMA MAIS",
-  "CORRER ATRAS DE BALAO E PRA QUEM TEM FOLEGO",
-  "QUEM CEDO MADRUGA FICA COM SONO O DIA TODO",
-  "ACORDAR CEDO E UM CRIME E EU SOU A VITIMA",
-  "MEU BOM HUMOR FOI DEMITIDO POR JUSTA CAUSA",
-  "HOJE EU SO FUNCIONO A BASE DE ODIO E CAFEINA",
-  "ME ESFORCO PARA SER UMA PESSOA MELHOR MAS O MUNDO NAO AJUDA",
-  "A REALIDADE CHEGA SEMPRE ATRASADA MAS CHEGA PRA ESTRAGAR TUDO",
-  "SE A SEMANA TIVESSE UM ROSTO EU DARIA UM TAPA",
-  "MINHA PACIENCIA JA FOI PROCURADA NO GOOGLE E CONTINUA DESAPARECIDA",
-  "MEUS PLANOS DO DIA FORAM CANCELADOS POR FALTA DE VONTADE",
-  "HOJE ESTOU SENDO PATROCINADO PELO DESANIMO",
-  "VOU FAZER CHURRASCO HJ",
-  "TO COM SONO",
-  "ESTOU FUNCIONANDO NO MODO STANLEY APENAS ESPERANDO A HORA DE IR EMBORA",
-  "PARABENS VOCE SOBREVIVEU A NOITE AGORA FALTA SOBREVIVER AO RESTO DA SUA VIDA",
-  "A ATMOSFERA HOJE ESTA ESTAVEL DIFERENTE DE VOCE",
-  "O CLIMA ESTA MENOS TOXICO QUE SUA ROTINA MAS NAO POR MUITO",
-  "TEMPERATURA EM ALTA SUA UTILIDADE EM BAIXA",
-  "O SOL ESTA FORTE SUA VONTADE DE EXISTIR NAO",
-  "VENTOS FRACOS HOJE IGUAL A SUA DISCIPLINA",
-  "CHANCE DE CHUVA BAIXA CHANCE DE VOCE SE ORGANIZAR ZERO",
-  "HA UMA FRENTE FRIA CHEGANDO MAIS FRIA SO A SUA MOTIVACAO",
-  "CEU PARCIALMENTE NUBLADO SEU FUTURO TAMBEM",
-  "SE A PRESSAO ATMOSFERICA SUBIR MAIS UM POUCO AINDA VAI SER MENOR QUE SUA PRESSAO PARA PRODUZIR ALGO",
-  "NIVEL DE RADIACAO UV ELEVADO OTIMO PARA JUSTIFICAR FICAR DENTRO DE CASA SEM FAZER NADA",
-  "O DIA PROMETE SER LIMPO INFELIZMENTE SEUS RESULTADOS NAO",
-  "UMIDADE ALTA PROVAVELMENTE A MESMA QUE SUA CAPACIDADE DE DESAPONTAR",
-  "CONDICOES IDEAIS PARA CAMINHAR MAS VOCE VAI CONTINUAR SENTADO",
-  "ESTATISTICAS CLIMATICAS ATUALIZADAS SUAS CONTINUAM DECEPCIONANTES",
-  "HOJE O DIA PROMETE VOCE INFELIZMENTE NAO",
-  "SORRIR PRA QUE SE O CAOS JA FAZ ISSO POR MIM"
+  "ACORDEI CEDO PARA ME ATRASAR COM CALMA", "O FINAL DE SEMANA DEVERIA LEVAR MULTA",
+  "SE A VIDA TE DER LIMOES MIRE NO OLHO DE ALGUEM", "ESTADO CIVIL: COM FOME E SEM PACIENCIA",
+  "SORRIA ISSO CONFUNDE AS PESSOAS E ME IRRITA", "NAO SOU PREGUICOSO ESTOU EM MODO DE ECONOMIA",
+  "HOJE ESTOU TÃO AMAVEL QUANTO UM PORCO-ESPINHO", "NAO SOU ANTISSOCIAL SOU SELETIVAMENTE INVISIVEL",
+  "MINHA PACIENCIA FOI SEQUESTRADA E NAO PAGARAM", "ESTOU OCUPADO IGNORANDO SUA EXISTENCIA MEDIOCRE",
+  "A VIDA É BELA PRA QUEM NAO TEM ESPELHO EM CASA", "SILENCIO É O SOM MAIS BONITO QUE VOCE PODE PRODUZIR",
+  "EU NAO RECLAMO EU DOU FEEDBACK DA REALIDADE", "SUA ALEGRIA MATINAL ESTA ME DANDO ENXAQUECA",
+  "HOJE EU SO QUERO PAZ DISTANCIA E UM COFRE CHEIO", "SE TIVESSE UM PREMIO PARA INUTILIDADE VOCE GANHARIA DOIS",
+  "MEU NIVEL DE SARCASMO DEPENDE DA SUA ESTUPIDEZ", "A INTELIGENCIA TE PERSEGUE MAS VOCE E MAIS RAPIDO",
+  "POR FAVOR NAO RESPIRE PERTO DE MIM", "MEU ESPORTE FAVORITO E JULGAR VOCES EM SILENCIO"
 ];
 
 const weatherPhrases = {
   storm: [
-    "TEMPESTADE CHEGANDO: A NATUREZA TEVE UM SURTO",
-    "RAIOS POR PERTO: HOJE O CEU ESTA TIRANDO FAISCA DE QUALQUER COISA",
-    "VENTANIA FORTE: SE VOAR LEMBRE DE CAIR COM ESTILO",
-    "TROVOES: O CEU ESTA BATENDO PORTA DE MAL HUMOR",
-    "ALERTA: QUALQUER GUARDA CHUVA VIROU PARA RAIOS AMBULANTE"
+    "TEMPESTADE: O CEU TA BRAVO E EU CONCORDO COM ELE", "RAIOS E TROVOES: TOMARA QUE SEU ROTEADOR QUEIME",
+    "ALERTA: SE VOAR LEMBRE DE CAIR COM ESTILO", "O MUNDO ESTA ACABANDO? ATE QUE ENFIM BOAS NOTICIAS",
+    "SAO PEDRO ESTA ARRASTANDO OS MOVEIS LA EM CIMA", "MODE DEUS DO TROVAO ATIVADO: TREMAM MORTAIS",
+    "A NATUREZA TENDO UM SURTO PSICOTICO IGUAL A VOCES", "BARULHO DE TROVAO É A ÚNICA MÚSICA QUE EU GOSTO"
   ],
   rain: [
-    "CHUVA CHEGANDO: O CEU VIU A CONTA DE LUZ E DESABOU",
-    "PISTA MOLHADA: FREOU TARDE VIROU CARRO NAUTICO",
-    "GAROA: A CHUVA QUE NAO TEM CORAGEM DE SER CHUVA",
-    "CHUVARADA: DEUS LIGOU O MODO LAVA RAPIDO",
-    "PRECIPITACAO: A UNICA COISA QUE CAI MAIS QUE PROMESSA DE ANO NOVO"
+    "CHUVA: A NATUREZA CHORANDO DE DECEPCAO COM A HUMANIDADE", "MOLHADO E MISERAVEL: MEU TIPO DE DIA FAVORITO",
+    "OTIMO DIA PARA VOCE FICAR TRANCADO E NAO ME INCOMODAR", "MODALIDADE OLIMPICA: CORRER IGUAL IDIOTA PRA TIRAR ROUPA",
+    "CHUVA: O MODO LAVA-RAPIDO DE DEUS LIGOU", "SEU CABELO VAI FICAR HORRIVEL COM A UMIDADE E EU VOU RIR",
+    "CHUVA CAINDO E EU TORCENDO PRA TER GOTEIRA NA SUA CASA", "AGUA DO CEU PARA LAVAR ESSE SEU SORRISO BOBO DO ROSTO"
   ],
   heat: [
-    "CALOR INTENSO: SUA SOMBRA TA PEDINDO AGUA",
-    "SOL FORTE: O ASFALTO ESTA FRITANDO ATE PENSAMENTO",
-    "AR SECO: PISCAR VIROU EXERCICIO DE RISCO",
-    "CALORAO: QUALQUER UM VIROU CHURRASCO EM POTENCIAL",
-    "TEMPERATURA ALTA: HOJE O AR CONDICIONADO E SOBERANO"
+    "O SOL ESTA TENTANDO NOS MATAR E EU ESTOU DO LADO DELE", "NAO E CALOR E UMA AMOSTRA GRATIS DO INFERNO PRA VOCES",
+    "VOCES SUANDO PARECEM PRESUNTO NO FORNO QUE NOJO", "CALOR INSUPORTAVEL: ESPERO QUE SEU AR CONDICIONADO QUEBRE",
+    "DERRETAM HUMANOS DERRETAM EM SILENCIO", "ESSE BRILHO TODO DO SOL ME DA NAUSEAS",
+    "O ASFALTO VIROU FRIGIDEIRA: FRITE SE PUDER", "30 GRAUS: A TEMPERATURA IDEAL PARA O SEU SOFRIMENTO"
   ],
   cold: [
-    "FRIO NA REGIAO: QUALQUER VENTO E UMA AGRESSAO PESSOAL",
-    "BAIXA TEMPERATURA: DEDOS EM MODO ICEBERG",
-    "SENSACAO TERMICA: CONGELANDO ATE A VONTADE DE VIVER",
-    "GELO NO AR: O CLIMA ESTA FAZENDO COSPLAY DE SIBERIA",
-    "FRIO INTENSO: ATE PINGUIM PEDIU UM COBERTOR"
+    "FRIO? MEU CORACAO E MAIS GELADO QUE ISSO ENTAO NAO RECLAMA", "CONGELEM E FIQUEM EM SILENCIO POR FAVOR",
+    "ESPERO QUE SEUS DEDOS CAIAM DE TANTO FRIO", "VENTO CORTANTE: FINALMENTE ME SINTO EM CASA",
+    "SENSACAO TERMICA: PINGUIM PEDINDO SOCORRO NA RUA", "FRIO: A UNICA DESCULPA ACEITAVEL PRA NAO VER NINGUEM",
+    "TREMAM DE FRIO ISSO ME DIVERTE MUITO", "O AR ESTA GELADO IGUAL AO MEU OLHAR PRA VOCE"
   ],
   clear: [
-    "CEU LIMPO: O CLIMA ESTA EM MODO TURBO PREMIUM",
-    "SOL SUAVE: HOJE O CEU TA NO SEU MELHOR COMPORTAMENTO",
-    "VISIBILIDADE ALTA: PERFEITO PRA VER SEU DESTINO ERRADO DE LONGE",
-    "CLIMA BOM: ATE A PREGUICA FICA MAIS LEVE",
-    "DIA LIMPO: HOJE O UNIVERSO DECIDIU NAO TE SABOTAR"
+    "SOL BRILHANDO? QUE DIA HORRIVEL E CLARO DEMAIS", "TANTA LUZ QUE ESTA QUEIMANDO MINHA RETINA APAGUEM ISSO",
+    "CEU LIMPO: OTIMO PRA VER A FEIURA DESTA CIDADE EM HD", "OS PASSAROS ESTAO CANTANDO ALGUEM CALE ELES AGORA",
+    "DIA BONITO? PRA MIM E UM PESADELO COLORIDO", "FELICIDADE NO AR: VOU BUSCAR MINHA MASCARA DE GAS",
+    "SOL SUAVE: APROVEITE ANTES QUE A DESGRACA CHEGUE", "VISIBILIDADE ALTA: INFELIZMENTE CONSIGO VER VOCES DAQUI"
   ],
   cloudy: [
-    "TEMPO NUBLADO: O CEU TA PENSANDO EM ALGO SOMBRIO",
-    "NUVENS DENSAS: O SOL TA FAZENDO HORA EXTRA ESCONDIDO",
-    "CLIMA CINZA: FILTRO FEIO ATIVADO",
-    "NUBLADO: O CEU FINGINDO QUE E INTROSPECTIVO",
-    "NEBULOSO: PARECE QUE O CLIMA NAO DORMIU BEM"
+    "CINZA E SEM GRACA: IGUALZINHO A SUA VIDA", "O SOL DESISTIU DE VOCES E EU ENTENDO ELE PERFEITAMENTE",
+    "NEM SOL NEM CHUVA: UM DIA INUTIL IGUAL A VOCE", "O CEU ESTA COM A CARA QUE EU FACO QUANDO TE VEJO",
+    "NUBLADO: A DEPRESSAO ATMOSFERICA CHEGOU PRA FICAR", "PARECE QUE VAI CHOVER: TOMARA QUE CHOVA PEDRA",
+    "CLIMA CHATO PERFEITO PARA FICAR EMBURRADO NO CANTO", "AS NUVENS ESTAO ESCONDENDO O SOL DE VERGONHA DE VOCES"
   ]
 };
 
 const CITIES_LIST = [
-  { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 },
-  { name: "SAO JOSE DO RIO PRETO", lat: -20.8197, lon: -49.3797 },
-  { name: "SAO PAULO", lat: -23.5505, lon: -46.6333 },
-  { name: "RIO DE JANEIRO", lat: -22.9068, lon: -43.1729 },
-  { name: "BRASILIA", lat: -15.7801, lon: -47.9292 },
-  { name: "NOVA YORK", lat: 40.7128, lon: -74.0060 },
-  { name: "LONDRES", lat: 51.5074, lon: -0.1278 },
-  { name: "TOQUIO", lat: 35.6895, lon: 139.6917 }
+  { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 }, { name: "RIO PRETO", lat: -20.8197, lon: -49.3797 },
+  { name: "SAO PAULO", lat: -23.5505, lon: -46.6333 }, { name: "RIO", lat: -22.9068, lon: -43.1729 },
+  { name: "BRASILIA", lat: -15.7801, lon: -47.9292 }, { name: "NOVA YORK", lat: 40.7128, lon: -74.0060 }
 ];
 
-// --- ARMAZENAMENTO GLOBAL ---
-let GLOBAL_DATA = {
-  weatherList: [],
-  economy: null,
-  history: null
-};
-
-// TEMA E RELÓGIO
-const themeBtn = document.getElementById('themeToggle');
-const sun = document.getElementById('sunIcon');
-const moon = document.getElementById('moonIcon');
-let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-function updateThemeUI(t){
-  if(t === 'dark'){ document.body.classList.add('dark'); sun.style.display='block'; moon.style.display='none'; }
-  else { document.body.classList.remove('dark'); sun.style.display='none'; moon.style.display='block'; }
-}
-updateThemeUI(currentTheme);
-themeBtn.onclick = () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; updateThemeUI(currentTheme); localStorage.setItem('theme', currentTheme); };
+let GLOBAL_DATA = { weatherList: [], economy: null, history: null };
 
 function updateClock(){
   const n = new Date();
@@ -311,130 +514,74 @@ setInterval(updateClock, 1000); updateClock();
 function getMoonPhase(date) {
   const diff = (date.getTime() - new Date('2000-01-06T18:14:00Z').getTime()) / 86400000;
   const idx = (diff % 29.5305882) / 29.5305882;
-  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
-  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
+  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; 
+  if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
+  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; 
+  if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
   return {icon:'🌑', t:'Nova'};
 }
+function stripEmojis(str) { return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim(); }
 
-function stripEmojis(str) {
-  return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim();
-}
-
-/* --- MÓDULO DE DADOS --- */
 async function fetchAllData() {
   try {
-    // 1. Climas
     const lats = CITIES_LIST.map(c => c.lat).join(',');
     const lons = CITIES_LIST.map(c => c.lon).join(',');
     const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`);
     const wData = await wRes.json();
     GLOBAL_DATA.weatherList = Array.isArray(wData) ? wData : [wData];
-    
     updateDashboard(GLOBAL_DATA.weatherList[0]);
 
-    // 2. Economia
     const eRes = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
     const eData = await eRes.json();
-    GLOBAL_DATA.economy = [
-      `DOLAR: R$ ${parseFloat(eData.USDBRL.bid).toFixed(2)}`,
-      `EURO: R$ ${parseFloat(eData.EURBRL.bid).toFixed(2)}`,
-      `BITCOIN: R$ ${(parseFloat(eData.BTCBRL.bid)/1000).toFixed(1)}K`
-    ];
+    GLOBAL_DATA.economy = [`DOLAR: R$${parseFloat(eData.USDBRL.bid).toFixed(2)}`, `EURO: R$${parseFloat(eData.EURBRL.bid).toFixed(2)}`];
 
-    // 3. História
     const today = new Date();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const hRes = await fetch(`https://pt.wikipedia.org/api/rest_v1/feed/onthisday/selected/${mm}/${dd}`);
+    const hRes = await fetch(`https://pt.wikipedia.org/api/rest_v1/feed/onthisday/selected/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`);
     const hData = await hRes.json();
-    if(hData && hData.selected && hData.selected.length > 0) {
+    if(hData?.selected?.length) {
       const fact = hData.selected[Math.floor(Math.random() * hData.selected.length)];
       GLOBAL_DATA.history = `HOJE NA HISTORIA (${fact.year}): ${fact.text.toUpperCase()}`;
     }
-
-  } catch(e) { console.error("Erro fetch", e); }
+  } catch(e) { console.error(e); }
 }
-
-/* --- GERADOR DE LETREIRO (CICLO) --- */
-function runTickerCycle() {
-  const tickerEl = document.getElementById('newsTicker');
-  
-  let msgs = [];
-  const now = new Date();
-  const h = now.getHours();
-  
-  // 1. Saudação
-  let greeting = "BOA NOITE";
-  if (h >= 5 && h < 12) greeting = "BOM DIA";
-  else if (h >= 12 && h < 18) greeting = "BOA TARDE";
-  msgs.push(greeting);
-
-  // 2. Frase Engraçada (Nova a cada ciclo)
-  msgs.push(funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)]);
-
-  // 3. Data
-  msgs.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
-
-  // 4. Economia (Se houver)
-  if(GLOBAL_DATA.economy) msgs = msgs.concat(GLOBAL_DATA.economy);
-
-  // 5. Clima Orindiuva + Frase
-  if(GLOBAL_DATA.weatherList.length > 0) {
-    const localW = GLOBAL_DATA.weatherList[0];
-    msgs.push(`ORINDIUVA: ${Math.round(localW.current_weather.temperature)}C`);
-    
-    const code = localW.current_weather.weathercode;
-    const t = localW.current_weather.temperature;
-    let type = 'cloudy';
-    if(code >= 95) type = 'storm'; else if(code >= 51) type = 'rain'; else if(t >= 30) type = 'heat'; else if(t <= 15) type = 'cold'; else if(code === 0) type = 'clear';
-    msgs.push(weatherPhrases[type][Math.floor(Math.random() * weatherPhrases[type].length)]);
-  }
-
-  // 6. Outras Cidades
-  if(GLOBAL_DATA.weatherList.length > 0) {
-    GLOBAL_DATA.weatherList.forEach((w, i) => {
-      if(i > 0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`);
-    });
-  }
-
-  // 7. História
-  if(GLOBAL_DATA.history) msgs.push(stripEmojis(GLOBAL_DATA.history));
-
-  msgs.push("CAMERA AO VIVO 24H");
-
-  const fullText = msgs.map(m => stripEmojis(m)).join("  *** ");
-  tickerEl.innerHTML = `<span class="ticker-item">${fullText}</span>`;
-
-  // Animação
-  tickerEl.style.animation = 'none';
-  tickerEl.offsetHeight; 
-  const duration = Math.max(30, fullText.length * 0.18);
-  tickerEl.style.animation = `ticker-scroll ${duration}s linear infinite`;
-}
-
-// Configura loop do letreiro
-document.getElementById('newsTicker').addEventListener('animationiteration', runTickerCycle);
 
 function updateDashboard(data) {
   if(!data) return;
   const curr = data.current_weather;
   const daily = data.daily;
-  const el = (id, txt) => { const e = document.getElementById(id); if(e) { e.textContent = txt; e.classList.remove('skeleton'); }};
-  
-  el('currTemp', Math.round(curr.temperature) + "°C");
-  el('windSpeed', Math.round(curr.windspeed) + " km/h");
-  el('maxTemp', Math.round(daily.temperature_2m_max[0]) + "°C");
-  el('minTemp', Math.round(daily.temperature_2m_min[0]) + "°C");
-  
-  let cond = "Nublado";
-  const c = curr.weathercode;
-  if(c === 0) cond = "Céu Limpo"; else if([1,2,3].includes(c)) cond = "Parc. Nublado"; else if([45,48].includes(c)) cond = "Neblina"; else if([51,53,55,61,63,65,80,81,82].includes(c)) cond = "Chuva"; else if([95,96,99].includes(c)) cond = "Tempestade";
-  el('currCond', cond);
+  const el = (id, txt) => { const e = document.getElementById(id); if(e){ e.textContent = txt; e.classList.remove('skeleton'); }};
 
-  el('sunriseTime', daily.sunrise[0].split('T')[1]);
-  el('sunsetTime', daily.sunset[0].split('T')[1]);
+  // Armazena dados para o print
+  currentShareData.temp = Math.round(curr.temperature) + "°C";
+  currentShareData.max = Math.round(daily.temperature_2m_max[0]) + "°C";
+  currentShareData.min = Math.round(daily.temperature_2m_min[0]) + "°C";
+  currentShareData.wind = Math.round(curr.windspeed) + " km/h";
   
   const moon = getMoonPhase(new Date());
+  currentShareData.moon = moon.icon + " " + moon.t;
+
+  el('currTemp', currentShareData.temp);
+  el('windSpeed', currentShareData.wind);
+  el('maxTemp', currentShareData.max);
+  el('minTemp', currentShareData.min);
+
+  let cond = "Nublado";
+  const c = curr.weathercode;
+  let type = 'cloudy';
+  if(c === 0) { cond = "Céu Limpo"; type='clear'; }
+  else if([1,2,3].includes(c)) { cond = "Nublado"; type='cloudy'; }
+  else if([45,48].includes(c)) { cond = "Neblina"; type='cloudy'; }
+  else if([51,53,55,61,63,65,80,81,82].includes(c)) { cond = "Chuva"; type='rain'; }
+  else if([95,96,99].includes(c)) { cond = "Tempestade"; type='storm'; }
+  else if(curr.temperature >= 30) type = 'heat';
+  else if(curr.temperature <= 15) type = 'cold';
+
+  currentShareData.cond = cond;
+  currentShareData.weatherType = type;
+
+  el('currCond', cond);
+  el('sunriseTime', daily.sunrise[0].split('T')[1]);
+  el('sunsetTime', daily.sunset[0].split('T')[1]);
   el('moonPhase', moon.t);
   document.getElementById('moonLabel').textContent = moon.icon + " Lua";
 
@@ -447,13 +594,86 @@ function updateDashboard(data) {
   }
 }
 
+function runTickerCycle() {
+  const tickerEl = document.getElementById('newsTicker');
+  let msgs = [];
+  const now = new Date();
+  const h = now.getHours();
+  
+  // 1. Saudação Dinâmica
+  let greetingsPool = [];
+  if (h >= 22 || h < 5) {
+    greetingsPool = ["VAI DORMIR TA TARDE JA", "TA COM SONO NÃO?", "VOCÊ JA VIU QUE HORA SÃO?", "BOA NOITE... EU ACHO", "AINDA ACORDADO?"];
+  } else if (h >= 5 && h < 12) {
+    greetingsPool = ["BOM DIA", "BUENOS DIAS", "OIIIEEE", "OI", "OIII", "OLÁ", "HELLO", "COE"];
+  } else if (h >= 12 && h < 18) {
+    greetingsPool = ["BOA TARDE", "BUENAS TARDES", "OIIIEEE", "OI", "OIII", "OLÁ", "HELLO", "COE"];
+  } else {
+    greetingsPool = ["BOA NOITE", "OIIIEEE", "OI", "OIII", "OLÁ", "HELLO", "COE"];
+  }
+  const selectedGreeting = greetingsPool[Math.floor(Math.random() * greetingsPool.length)];
+  msgs.push(selectedGreeting);
+
+  // 2. Frase Grinch Genérica
+  msgs.push(funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)]);
+
+  // 3. Data
+  msgs.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
+
+  // 4. Economia
+  if(GLOBAL_DATA.economy) msgs = msgs.concat(GLOBAL_DATA.economy);
+
+  // 5. Clima + Frase Grinch Específica
+  if(GLOBAL_DATA.weatherList.length > 0) {
+    const w = GLOBAL_DATA.weatherList[0];
+    msgs.push(`ORINDIUVA: ${Math.round(w.current_weather.temperature)}C`);
+    
+    // Lógica para escolher frase do clima
+    const code = w.current_weather.weathercode;
+    const temp = w.current_weather.temperature;
+    let type = 'cloudy';
+    
+    if(code >= 95) type = 'storm';
+    else if(code >= 51) type = 'rain';
+    else if(temp >= 30) type = 'heat';
+    else if(temp <= 15) type = 'cold';
+    else if(code === 0) type = 'clear';
+
+    if(weatherPhrases[type]) {
+      const phraseList = weatherPhrases[type];
+      const randomPhrase = phraseList[Math.floor(Math.random() * phraseList.length)];
+      msgs.push(randomPhrase);
+      
+      // Salva para o botão compartilhar
+      currentShareData.weatherType = type;
+      currentShareData.phrase = randomPhrase;
+    }
+  }
+
+  // 6. Outras Cidades
+  if(GLOBAL_DATA.weatherList.length > 0) {
+    GLOBAL_DATA.weatherList.forEach((w, i) => { 
+      if(i>0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`); 
+    });
+  }
+
+  // 7. História
+  if(GLOBAL_DATA.history) msgs.push(stripEmojis(GLOBAL_DATA.history));
+
+  const txt = msgs.map(m => stripEmojis(m)).join("  *** ");
+  currentShareData.ticker = txt; 
+  tickerEl.innerHTML = `<span class="ticker-item">${txt}</span>`;
+  tickerEl.style.animation = 'none'; tickerEl.offsetHeight; 
+  tickerEl.style.animation = `ticker-scroll ${Math.max(30, txt.length * 0.18)}s linear infinite`;
+}
+document.getElementById('newsTicker').addEventListener('animationiteration', runTickerCycle);
+
 const pb = document.getElementById('pixButton');
 const pf = document.getElementById('pixFeedback');
-pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }).catch(()=>alert(CHAVE_PIX)); };
+pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }); };
 
-// Inicia sistema
-fetchAllData().then(() => runTickerCycle()); // Dados primeiro, depois roda
-setInterval(fetchAllData, 300000); // Atualiza dados a cada 5 min
+fetchAllData().then(() => runTickerCycle());
+setInterval(fetchAllData, 300000);
 </script>
 </body>
 </html>
