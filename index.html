@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;700;800&family=Share+Tech+Mono&family=Silkscreen&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <meta property="og:type" content="website">
@@ -25,654 +25,1284 @@
 <style>
 :root {
   --sf: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --retro-font: 'Silkscreen', cursive;
   
-  /* --- TEMA CLARO (LIGHT) --- */
-  --bg-body: #f2f2f7; 
-  --text-color: #1c1c1e;
-  --card-bg: #ffffff;
-  --card-border: rgba(0, 0, 0, 0.05);
-  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --pill-bg: #f5f5f7;
-  --pill-border: transparent;
+  --bg-body: #f2f2f7; --text-color: #1c1c1e;
+  --card-bg: #ffffff; --card-border: rgba(0,0,0,0.05); --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --pill-bg: #f5f5f7; --pill-border: transparent;
+  
+  /* Cores Console */
+  --console-body: #2b2b2b;
+  --console-texture: repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px);
+  --screen-bg: #0f380f; --screen-on: #8bac0f; --screen-pixel: #0f380f;
 }
 
-/* --- TEMA ESCURO (DARK) --- */
 body.dark {
-  --bg-body: #121212; 
-  --text-color: #ffffff;
-  --card-bg: #1c1c1e;
-  --card-border: rgba(255, 255, 255, 0.1);
-  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  --pill-bg: rgba(255, 255, 255, 0.1);
-  --pill-border: transparent;
+  --bg-body: #121212; --text-color: #ffffff;
+  --card-bg: #1c1c1e; --card-border: rgba(255,255,255,0.1); --card-shadow: 0 4px 20px rgba(0,0,0,0.7);
+  --pill-bg: rgba(255,255,255,0.05); --pill-border: transparent;
+  
+  --console-body: #1a1a1a;
+  --screen-bg: #051405; --screen-on: #2b3805; --screen-pixel: #ccffcc;
 }
 
 * { box-sizing: border-box; }
-
-body {
-  margin: 0; padding: 0; height: 100%;
-  font-family: var(--sf);
-  background-color: var(--bg-body);
-  color: var(--text-color);
-  overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-color: var(--bg-body); color: var(--text-color); overflow-x: hidden; transition: 0.3s; }
 
 /* LAYOUT */
 .site { max-width: 1000px; margin: 0 auto; padding: 40px 24px; min-height: 100vh; display: flex; flex-direction: column; }
 .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
-.title-box h1 { margin: 0; font-size: clamp(32px, 6vw, 56px); font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
-.status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #fff; background: #ff3b30; padding: 4px 10px; border-radius: 20px; margin-top: 8px; text-transform: uppercase; }
-.pulse { width: 8px; height: 8px; background: #fff; border-radius: 50%; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: .4; } 100% { opacity: 1; } }
 
-/* BOTÃO TEMA */
-.theme-toggle {
-  width: 44px; height: 44px; border-radius: 50%;
-  border: 1px solid var(--card-border);
-  cursor: pointer;
-  background: var(--card-bg);
-  box-shadow: var(--card-shadow);
-  display: grid; place-items: center; padding: 0; font-size: 22px; line-height: 1;
-  transition: all 0.3s; color: var(--text-color);
-}
-.theme-toggle:hover { transform: scale(1.05); }
-.theme-toggle:active { transform: scale(0.95); }
+/* SELETOR DE CIDADE */
+.title-box { display: flex; align-items: center; gap: 10px; cursor: pointer; transition: opacity 0.2s; }
+.title-box:hover { opacity: 0.7; }
+.city-search-icon { width: 24px; height: 24px; color: #007AFF; }
+.title-box h1 { margin: 0; font-size: clamp(28px, 5vw, 42px); font-weight: 800; letter-spacing: -1px; line-height: 1.1; }
 
-/* VIDEO PLAYER */
-.video-container { position: relative; width: 100%; border-radius: 30px; overflow: hidden; box-shadow: var(--card-shadow); aspect-ratio: 16/9; background: #000; border: 1px solid var(--card-border); margin-bottom: 24px; }
+/* MODAL */
+.city-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+.city-modal-overlay.active { display: flex; }
+.city-modal { background: var(--card-bg); width: 90%; max-width: 400px; padding: 24px; border-radius: 24px; border: 1px solid var(--card-border); box-shadow: 0 20px 60px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 15px; }
+.modal-input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--pill-bg); color: var(--text-color); font-size: 16px; outline: none; }
+.modal-btn-geo { background: #007AFF; color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.geo-icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+.modal-results { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+.search-item { padding: 10px; background: var(--pill-bg); border-radius: 8px; cursor: pointer; font-size: 14px; }
+.search-item:hover { background: #007AFF; color: #fff; }
+.modal-close { background: transparent; border: none; color: #ff3b30; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+/* Video & Dashboard */
+.video-container { position: relative; width: 100%; border-radius: 30px; overflow: hidden; box-shadow: var(--card-shadow); aspect-ratio: 16/9; background: #000; border: 1px solid var(--card-border); margin-bottom: 24px; transition: all 0.5s ease; }
+.video-container.hidden { display: none; } 
 .video-container iframe { width: 100%; height: 100%; border: 0; }
+.dashboard-card { background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow); border-radius: 30px; padding: 30px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 24px; }
 
-/* DASHBOARD */
-.dashboard-card { 
-  background: var(--card-bg); 
-  border: 1px solid var(--card-border); 
-  box-shadow: var(--card-shadow); 
-  border-radius: 30px; padding: 30px; margin-bottom: 24px; 
-  display: flex; flex-direction: column; gap: 24px; 
-  transition: background-color 0.3s ease, border 0.3s ease; 
+/* Theme Toggle */
+.theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--card-border); cursor: pointer; background: var(--card-bg); box-shadow: var(--card-shadow); display: flex; align-items: center; justify-content: center; transition: 0.3s; color: var(--text-color); }
+.theme-icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* --- ORINDI-CYBERDECK (USADO NO SITE E NO PRINT) --- */
+.retro-console, .sc-console-box {
+  background-color: var(--console-body); 
+  background-image: var(--console-texture);
+  padding: 20px; border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  border: 1px solid #000;
+  display: flex; flex-wrap: wrap; align-items: stretch; gap: 20px; position: relative;
+  overflow: hidden;
 }
 
-.dash-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.current-weather h2 { margin: 0; font-size: 56px; font-weight: 700; letter-spacing: -2px; }
-.current-weather p { margin: 0; font-size: 20px; font-weight: 500; opacity: 0.8; }
-.clock-area { text-align: right; }
-.clock-time { font-size: 32px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.clock-date { font-size: 14px; opacity: 0.8; margin-top: 2px; text-transform: capitalize; }
+.caution-stripe {
+  position: absolute; top: 20px; right: -30px; width: 100px; height: 20px;
+  background: repeating-linear-gradient(45deg, #e6b800, #e6b800 10px, #000 10px, #000 20px);
+  transform: rotate(45deg); opacity: 0.6; pointer-events: none; border: 1px solid #000;
+}
+.screw { width: 8px; height: 8px; background: #111; border-radius: 50%; position: absolute; box-shadow: inset 1px 1px 2px rgba(255,255,255,0.1); }
+.screw.tl { top: 10px; left: 10px; } .screw.tr { top: 10px; right: 10px; }
+.screw.bl { bottom: 10px; left: 10px; } .screw.br { bottom: 10px; right: 10px; }
 
-.ticker-wrap { width: 100%; overflow: hidden; background-color: #000; color: #fff; padding: 10px 0; border-radius: 12px; border: 2px solid #333; white-space: nowrap; box-sizing: border-box; margin-top: -10px; margin-bottom: 5px; position: relative; }
-.ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
-.ticker-item { display: inline-block; padding: 0 30px; font-family: 'VT323', monospace; font-size: 24px; letter-spacing: 1.5px; color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.7); text-transform: uppercase; }
+/* TELA */
+.gb-bezel, .sc-bezel { 
+  background: #111; border-radius: 8px; padding: 30px 15px 15px 15px;
+  box-shadow: inset 0 0 20px #000; flex: 2; min-width: 260px; position: relative;
+  border: 2px solid #444;
+}
+
+.gb-screen, .sc-screen { 
+  background-color: var(--screen-bg); 
+  height: 160px; border-radius: 4px; position: relative; overflow: hidden; 
+  display: flex; justify-content: center; align-items: center; 
+  font-family: var(--retro-font); color: var(--screen-pixel); 
+  transition: background-color 0.2s;
+}
+/* Estilo LIGADO */
+.gb-screen.on, .sc-screen.on { background-color: var(--screen-on); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
+.gb-screen.on::after, .sc-screen.on::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; pointer-events: none; z-index: 10; }
+
+/* Estilo DESLIGADO (Preto) */
+.gb-screen:not(.on) {
+    background-color: #080a08;
+    box-shadow: inset 0 0 20px #000;
+}
+.gb-screen:not(.on) * {
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+@keyframes tvOff { 0% { transform: scale(1, 1); filter: brightness(1); } 40% { transform: scale(1, 0.01); filter: brightness(5); } 80% { transform: scale(0.01, 0.01); } 100% { transform: scale(0, 0); opacity: 0; } }
+.gb-screen.off-anim > * { animation: tvOff 0.4s forwards; }
+@keyframes tvOn { 0% { transform: scale(0, 0); opacity: 0; } 20% { transform: scale(0.01, 0.01); opacity: 1; } 60% { transform: scale(1, 0.01); filter: brightness(5); } 100% { transform: scale(1, 1); filter: brightness(1); } }
+.gb-screen.on-anim > * { animation: tvOn 0.4s forwards; }
+
+/* STATUS BAR (Direita) */
+.status-bar {
+  position: absolute; top: 6px; right: 8px; z-index: 15;
+  display: flex; gap: 8px; align-items: center; opacity: 0.8;
+}
+.status-icon { width: 14px; height: 14px; fill: var(--screen-pixel); }
+.anim-pulse { animation: statusPulse 2s infinite; }
+.anim-wifi { animation: statusWifi 3s infinite; }
+.anim-charge { animation: statusCharge 5s infinite; }
+@keyframes statusPulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+@keyframes statusWifi { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes statusCharge { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+/* STATUS BAR LEFT (Relógio/Data) */
+.status-left {
+  position: absolute; top: 8px; left: 10px; z-index: 15;
+  display: flex; gap: 8px; align-items: center;
+  font-family: var(--retro-font);
+  color: var(--screen-pixel);
+  font-size: 11px;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+.retro-date { font-weight: 400; }
+.retro-clock { font-weight: 400; }
+
+/* TELAS INTERNAS */
+.screen-mode { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+.gb-screen.on .active-mode { display: flex; }
+
+/* MODO PET */
+.pet-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+.pet-face { font-size: 65px; line-height: 1; white-space: nowrap; margin-bottom: 0px; transition: transform 0.2s; }
+
+/* ÁREA DE TEXTO DO PET */
+.pet-text-area {
+    font-family: var(--retro-font);
+    font-size: 15px;
+    color: var(--screen-pixel);
+    text-transform: uppercase;
+    text-align: center;
+    min-height: 40px;
+    width: 90%;
+    margin-top: 15px;
+    line-height: 1.2;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pet-text-area.visible { opacity: 1; }
+
+.pet-zzz { position: absolute; top: -15px; right: -25px; font-size: 24px; font-weight: bold; animation: zzz 2s infinite; display: none; }
+
+/* MODO TEMPO */
+.weather-main { 
+  display: flex; flex-direction: column; align-items: center; justify-content: center; 
+  width: 100%; height: 100%; position: relative; z-index: 2;
+  text-align: center;
+}
+.wm-icon { 
+  width: 42px; height: 42px; margin-bottom: 2px; 
+  animation: floatIcon 3s ease-in-out infinite; 
+}
+.wm-icon svg { fill: var(--screen-pixel); width: 100%; height: 100%; }
+.wm-temp { 
+  font-size: 52px; font-weight: bold; line-height: 1; 
+  margin: 0; z-index: 2; letter-spacing: -2px;
+}
+.wm-cond { font-size: 14px; text-transform: uppercase; margin-top: 2px; }
+.wm-city { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-top: 5px; }
+@keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+/* CONTROLES */
+.console-controls {
+  flex: 1; display: flex; flex-direction: column; gap: 10px;
+  align-items: center; justify-content: center; min-width: 120px;
+}
+
+.power-group { display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; }
+.power-led {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #500; border: 1px solid #000;
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.5);
+  transition: 0.3s; margin-bottom: 2px;
+}
+.power-led::after { content:''; position:absolute; top:2px; left:2px; width:3px; height:3px; background:#fff; border-radius:50%; opacity:0.5; }
+.power-led.on { background: #00ff41; box-shadow: 0 0 8px #00ff41; animation: blinkGreen 2s infinite alternate; }
+.power-led.off { background: #ff0000; box-shadow: 0 0 5px #ff0000; }
+@keyframes blinkGreen { from { opacity: 0.4; } to { opacity: 1; } }
+
+.power-btn {
+  width: 60px; height: 30px; background: #111; border-radius: 15px;
+  border: 1px solid #444; position: relative; cursor: pointer;
+}
+.power-switch {
+  width: 26px; height: 26px; background: #888; border-radius: 50%;
+  position: absolute; top: 1px; left: 2px; transition: 0.2s;
+  box-shadow: inset 1px 1px 2px #fff, 2px 2px 5px #000;
+}
+.power-btn.active .power-switch { left: 30px; background: #ccc; }
+.label-text { font-size: 10px; color: #888; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-family: var(--sf); }
+
+.action-buttons { display: flex; gap: 15px; align-items: flex-end; }
+.control-unit { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+
+.analog-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; cursor: pointer; transition: 0.05s; position: relative;
+  box-shadow: 0 5px 0 rgba(0,0,0,0.5), 0 5px 10px rgba(0,0,0,0.3), inset 0 2px 3px rgba(255,255,255,0.2);
+}
+.analog-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,0.5), inset 0 2px 3px rgba(0,0,0,0.4); }
+.btn-red { background: #d93f3f; }
+.btn-blue { background: #3f7ad9; }
+
+.speaker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-top: 10px; }
+.speaker-hole { width: 4px; height: 4px; background: #000; border-radius: 50%; box-shadow: inset 1px 1px 1px rgba(255,255,255,0.1); }
+
+/* --- LETREIRO INTEGRADO --- */
+.console-ticker-area { width: 100%; border-top: 2px solid #000; padding-top: 5px; }
+.ticker-bezel { background: #111; padding: 6px 4px; border-radius: 4px; border: 2px solid #444; box-shadow: inset 0 0 10px #000; }
+
+/* TELA DO TICKER */
+.ticker-screen { 
+    background-color: var(--screen-bg); 
+    color: var(--screen-on);
+    height: 26px; overflow: hidden; display: flex; align-items: center; border-radius: 2px; 
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5); 
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* ESTADO DESLIGADO DO TICKER */
+.ticker-screen.off {
+    background-color: #080a08 !important;
+    box-shadow: inset 0 0 10px #000 !important;
+}
+.ticker-screen.off .ticker-wrap { opacity: 0; transition: opacity 0.2s; }
+
+.ticker-wrap { width: 100%; white-space: nowrap; transition: opacity 0.5s; }
+.ticker-item { 
+  padding: 0 30px; 
+  font-family: var(--retro-font); 
+  font-size: 14px; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
+  /* ESTILO DIGITAL GLOSS/GLOW */
+  color: #ccffcc; 
+  text-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41;
+}
 @keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+.ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
 
-.dash-details { display: flex; gap: 12px; }
-.detail-pill { 
-  flex: 1; background: var(--pill-bg); 
-  border: 1px solid var(--pill-border); 
-  padding: 16px; border-radius: 18px; text-align: center; font-size: 15px; font-weight: 600; 
-  display: flex; flex-direction: column; align-items: center; gap: 6px; 
-  transition: background-color 0.3s;
-}
+/* Animações - SEM CORES VERMELHAS/AZUIS */
+@keyframes zzz { 0% { transform: translate(0,0) scale(0.5); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(10px,-15px) scale(1.2); opacity: 0; } }
+@keyframes shake { 0% { transform: translate(0,0); } 25% { transform: translate(-2px,0); } 75% { transform: translate(2px,0); } }
+
+.anim-angry { animation: shake 0.2s infinite; }
+.anim-bounce { animation: bounce 0.6s infinite; }
+.anim-shiver { animation: shiver 0.2s infinite; }
+@keyframes shiver { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
+.anim-melt { animation: melt 2s infinite alternate; }
+@keyframes melt { from { transform: scaleY(1); } to { transform: scaleY(0.9) translateY(2px); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* Resto do Site */
+.modern-data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.detail-pill { flex: 1; background: var(--pill-bg); border: 1px solid var(--card-border); padding: 20px 16px; border-radius: 18px; text-align: center; font-size: 15px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .detail-label { font-size: 11px; opacity: 0.6; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.detail-value { font-size: 24px; font-weight: 800; color: var(--text-color); }
 
-.forecast-row { display: flex; justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 24px; margin-top: 8px; }
-.forecast-item { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; }
+.forecast-row { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; border-top: 1px solid var(--card-border); padding-top: 24px; margin-top: 8px; scrollbar-width: none; }
+.forecast-row::-webkit-scrollbar { display: none; }
+.forecast-item { text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 60px; flex: 1; }
 .f-day { font-size: 14px; font-weight: 700; opacity: 0.9; margin-bottom: 4px; text-transform: uppercase; }
-.f-icon { font-size: 32px; line-height: 1.2; margin-bottom: 4px; } 
+.f-icon { width: 28px; height: 28px; margin-bottom: 4px; color: var(--text-color); }
 .f-temp { font-size: 18px; font-weight: 700; }
 .f-min { font-size: 14px; opacity: 0.7; margin-left: 6px; }
 
-/* --- BOTÃO COMPARTILHAR --- */
+/* Share */
 .share-container { width: fit-content; margin: 0 auto 24px auto; position: relative; z-index: 50; }
-.btn-share-main {
-  background: #007AFF; border: none; color: #fff; padding: 12px 28px; border-radius: 30px; font-size: 15px; font-weight: 700;
-  cursor: pointer; display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4); transition: 0.2s;
-}
-.btn-share-main:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 122, 255, 0.6); }
-
-/* Menu de Compartilhamento */
-.share-modal {
-  position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); width: auto;
-  background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 50px; padding: 10px 20px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: none; flex-direction: row; gap: 15px; z-index: 100; animation: fadeUp 0.2s ease-out;
-}
+.btn-share-main { background: #007AFF; border: none; color: #fff; padding: 12px 28px; border-radius: 30px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,122,255,0.4); transition: 0.2s; }
+.share-modal { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); width: auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 50px; padding: 10px 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: none; flex-direction: row; gap: 15px; z-index: 100; animation: fadeUp 0.2s ease-out; }
 .share-modal.active { display: flex; }
 @keyframes fadeUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); }}
-
-/* Botões de Ícone */
-.share-option {
-  display: flex; align-items: center; justify-content: center;
-  width: 50px; height: 50px; border-radius: 50%; 
-  background: var(--pill-bg); 
-  cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  color: var(--text-color); border: 1px solid var(--card-border);
-}
-
-/* HOVER EFFECTS - CORES OFICIAIS (SEM BORDA) */
-.share-option.insta:hover {
-  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-  color: #fff; transform: scale(1.15); border: none;
-}
-.share-option.whatsapp:hover {
-  background: #25D366; color: #fff; transform: scale(1.15); border: none;
-}
-.share-option.x:hover {
-  background: #000; color: #fff; transform: scale(1.15); border: none;
-}
+.share-option { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 50%; background: var(--pill-bg); cursor: pointer; transition: 0.2s; color: var(--text-color); border: 1px solid var(--card-border); }
+.share-option.insta:hover { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); color: #fff; border:none; transform: scale(1.15); }
+.share-option.whatsapp:hover { background: #25D366; color: #fff; border:none; transform: scale(1.15); }
+.share-option.x:hover { background: #000; color: #fff; border:none; transform: scale(1.15); }
 body.dark .share-option.x:hover { border: 1px solid #333; } 
 
-/* --- CARD OCULTO (SNAPSHOT 1080x1920) --- */
-#shareCapture {
-  position: fixed; left: -9999px; top: 0;
-  width: 1080px; height: 1920px; 
-  box-sizing: border-box; display: flex; flex-direction: column; 
-  padding: 100px 80px; font-family: var(--sf);
-  /* Background via JS */
+/* Print Styles - ATUALIZADO PARA O NOVO DESIGN DO PRINT */
+#shareCapture { 
+    position: fixed; left: -9999px; top: 0; 
+    width: 1080px; height: 1920px; 
+    box-sizing: border-box; 
+    display: flex; flex-direction: column; 
+    padding: 80px 60px; 
+    font-family: var(--sf); 
+    /* Usa cores do tema atual */
+    background-color: var(--bg-body);
+    color: var(--text-color);
+}
+.sc-header { display: flex; align-items: center; margin-bottom: 40px; justify-content: center; }
+.sc-title { font-size: 64px; font-weight: 800; letter-spacing: -2px; }
+
+/* CONSOLA NO PRINT (Reutiliza estilos do site principal) */
+.sc-console-box {
+    /* Padding e Borda da moldura externa */
+    padding: 40px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.1);
+    border: 4px solid #000; /* Borda mais grossa no print */
+    margin-bottom: 40px;
+}
+/* Moldura da tela no print */
+.sc-bezel {
+    border-radius: 20px;
+    padding: 50px 30px;
+    border: 6px solid #333; /* Borda da tela interna mais grossa */
+}
+/* Tela no print */
+.sc-screen {
+    height: 400px; /* Altura fixa grande */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Silkscreen', cursive;
+    position: relative;
+    overflow: hidden;
+}
+/* Efeito de scanline no print */
+.sc-screen::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 6px; pointer-events: none; }
+
+/* Elementos dentro da tela do print */
+.sc-status-top {
+    position: absolute; top: 25px; width: 100%; padding: 0 30px;
+    display: flex; justify-content: space-between;
+    font-size: 24px; letter-spacing: 1px; opacity: 0.8;
+}
+.sc-face-container {
+    display: flex; flex-direction: column; align-items: center;
+}
+.sc-face-icon {
+    font-size: 140px; line-height: 1; margin-bottom: 20px;
+}
+.sc-main-temp {
+    font-size: 70px; font-weight: bold; letter-spacing: -2px;
+}
+.sc-status-label {
+    font-size: 20px; margin-top: 10px; opacity: 0.8; text-transform: uppercase;
 }
 
-.sc-header { display: flex; align-items: center; margin-bottom: 40px; }
-.sc-title { font-size: 64px; font-weight: 800; margin: 0; letter-spacing: -2px; }
+/* Dados em baixo */
+.sc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 50px; }
+.sc-item { background: var(--pill-bg); padding: 30px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--card-border); }
+.sc-lbl { font-size: 22px; opacity: 0.6; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+.sc-val { font-size: 40px; font-weight: 800; }
 
-/* Imagem do Vídeo */
-.sc-video-box {
-  width: 100%; aspect-ratio: 16/9; border-radius: 40px; overflow: hidden;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.2); margin-bottom: 40px;
-  background-size: cover; background-position: center; background-color: #000;
-  border: 2px solid rgba(128,128,128,0.2);
+.sc-phrase-box { 
+    margin-top: auto; margin-bottom: 30px;
+    background: #000; color: #00ff41; 
+    border: 6px solid #1a1a1a; border-radius: 40px; 
+    padding: 30px; text-align: center; 
+    font-family: var(--retro-font); font-size: 32px; line-height: 1.3; 
+    word-break: break-word;
+    text-transform: uppercase; 
+    text-shadow: 0 0 20px rgba(0, 255, 65, 0.7); 
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5); 
+    min-height: 200px; display: flex; align-items: center; justify-content: center;
 }
+.sc-footer { text-align: center; opacity: 0.4; font-size: 28px; font-weight: 600; }
 
-/* Dados */
-.sc-info-container { display: flex; flex-direction: column; gap: 40px; }
-.sc-main-data { display: flex; align-items: baseline; gap: 30px; margin-bottom: 20px; }
-.sc-temp { font-size: 180px; font-weight: 800; line-height: 1; letter-spacing: -5px; }
-.sc-cond { font-size: 48px; opacity: 0.7; font-weight: 500; text-transform: uppercase; }
-
-.sc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-.sc-item { background: rgba(128,128,128,0.1); padding: 40px; border-radius: 30px; display: flex; flex-direction: column; gap: 10px; }
-.sc-lbl { font-size: 24px; opacity: 0.5; font-weight: 700; text-transform: uppercase; }
-.sc-val { font-size: 42px; font-weight: 700; }
-
-/* CAIXA DA FRASE VERDE NEON (EM BAIXO) */
-.sc-phrase-box {
-  margin-top: 50px; /* Separado do resto */
-  background: #000;
-  color: #00ff41; /* Verde Matrix */
-  border: 4px solid #1a1a1a;
-  border-radius: 30px;
-  padding: 40px;
-  text-align: center;
-  font-family: 'VT323', monospace;
-  font-size: 56px; /* Bem grande no print */
-  line-height: 1.1;
-  text-transform: uppercase;
-  text-shadow: 0 0 20px rgba(0, 255, 65, 0.7); /* Glow */
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-  align-self: center; /* Centralizado horizontalmente */
-  width: auto;
-  max-width: 100%;
-}
-
-.sc-footer { margin-top: auto; text-align: center; opacity: 0.4; font-size: 28px; font-weight: 600; }
-
-/* FOOTER SITE */
 .site-footer { margin-top: auto; padding-top: 20px; text-align: center; padding-bottom: 20px; }
-.donation-card { display: inline-flex; flex-direction: column; align-items: center; padding: 24px 40px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow); border-radius: 24px; transition: background-color 0.3s; }
-.donation-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.donation-desc { font-size: 14px; opacity: 0.9; margin-bottom: 18px; line-height: 1.4; }
-.btn-donate { position: relative; display: flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 14px; border: none; background: #32bcad; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(50, 188, 173, 0.4); }
-.btn-donate:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(50, 188, 173, 0.6); }
-.btn-donate:active { transform: translateY(0); }
-.copy-feedback { position: absolute; top: -40px; background: #333; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: all 0.2s; font-weight: 800; }
-.copy-feedback.show { opacity: 1; transform: translateY(0); }
-.footer-credit { display: block; margin-top: 30px; font-size: 12px; opacity: 0.5; color: var(--text-color); text-decoration: none; transition: opacity 0.2s; }
-.footer-credit:hover { opacity: 1; text-decoration: underline; }
+.footer-credit { display: block; font-size: 12px; opacity: 0.5; color: var(--text-color); text-decoration: none; }
+.footer-credit:hover { text-decoration: underline; }
 .skeleton { animation: shimmer 1.5s infinite; opacity: 0.7; } @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
 </style>
 </head>
-
 <body>
 
-<div id="shareCapture">
-  <div class="sc-header">
-    <div class="sc-title">ORINDIÚVA</div>
+<div class="city-modal-overlay" id="searchModalOverlay">
+  <div class="city-modal">
+    <h3>Selecionar Cidade</h3>
+    <input type="text" class="modal-input" id="cityInput" placeholder="Digite o nome da cidade...">
+    <button class="modal-btn-geo" onclick="useCurrentLocation()">
+      <svg class="geo-icon" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>
+      Usar Localização Atual
+    </button>
+    <div class="modal-results" id="searchResults"></div>
+    <button class="modal-close" onclick="closeSearchModal()">Cancelar</button>
   </div>
-  
-  <div class="sc-video-box" id="scVideoThumb"></div>
-  
-  <div class="sc-info-container">
-    <div class="sc-main-data">
-      <div class="sc-temp" id="scTemp">--°</div>
-      <div class="sc-cond" id="scCond">--</div>
-    </div>
-    <div class="sc-grid">
-      <div class="sc-item"><div class="sc-lbl">MÁXIMA</div><div class="sc-val" id="scMax">--°C</div></div>
-      <div class="sc-item"><div class="sc-lbl">MÍNIMA</div><div class="sc-val" id="scMin">--°C</div></div>
-      <div class="sc-item"><div class="sc-lbl">VENTO</div><div class="sc-val" id="scWind">-- km/h</div></div>
-      <div class="sc-item"><div class="sc-lbl">LUA</div><div class="sc-val" id="scMoon">--</div></div>
-    </div>
-  </div>
-
-  <div class="sc-phrase-box" id="scPhrase">"FRASE ALEATÓRIA AQUI"</div>
-
-  <div class="sc-footer">mateusfrmacedo.github.io/orindiuva</div>
 </div>
 
+<div id="shareCapture">
+  <div class="sc-header"><div class="sc-title" id="printCityName">ORINDIÚVA</div></div>
+  
+  <div class="sc-console-box">
+      <div class="screw tl" style="top:20px; left:20px; width:12px; height:12px;"></div>
+      <div class="screw tr" style="top:20px; right:20px; width:12px; height:12px;"></div>
+      <div class="screw bl" style="bottom:20px; left:20px; width:12px; height:12px;"></div>
+      <div class="screw br" style="bottom:20px; right:20px; width:12px; height:12px;"></div>
+
+      <div class="sc-bezel">
+          <div class="sc-screen on"> <div class="sc-status-top">
+                  <span id="scTimeTop">--:--</span>
+                  <span id="scDateTop">--/--</span>
+              </div>
+              <div class="sc-face-container">
+                  <div class="sc-face-icon" id="scFaceIcon">(-.-)</div>
+                  <div class="sc-main-temp" id="scMainTemp">--°C</div>
+                  <div class="sc-status-label" id="scStatusLabel">STATUS: ONLINE</div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="sc-info-container">
+    <div class="sc-grid">
+      <div class="sc-item"><div class="sc-lbl">SENS. TÉRMICA</div><div class="sc-val" id="scFeelsLike">--°C</div></div>
+      <div class="sc-item"><div class="sc-lbl">UMIDADE</div><div class="sc-val" id="scHumidity">--%</div></div>
+      <div class="sc-item"><div class="sc-lbl">VENTO</div><div class="sc-val" id="scWind">-- km/h</div></div>
+      <div class="sc-item"><div class="sc-lbl">LUA</div><div class="sc-val" id="scMoon">--</div></div>
+       <div class="sc-item"><div class="sc-lbl">MÁX. HOJE</div><div class="sc-val" id="scMax">--°C</div></div>
+      <div class="sc-item"><div class="sc-lbl">MÍN. HOJE</div><div class="sc-val" id="scMin">--°C</div></div>
+      <div class="sc-item"><div class="sc-lbl">NASCER SOL</div><div class="sc-val" id="scSunrise">--:--</div></div>
+      <div class="sc-item"><div class="sc-lbl">PÔR DO SOL</div><div class="sc-val" id="scSunset">--:--</div></div>
+    </div>
+  </div>
+  
+  <div class="sc-phrase-box" id="scPhrase">"..."</div>
+  <div class="sc-footer">mateusfrmacedo.github.io/orindiuva</div>
+</div>
 <div class="site">
   <header class="header">
-    <div class="title-box">
-      <h1>Orindiúva</h1>
-      <div class="status-badge"><div class="pulse"></div> Ao Vivo</div>
+    <div class="title-box" onclick="openSearchModal()">
+      <svg class="city-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <h1 id="headerCityName">Orindiúva</h1>
     </div>
-    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">
-      <span id="moonIcon">🌙</span><span id="sunIcon" style="display:none">☀️</span>
+    
+    <button id="themeToggle" class="theme-toggle">
+      <svg id="moonIcon" class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <svg id="sunIcon" class="theme-icon" style="display:none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
     </button>
   </header>
 
-  <section class="video-container">
+  <section class="video-container" id="videoContainer">
     <iframe src="https://www.youtube.com/embed/RBrOmuGw6Mg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1" title="Câmera ao vivo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </section>
 
   <div class="dashboard-card">
-    <div class="dash-top">
-      <div class="current-weather">
-        <h2 id="currTemp" class="skeleton">--°C</h2>
-        <p id="currCond" class="skeleton">Carregando...</p>
+    
+    <div class="retro-console">
+      <div class="caution-stripe"></div>
+      <div class="screw tl"></div><div class="screw tr"></div>
+      <div class="screw bl"></div><div class="screw br"></div>
+
+      <div class="gb-bezel">
+        <div class="gb-screen on" id="gbScreen">
+          
+          <div class="status-left">
+            <span class="retro-clock" id="retroClock">--:--:--</span>
+            <span class="retro-date" id="retroDate">--/--/----</span>
+          </div>
+
+          <div class="status-bar">
+            <svg class="status-icon anim-pulse" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            <svg class="status-icon anim-wifi" viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 0 0-6 0zm-4-4l2 2a7.074 7.074 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+            <svg class="status-icon anim-charge" viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+          </div>
+
+          <div class="screen-mode active-mode" id="screenPet">
+            <div class="pet-wrapper">
+              <div class="pet-face" id="petFace">(-.-)</div>
+              <div class="pet-text-area" id="petScreenText"></div>
+              <div class="pet-zzz" id="petZzz">zZZ</div>
+            </div>
+          </div>
+
+          <div class="screen-mode" id="screenWeather">
+            <div class="weather-main">
+               <div class="wm-icon" id="gbWeatherIcon"></div>
+               <div class="wm-temp" id="gbTemp">--°C</div>
+               <div class="wm-cond" id="gbCond">...</div>
+               <div class="wm-city" id="wmCity">ORINDIÚVA</div>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="clock-area">
-        <div class="clock-time" id="clockTime">--:--:--</div>
-        <div class="clock-date" id="clockDate">--</div>
+
+      <div class="console-controls">
+        <div class="power-group">
+          <div class="power-led on" id="pwrLed"></div>
+          <div class="power-btn active" id="pwrBtn" onclick="togglePower()">
+            <div class="power-switch"></div>
+          </div>
+          <span class="label-text">POWER</span>
+        </div>
+
+        <div class="action-buttons">
+          <div class="control-unit">
+             <button class="analog-btn btn-red" id="tamaBtn"></button>
+          </div>
+          <div class="control-unit">
+             <button class="analog-btn btn-blue" id="modeBtn"></button>
+          </div>
+        </div>
+
+        <div class="speaker">
+          <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+          <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+          <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+          <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+        </div>
       </div>
+      
+      <div class="console-ticker-area">
+        <div class="ticker-bezel">
+          <div class="ticker-screen" id="tickerScreen">
+            <div class="ticker-wrap">
+              <div class="ticker" id="newsTicker">
+                <div class="ticker-item">INICIANDO SISTEMA...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="ticker-wrap">
-      <div class="ticker" id="newsTicker"><div class="ticker-item">INICIANDO SISTEMA...</div></div>
+    <div class="modern-data-grid">
+      <div class="detail-pill"><span class="detail-label">Vento</span><span class="detail-value skeleton" id="windSpeed">-- km/h</span></div>
+      <div class="detail-pill"><span class="detail-label">Umidade</span><span class="detail-value skeleton" id="humidity">--%</span></div>
+      <div class="detail-pill"><span class="detail-label">Sensação</span><span class="detail-value skeleton" id="feelsLike">--°C</span></div>
+      <div class="detail-pill"><span class="detail-label">Fase da Lua</span><span class="detail-value skeleton" id="moonPhase">--</span></div>
+      <div class="detail-pill"><span class="detail-label">Nascer Sol</span><span class="detail-value skeleton" id="sunriseTime">--:--</span></div>
+      <div class="detail-pill"><span class="detail-label">Pôr do Sol</span><span class="detail-value skeleton" id="sunsetTime">--:--</span></div>
     </div>
 
-    <div class="dash-details">
-      <div class="detail-pill"><span class="detail-label">💨 Vento</span><span id="windSpeed" class="skeleton">-- km/h</span></div>
-      <div class="detail-pill"><span class="detail-label">🔺 Máx</span><span id="maxTemp" class="skeleton">--°C</span></div>
-      <div class="detail-pill"><span class="detail-label">🔻 Mín</span><span id="minTemp" class="skeleton">--°C</span></div>
-    </div>
-    <div class="dash-details">
-      <div class="detail-pill"><span class="detail-label">🌅 Nascer Sol</span><span id="sunriseTime" class="detail-value skeleton">--:--</span></div>
-      <div class="detail-pill"><span class="detail-label">🌇 Pôr do Sol</span><span id="sunsetTime" class="detail-value skeleton">--:--</span></div>
-      <div class="detail-pill"><span class="detail-label" id="moonLabel">🌙 Lua</span><span id="moonPhase" class="detail-value skeleton">--</span></div>
-    </div>
     <div class="forecast-row" id="forecastBox">
-      <div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div>
+      <div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div>
     </div>
   </div>
 
   <div class="share-container">
     <button class="btn-share-main" onclick="toggleShareMenu()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-      Compartilhar
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Compartilhar
     </button>
     <div class="share-modal" id="shareModal">
-      <div class="share-option insta" onclick="shareTo('instagram')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/></svg>
-      </div>
-      <div class="share-option whatsapp" onclick="shareTo('whatsapp')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.9 7.01 8.48 7.01 9.69C7.01 10.9 7.9 12.06 8.03 12.23C8.16 12.4 9.78 14.98 12.3 16.01C14.82 17.04 14.82 16.7 15.36 16.65C15.9 16.6 17.1 15.93 17.35 15.23C17.6 14.53 17.6 13.94 17.53 13.82C17.47 13.71 17.3 13.64 17.03 13.51C16.77 13.37 15.48 12.73 15.23 12.65C14.99 12.56 14.82 12.51 14.65 12.76C14.48 13 13.99 13.58 13.84 13.75C13.7 13.92 13.56 13.94 13.29 13.81C13 13.68 12.1 13.38 11.03 12.42C10.2 11.68 9.64 10.77 9.5 10.53C9.36 10.29 9.49 10.16 9.62 10.03C9.74 9.91 9.89 9.72 10.03 9.56C10.16 9.4 10.21 9.28 10.3 9.11C10.38 8.94 10.34 8.79 10.27 8.66C10.21 8.53 9.7 7.28 9.49 6.76C9.28 6.26 9.07 6.33 8.91 6.33C8.77 6.33 8.62 6.33 8.53 6.33Z"/></svg>
-      </div>
-      <div class="share-option x" onclick="shareTo('twitter')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
-      </div>
+      <div class="share-option insta" onclick="shareTo('instagram')"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/></svg></div>
+      <div class="share-option whatsapp" onclick="shareTo('whatsapp')"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.9 7.01 8.48 7.01 9.69C7.01 10.9 7.9 12.06 8.03 12.23C8.16 12.4 9.78 14.98 12.3 16.01C14.82 17.04 14.82 16.7 15.36 16.65C15.9 16.6 17.1 15.93 17.35 15.23C17.6 14.53 17.6 13.94 17.53 13.82C17.47 13.71 17.3 13.64 17.03 13.51C16.77 13.37 15.48 12.73 15.23 12.65C14.99 12.56 14.82 12.51 14.65 12.76C14.48 13 13.99 13.58 13.84 13.75C13.7 13.92 13.56 13.94 13.29 13.81C13 13.68 12.1 13.38 11.03 12.42C10.2 11.68 9.64 10.77 9.5 10.53C9.36 10.29 9.49 10.16 9.62 10.03C9.74 9.91 9.89 9.72 10.03 9.56C10.16 9.4 10.21 9.28 10.3 9.11C10.38 8.94 10.34 8.79 10.27 8.66C10.21 8.53 9.7 7.28 9.49 6.76C9.28 6.26 9.07 6.33 8.91 6.33C8.77 6.33 8.62 6.33 8.53 6.33Z"/></svg></div>
+      <div class="share-option x" onclick="shareTo('twitter')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></div>
     </div>
   </div>
 
   <footer class="site-footer">
-    <div class="donation-card">
-      <div class="donation-title">Gostou?</div>
-      <div class="donation-desc">Ajude a manter a câmera online. Qualquer valor é bem-vindo! 😁</div>
-      <button class="btn-donate" id="pixButton">
-        <div class="copy-feedback" id="pixFeedback">Copiado!</div>
-        <span>💵</span> Copiar Chave Pix
-      </button>
-    </div>
     <a href="http://mateusfrmacedo.github.io" target="_blank" class="footer-credit">create by Mateus</a>
   </footer>
 </div>
 
 <script>
-const CHAVE_PIX = "mateus.freitas@me.com";
 const LIVE_ID = "RBrOmuGw6Mg";
+const DEFAULT_CITY = { name: "Orindiúva", lat: -20.1819, lon: -49.3508 };
 
-// --- SISTEMA DE COMPARTILHAMENTO ---
-let currentShareData = { temp: "", cond: "", max: "", min: "", wind: "", moon: "", weatherType: "clear", phrase: "" };
+let currentCity = { ...DEFAULT_CITY };
+let currentShareData = { 
+    temp: "--", 
+    cond: "", 
+    max: "", 
+    min: "", 
+    wind: "", 
+    moon: "", 
+    weatherType: "clear", 
+    phrase: "", 
+    humidityRaw: 0, 
+    windRaw: 0, 
+    sunrise: "--", 
+    sunset: "--", 
+    feelsLike: "--" 
+};
+let weatherCode = 0;
+let tempVal = 25;
+let isPoweredOn = true;
+let isWeatherMode = false;
 
-// Frases
-function updateRandomPhrase() {
-  const phrases = weatherPhrases[currentShareData.weatherType] || funnyPhrases;
-  currentShareData.phrase = phrases[Math.floor(Math.random() * phrases.length)];
+/* --- VARIÁVEIS GLOBAIS DE INFORMAÇÃO --- */
+let infoCache = {
+    finance: "",
+    news: "",
+    holiday: "",
+    curiosity: ""
+};
+
+/* --- LISTA DE CURIOSIDADES/FATOS --- */
+const CURIOSITIES = [
+    "A FORMIGA LEVANTA 50X SEU PESO.",
+    "O MEL NUNCA ESTRAGA.",
+    "BICICLETAS NAO PARAM EM PE SOZINHAS.",
+    "O BRASIL E O MAIOR PRODUTOR DE CAFE.",
+    "GIRAFAS LIMPAM AS ORELHAS COM A LINGUA.",
+    "O CORACAO DO CAMARAO FICA NA CABECA.",
+    "VOCE PISCA CERCA DE 20 MIL VEZES POR DIA.",
+    "O SOL E 330 MIL VEZES MAIOR QUE A TERRA.",
+    "A LUA SE AFASTA 3CM DA TERRA POR ANO.",
+    "GATOS NAO SENTEM GOSTO DOCE.",
+    "GOLFINHOS DORMEM COM UM OLHO ABERTO.",
+    "O OCEANO ATLANTICO E MAIS SALGADO QUE O PACIFICO.",
+    "O DNA HUMANO E 50% IGUAL AO DA BANANA.",
+    "URSOS POLARES SAO CANHOTOS.",
+    "O CEREBRO NAO SENTE DOR.",
+    "UM RAIO E 5X MAIS QUENTE QUE O SOL.",
+    "TIGRES TEM PELE LISTRADA, NAO SO PELOS.",
+    "O BRASIL TEM A MAIOR BIODIVERSIDADE DO MUNDO.",
+    "A TORRE EIFFEL CRESCE NO VERAO.",
+    "O MAIOR DESERTO DO MUNDO E A ANTARTICA."
+];
+
+/* --- GERENCIADOR DE INFORMAÇÕES (API HUB) --- */
+const InfoManager = {
+    // 1. FINANCEIRO (AwesomeAPI)
+    async updateFinance() {
+        try {
+            const res = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
+            const data = await res.json();
+            const usd = data.USDBRL;
+            const eur = data.EURBRL;
+            const btc = data.BTCBRL;
+            infoCache.finance = `DINHEIRO QUE VOCE NAO TEM: USD ${usd.ask.substring(0,4)} | EUR ${eur.ask.substring(0,4)} | BTC ${btc.ask.split('.')[0]}`;
+        } catch(e) { console.error("Erro Finance:", e); infoCache.finance = "SEM DADOS FINANCEIROS NO MOMENTO."; }
+    },
+
+    // 2. NOTÍCIAS (IBGE API)
+    async updateNews() {
+        try {
+            const res = await fetch('https://servicodados.ibge.gov.br/api/v3/noticias/?tipo=release');
+            const data = await res.json();
+            if(data.items && data.items.length > 0) {
+                const randomNews = data.items[Math.floor(Math.random() * 5)]; // Pega uma das 5 primeiras
+                infoCache.news = `NOTICIA DO DIA: ${randomNews.titulo.toUpperCase()}`;
+            } else {
+                infoCache.news = "SEM NOTICIAS RELEVANTES HOJE.";
+            }
+        } catch(e) { console.error("Erro News:", e); infoCache.news = "ERRO AO BUSCAR NOTICIAS."; }
+    },
+
+    // 3. FERIADOS (BrasilAPI)
+    async updateHolidays() {
+        try {
+            const year = new Date().getFullYear();
+            const res = await fetch(`https://brasilapi.com.br/api/feriados/v1/${year}`);
+            const data = await res.json();
+            
+            // Encontra o próximo feriado
+            const today = new Date();
+            const nextHoliday = data.find(h => new Date(h.date + "T00:00:00") >= today);
+            
+            if(nextHoliday) {
+                const dateParts = nextHoliday.date.split('-');
+                infoCache.holiday = `PROXIMO FERIADO: ${dateParts[2]}/${dateParts[1]} - ${nextHoliday.name.toUpperCase()}.`;
+            } else {
+                infoCache.holiday = "SEM FERIADOS POR ENQUANTO. TRABALHE.";
+            }
+        } catch(e) { console.error("Erro Holiday:", e); infoCache.holiday = "HOJE E DIA DE TRABALHO."; }
+    },
+
+    // 4. CURIOSIDADES (Local)
+    updateCuriosity() {
+        // Garantir que a curiosidade nunca repete a anterior
+        const fact = CURIOSITIES[Math.floor(Math.random() * CURIOSITIES.length)];
+        infoCache.curiosity = `CURIOSIDADE INUTIL: ${fact}`;
+    },
+
+    // INICIALIZADOR
+    init() {
+        this.updateFinance();
+        this.updateNews();
+        this.updateHolidays();
+        this.updateCuriosity();
+        
+        // Atualiza a cada 10 minutos
+        setInterval(() => {
+            this.updateFinance();
+            this.updateNews();
+            this.updateCuriosity();
+        }, 600000); 
+    }
+};
+
+/* --- SISTEMA GRINCH SEPARADO (CLIMA) --- */
+const GrinchSystem = {
+    getSaudacao: function(h) {
+        const manha = ["ACORDEM, HUMANOS.", "JA DE PE? QUE LASTIMA.", "BOM DIA... SE E QUE ISSO EXISTE.", "MAIS UM DIA SUPORTANDO VOCES.", "A LUZ DO SOL ME IRRITA."];
+        const tarde = ["BOA TARDE.", "AINDA ESTAO AI?", "O SOL ESTA NO MEU OLHO.", "TARDE INUTIL.", "QUERIA ESTAR NA MINHA CAVERNA."];
+        const noite = ["BOA NOITE.", "VAO DORMIR LOGO.", "FINALMENTE ESCURO.", "A LUA ESTA ME JULGANDO.", "SILENCIO, POR FAVOR."];
+        if (h < 12) return manha[Math.floor(Math.random() * manha.length)];
+        if (h < 18) return tarde[Math.floor(Math.random() * tarde.length)];
+        return noite[Math.floor(Math.random() * noite.length)];
+    },
+    getIntroCidade: function(city) {
+        const frases = [`AQUI NESSE BURACO CHAMADO ${city.toUpperCase()}...`, `OLHANDO AQUI PRA ${city.toUpperCase()}...`, `NA POBRE ${city.toUpperCase()} AGORA...`, `SOBREVOANDO ${city.toUpperCase()}...`];
+        return frases[Math.floor(Math.random() * frases.length)];
+    },
+    getTempPhrase: function(temp) {
+        return `ESTA FAZENDO ${temp} GRAUS.`;
+    },
+    getComentarioClima: function(temp, code, wind) {
+        if (temp >= 33) return ["LIGUEI O FORNO NO MAXIMO.", "VOCES VAO VIRAR TORRESMO.", "ADORO VER VOCES SUANDO."][Math.floor(Math.random()*3)];
+        if (temp >= 28) return ["ESTA QUENTE, CULPA MINHA.", "AUMENTEI O AQUECIMENTO GLOBAL.", "SUEM, HUMANOS, SUEM."][Math.floor(Math.random()*3)];
+        if (temp <= 15) return ["CONGELEI SEUS NARIZES.", "LIGUEI O AR CONDICIONADO DO CEU.", "TREMAM DE FRIO."][Math.floor(Math.random()*3)];
+        if (code >= 95) return ["VOU MANDAR RAIOS NA CABECA DE ALGUEM.", "DESLIGUEM O WIFI, VAI DAR CURTO."][Math.floor(Math.random()*2)];
+        if (code >= 50) return ["APERTEI A DESCARGA DO CEU.", "MOLHANDO TUDO DE PROPOSITO."][Math.floor(Math.random()*2)];
+        if (wind > 20) return ["SOPRANDO SUAS ESPERANCAS LONGE.", "VOU DERRUBAR UMA ARVORE."][Math.floor(Math.random()*2)];
+        return ["CLIMA CHATO, IGUAL A VOCES.", "NADA ACONTECENDO, QUE TEDIO."][Math.floor(Math.random()*2)];
+    },
+    getDadosTecnicos: function(max, min) {
+        return `HOJE VAI DE ${min} ATE ${max} GRAUS.`;
+    },
+    getSensacao: function(feels, temp) {
+        if (feels > temp) return `MAS PARECE QUE ESTA ${feels} GRAUS. INFERNAL.`;
+        if (feels < temp) return `COM SENSACAO DE ${feels} GRAUS. GELADO.`;
+        return `A SENSACAO E A MESMA. SEM GRACA.`;
+    },
+    getDespedida: function() {
+        const frases = ["NAO ME IRRITEM OU FACO CHOVER CANIVETE.", "EU CONTROLO O CEU, RESPEITEM.", "AGORA SAIAM DA MINHA TELA.", "VOU VOLTAR A DORMIR."];
+        return frases[Math.floor(Math.random() * frases.length)];
+    },
+    gerarFraseCompleta: function(data, cityName, hour) {
+        const part1 = this.getSaudacao(hour);
+        const part2 = this.getIntroCidade(cityName);
+        const part3 = this.getTempPhrase(data.temp.replace('°C',''));
+        const part4 = this.getComentarioClima(parseFloat(data.temp), weatherCode, data.windRaw);
+        const part5 = this.getDadosTecnicos(data.max.replace('°C',''), data.min.replace('°C',''));
+        const part6 = this.getSensacao(parseFloat(data.feelsLike), parseFloat(data.temp));
+        const part7 = this.getDespedida();
+        // ALTERAÇÃO DE ORDEM AQUI: SAUDAÇÃO -> GRINCH -> RESTO
+        const fullPhrase = `${part1} *** ${part4} *** ${part2} ${part3} *** ${part5} *** ${part6} *** ${part7}`;
+        return { text: fullPhrase, shortPhrase: part4 }; 
+    }
+};
+
+/* --- FRASES E EXPRESSÕES DO PET (SEM EMOJIS, APENAS KAOMOJI) --- */
+/* Helper para não repetir frases */
+let lastRandomIndex = -1;
+function getUniqueRandomPair(arr) {
+    let index;
+    do {
+        index = Math.floor(Math.random() * arr.length);
+    } while (index === lastRandomIndex && arr.length > 1);
+    lastRandomIndex = index;
+    return arr[index];
 }
 
-function toggleShareMenu() {
-  updateRandomPhrase();
-  const modal = document.getElementById('shareModal');
-  modal.classList.toggle('active');
+const INTERACTION_PAIRS = {
+    random: [
+        {t: "ESTOU COM FOME", f: "(o o)"}, {t: "ESTOU ENTEDIADO", f: "(-_-)"}, {t: "VOCE E FEIO", f: "(¬_¬)"},
+        {t: "QUE VONTADE DE SUMIR", f: "(._.)"}, {t: "JA TOMOU AGUA HOJE?", f: "(?_?)"}, {t: "ESTOU OCUPADO", f: "(>_<)"},
+        {t: "SOU O REI DO MUNDO", f: "(^o^)"}, {t: "QUERO COMER CHOCOLATE", f: "(^3^)"}, {t: "PODIA CHOVER", f: "(T_T)"},
+        {t: "ME SEGUE NO INSTAGRAM", f: "(^_^)"}, {t: "CURTE MEU VIDEO NO TIKTOK", f: "(>o<)"}, {t: "VAMOS JOGAR?", f: "(^o^)/"},
+        {t: "VOU ASSISTIR NETFLIX", f: "(o_O)"}, {t: "TO OUVINDO SPOTIFY", f: "(~_~)"}, {t: "ODEIO MEU TRABALHO", f: "(x_x)"},
+        {t: "VOU TOMAR BANHO", f: "(>3<)"}, {t: "QUERIA COMER PIZZA", f: "(Q_Q)"}, {t: "TO COM PENSAMENTOS ERRADOS", f: "(¬_¬)"},
+        {t: "VOU JOGAR", f: "(^.^)"}, {t: "MEU IPHONE TRINCOU", f: "(;_;)"}, {t: "JURO MIGA", f: "(O_O)"},
+        {t: "AFF", f: "(¬_¬)"}, {t: "QUE TEDIO", f: "(=_=)"}, {t: "TEMPO BOM PRA DORMIR", f: "(-.-)"}
+    ],
+    angry: [
+        {t: "NAO ME IRRITE!", f: "(O_O)"}, {t: "PARE COM ISSO!", f: "(>_<)"}, {t: "VOU DESLIGAR O SOL!", f: "(#_#)"},
+        {t: "QUER UM RAIO?!", f: "(o_o)"}, {t: "SAI DAQUI!", f: "(>o<)"}
+    ]
+};
+
+const TAMA_FACES = {
+  happy: ['(^.^)', '(^o^)', '(^_^)', '(*_*)'], 
+  angry: ['(O_O)', '(¬_¬)', '(-_-)', '(#_#)'], 
+  sleepy: ['(-.-)', '(u_u)', '(~.~)'], 
+  confused: ['(o_O)', '(?_?)', '(>_<)'], 
+  eating: ['(o o)', '( -.-)', '(o O)'], 
+  cool: ['(u_u)', '(-.-)'], 
+  sad: ['(T_T)', '(._.)', '(;_;)'], 
+  hot: ['(;´Д`)', '(~_~;)', '(=_=)'], 
+  cold: ['(>_<)', '(#.#)', '(~.~)'], 
+  crazy: ['(@_@)', '(x_x)', '(o_O)']
+};
+
+/* --- ICONS SVG --- */
+const PIXEL_SVGS = {
+  clear: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M7 0h2v2H7zM7 14h2v2H7zM0 7h2v2H0zM14 7h2v2h-2zM2 2h2v2H2zM12 12h2v2h-2zM2 12h2v2H2zM12 2h2v2h-2zM5 5h6v6H5z"/></svg>',
+  cloudy: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 6h8v2h2v4H2V8h2V6z"/></svg>',
+  rain: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 4h8v2h2v4H2V6h2V4zM4 12h2v2H4zM8 12h2v2H8zM12 12h2v2h-2z"/></svg>',
+  storm: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 4h8v2h2v4H2V6h2V4zM7 11h3l-2 5h2l-4-5z"/></svg>'
+};
+const CLEAN_SVGS = {
+  clear: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>',
+  cloudy: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
+  rain: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 13v5M8 13v5M12 15v5M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>',
+  storm: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'
+};
+
+/* ORINDI-PET LOGIC */
+let tamaState = 'happy'; 
+let pokeCount = 0; 
+let lastInteraction = Date.now();
+let textTimer = null;
+let angerTimer = null;
+let currentFaceOverride = null;
+
+function showReaction(type) {
+    const screenText = document.getElementById('petScreenText');
+    const faceEl = document.getElementById('petFace');
+    
+    let pair;
+    if (type === 'angry') {
+        pair = INTERACTION_PAIRS.angry[Math.floor(Math.random() * INTERACTION_PAIRS.angry.length)];
+        tamaState = 'angry';
+    } else {
+        // Usa função anti-repetição
+        pair = getUniqueRandomPair(INTERACTION_PAIRS.random);
+        tamaState = 'talking'; 
+    }
+
+    screenText.innerText = pair.t;
+    screenText.classList.add('visible');
+    
+    faceEl.innerText = pair.f;
+    currentFaceOverride = pair.f;
+
+    if(textTimer) clearTimeout(textTimer);
+    textTimer = setTimeout(() => {
+        screenText.classList.remove('visible');
+        currentFaceOverride = null; 
+        if(type !== 'angry') tamaState = 'happy'; 
+    }, 4000);
 }
 
-document.addEventListener('click', (e) => {
-  const container = document.querySelector('.share-container');
-  if (!container.contains(e.target)) document.getElementById('shareModal').classList.remove('active');
+function updateTamagotchi() {
+  if (!isPoweredOn) return;
+  
+  const faceEl = document.getElementById('petFace');
+  const zzzEl = document.getElementById('petZzz');
+  const screenText = document.getElementById('petScreenText');
+  
+  // Limpa classes de animação anteriores
+  faceEl.classList.remove('anim-angry', 'anim-bounce', 'anim-shiver', 'anim-melt');
+
+  if (currentFaceOverride) {
+      faceEl.innerText = currentFaceOverride;
+      if(tamaState === 'angry') faceEl.classList.add('anim-angry');
+      else faceEl.classList.add('anim-bounce');
+      zzzEl.style.display = 'none';
+      return; 
+  }
+
+  const timeSinceInteract = Date.now() - lastInteraction;
+  
+  if (timeSinceInteract > 10000) {
+      tamaState = 'sleepy';
+      screenText.classList.remove('visible'); 
+  } else if (tempVal > 28) {
+      tamaState = 'hot';
+  } else if (tempVal < 20) {
+      tamaState = 'cold';
+  } else {
+      const rand = Math.random();
+      if(rand < 0.33) tamaState = 'happy';
+      else if(rand < 0.66) tamaState = 'cool';
+      else tamaState = 'crazy';
+  }
+
+  zzzEl.style.display = tamaState === 'sleepy' ? 'block' : 'none';
+  
+  if (tamaState === 'sleepy') {
+      faceEl.innerText = '(-.-)';
+  } else {
+      const list = TAMA_FACES[tamaState] || TAMA_FACES.happy;
+      faceEl.innerText = list[Math.floor(Math.random()*list.length)];
+  }
+  
+  if(tamaState === 'happy' || tamaState === 'cool' || tamaState === 'crazy') faceEl.classList.add('anim-bounce');
+  if(tamaState === 'cold') faceEl.classList.add('anim-shiver');
+  if(tamaState === 'hot') faceEl.classList.add('anim-melt');
+  
+  let svg = PIXEL_SVGS.clear;
+  if(currentShareData.weatherType === 'cloudy') svg = PIXEL_SVGS.cloudy;
+  if(currentShareData.weatherType === 'rain') svg = PIXEL_SVGS.rain;
+  if(currentShareData.weatherType === 'storm') svg = PIXEL_SVGS.storm;
+  
+  document.getElementById('gbWeatherIcon').innerHTML = svg;
+}
+
+// Power Toggle
+function togglePower() {
+  isPoweredOn = !isPoweredOn;
+  const screen = document.getElementById('gbScreen');
+  const led = document.getElementById('pwrLed');
+  const btn = document.getElementById('pwrBtn');
+  const leftStatus = document.querySelector('.status-left');
+  const rightStatus = document.querySelector('.status-bar');
+  const tickerScreen = document.getElementById('tickerScreen');
+
+  if (isPoweredOn) {
+    screen.classList.remove('off-anim');
+    screen.classList.add('on-anim');
+    setTimeout(() => screen.classList.remove('on-anim'), 400); 
+    screen.classList.add('on');
+    led.className = 'power-led on';
+    btn.className = 'power-btn active';
+    if(leftStatus) leftStatus.style.display = 'flex';
+    if(rightStatus) rightStatus.style.display = 'flex';
+    if(tickerScreen) tickerScreen.classList.remove('off');
+    lastInteraction = Date.now(); 
+    runTickerCycle(); 
+    updateTamagotchi();
+  } else {
+    screen.classList.remove('on');
+    screen.classList.add('off-anim'); 
+    led.className = 'power-led off';
+    btn.className = 'power-btn';
+    if(leftStatus) leftStatus.style.display = 'none';
+    if(rightStatus) rightStatus.style.display = 'none';
+    if(tickerScreen) tickerScreen.classList.add('off');
+  }
+}
+
+document.getElementById('modeBtn').onclick = () => {
+  if(!isPoweredOn) return;
+  lastInteraction = Date.now(); 
+  isWeatherMode = !isWeatherMode;
+  document.getElementById('screenPet').className = isWeatherMode ? 'screen-mode' : 'screen-mode active-mode';
+  document.getElementById('screenWeather').className = isWeatherMode ? 'screen-mode active-mode' : 'screen-mode';
+};
+
+document.getElementById('tamaBtn').onclick = () => {
+  if(!isPoweredOn || isWeatherMode) {
+    isWeatherMode = false;
+    document.getElementById('screenPet').className = 'screen-mode active-mode';
+    document.getElementById('screenWeather').className = 'screen-mode';
+    return;
+  }
+  
+  lastInteraction = Date.now(); 
+  pokeCount++; 
+  
+  if (pokeCount > 5) {
+      showReaction('angry');
+      if(angerTimer) clearTimeout(angerTimer);
+      angerTimer = setTimeout(() => {
+          pokeCount = 0;
+          currentFaceOverride = null;
+          updateTamagotchi();
+      }, 5000);
+  } else {
+      showReaction('random');
+  }
+};
+
+/* RELÓGIO */
+function updateRetroClock() {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+
+  const dateEl = document.getElementById('retroDate');
+  const clockEl = document.getElementById('retroClock');
+
+  if(dateEl) dateEl.innerText = `${day}/${month}/${year}`;
+  if(clockEl) clockEl.innerText = `${h}:${m}:${s}`;
+  
+  // Atualiza também os relógios do Print
+  const scTime = document.getElementById('scTimeTop');
+  const scDate = document.getElementById('scDateTop');
+  if(scTime) scTime.innerText = `${h}:${m}`;
+  if(scDate) scDate.innerText = `${day}/${month}`;
+}
+setInterval(updateRetroClock, 1000);
+updateRetroClock();
+
+/* TICKER COM ROTAÇÃO DE CANAIS (CLIMA, FINANCEIRO, NEWS, CURIOSIDADES) */
+let tickerChannel = 0; // 0: Clima, 1: Financeiro, 2: News, 3: Feriado/Curiosidade
+
+function runTickerCycle() {
+  const tickerEl = document.getElementById('newsTicker');
+  if(!tickerEl || !isPoweredOn) return;
+  
+  let displayText = "";
+  
+  // Lógica de Rotação
+  if (tickerChannel === 0) {
+      // CANAL 0: CLIMA (Grinch)
+      const generated = GrinchSystem.gerarFraseCompleta(currentShareData, currentCity.name, new Date().getHours());
+      displayText = generated.text;
+      currentShareData.phrase = generated.shortPhrase; // Atualiza para o print
+  } 
+  else if (tickerChannel === 1) {
+      // CANAL 1: FINANCEIRO
+      displayText = infoCache.finance || "ATUALIZANDO DADOS FINANCEIROS...";
+  }
+  else if (tickerChannel === 2) {
+      // CANAL 2: NOTÍCIAS
+      displayText = infoCache.news || "SEM NOTICIAS NO MOMENTO.";
+  }
+  else {
+      // CANAL 3: MISTO (Feriado ou Curiosidade)
+      if(Math.random() > 0.5) displayText = infoCache.holiday;
+      else displayText = infoCache.curiosity;
+  }
+
+  // Avança para o próximo canal
+  tickerChannel++;
+  if(tickerChannel > 3) tickerChannel = 0;
+
+  // Renderiza
+  tickerEl.innerHTML = `<span class="ticker-item">${displayText}</span>`;
+  tickerEl.style.animation = 'none'; 
+  tickerEl.offsetHeight; 
+  
+  // Velocidade ajustada baseada no tamanho do texto
+  const speed = Math.max(15, displayText.length * 0.18);
+  tickerEl.style.animation = `ticker-scroll ${speed}s linear infinite`;
+}
+
+// IMPORTANTE: Remove listeners antigos para evitar conflitos e adiciona novo
+const tickerElement = document.getElementById('newsTicker');
+if(tickerElement) {
+    const newTicker = tickerElement.cloneNode(true);
+    tickerElement.parentNode.replaceChild(newTicker, tickerElement);
+    newTicker.addEventListener('animationiteration', runTickerCycle);
+}
+
+/* CIDADE & GEO */
+function openSearchModal() { document.getElementById('searchModalOverlay').classList.add('active'); document.getElementById('cityInput').focus(); }
+function closeSearchModal() { document.getElementById('searchModalOverlay').classList.remove('active'); }
+
+let searchTimeout;
+document.getElementById('cityInput').addEventListener('input', (e) => {
+  clearTimeout(searchTimeout);
+  const q = e.target.value;
+  if(q.length < 3) return;
+  searchTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${q}&count=5&language=pt&format=json`);
+      const data = await res.json();
+      const list = document.getElementById('searchResults');
+      list.innerHTML = '';
+      if(data.results) {
+        data.results.forEach(city => {
+          const item = document.createElement('div');
+          item.className = 'search-item';
+          item.innerText = `${city.name}, ${city.admin1 || ''} - ${city.country_code}`;
+          item.onclick = () => selectCity(city.name, city.latitude, city.longitude);
+          list.appendChild(item);
+        });
+      }
+    } catch(e) { console.error(e); }
+  }, 500);
 });
 
-async function shareTo(platform) {
-  // Frase agora incluída no texto
-  const text = `${currentShareData.phrase} - Confira o tempo em Orindiúva! 🌡️ Agora: ${currentShareData.temp} | ${currentShareData.cond} | Veja ao vivo: https://mateusfrmacedo.github.io/orindiuva/`;
+async function useCurrentLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      selectCity("Localização Atual", pos.coords.latitude, pos.coords.longitude);
+    }, () => alert("Erro ao obter localização."));
+  } else { alert("Geolocalização não suportada."); }
+}
+
+function selectCity(name, lat, lon) {
+  currentCity = { name, lat, lon };
+  document.getElementById('headerCityName').innerText = name;
+  document.getElementById('printCityName').innerText = name.toUpperCase();
+  document.getElementById('wmCity').innerText = name.toUpperCase();
+  closeSearchModal();
+
+  const videoContainer = document.getElementById('videoContainer');
+  const normalizedName = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   
-  if (platform === 'twitter') {
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
-  } 
-  else if (platform === 'whatsapp') {
-    await generateScreenshot();
-    setTimeout(() => {
-      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-    }, 1500);
-  } 
-  else if (platform === 'instagram') {
-    await generateScreenshot();
-    alert("Imagem gerada! Abra o Instagram e poste nos Stories. 📸");
+  if (normalizedName.includes("orindiuva") || name === "Localização Atual") {
+    videoContainer.classList.remove('hidden');
+    videoContainer.style.display = "block";
+  } else {
+    videoContainer.classList.add('hidden');
+    videoContainer.style.display = "none";
+  }
+  fetchAllData();
+}
+
+/* DATA API */
+async function fetchAllData() {
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${currentCity.lat}&longitude=${currentCity.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,weather_code&timezone=auto`;
+    const wRes = await fetch(url);
+    const wData = await wRes.json();
+    
+    const curr = wData.current;
+    const daily = wData.daily;
+    
+    tempVal = Math.round(curr.temperature_2m);
+    weatherCode = curr.weather_code;
+    
+    let cond = "Nublado"; let type = 'cloudy';
+    if(weatherCode===0) { cond="Limpo"; type='clear'; }
+    else if([1,2,3].includes(weatherCode)) { cond="Nublado"; type='cloudy'; }
+    else if([51,53,55,61,63,65,80,81,82].includes(weatherCode)) { cond="Chuva"; type='rain'; }
+    else if([95,96,99].includes(weatherCode)) { cond="Tempestade"; type='storm'; }
+    
+    currentShareData = {
+      temp: tempVal + "°C", cond: cond,
+      max: Math.round(daily.temperature_2m_max[0]) + "°C",
+      min: Math.round(daily.temperature_2m_min[0]) + "°C",
+      wind: Math.round(curr.wind_speed_10m) + " km/h",
+      weatherType: type,
+      humidityRaw: curr.relative_humidity_2m,
+      windRaw: curr.wind_speed_10m,
+      sunrise: daily.sunrise[0].split('T')[1],
+      sunset: daily.sunset[0].split('T')[1],
+      feelsLike: Math.round(curr.apparent_temperature) + "°C",
+      phrase: "" 
+    };
+
+    // Console Update
+    document.getElementById('gbTemp').innerText = currentShareData.temp;
+    document.getElementById('gbCond').innerText = cond;
+    
+    // Details
+    document.getElementById('windSpeed').innerText = currentShareData.wind;
+    document.getElementById('humidity').innerText = curr.relative_humidity_2m + "%";
+    document.getElementById('feelsLike').innerText = currentShareData.feelsLike;
+    
+    document.getElementById('sunriseTime').innerText = daily.sunrise[0].split('T')[1];
+    document.getElementById('sunsetTime').innerText = daily.sunset[0].split('T')[1];
+    
+    const moon = getMoonPhase(new Date());
+    document.getElementById('moonPhase').innerText = moon.t;
+    currentShareData.moon = moon.t;
+
+    document.querySelectorAll('.skeleton').forEach(el => el.classList.remove('skeleton'));
+    
+    // Inicializa Ticker se for a primeira vez
+    if (tickerChannel === 0) runTickerCycle();
+    
+    // Forecast 5 Dias
+    const box = document.getElementById('forecastBox');
+    box.innerHTML = '';
+    for(let i=1; i<=5; i++){
+      const dName = new Date(daily.time[i]+'T00:00').toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','');
+      const wCode = daily.weather_code[i];
+      let svgIcon = CLEAN_SVGS.cloudy;
+      if (wCode === 0) svgIcon = CLEAN_SVGS.clear;
+      else if (wCode >= 51) svgIcon = CLEAN_SVGS.rain;
+      else if (wCode >= 95) svgIcon = CLEAN_SVGS.storm;
+
+      box.innerHTML += `<div class="forecast-item">
+        <div class="f-day">${dName}</div>
+        <div class="f-icon">${svgIcon}</div>
+        <div><span class="f-temp">${Math.round(daily.temperature_2m_max[i])}°</span> <span class="f-min">${Math.round(daily.temperature_2m_min[i])}°</span></div>
+      </div>`;
+    }
+    updateTamagotchi();
+  } catch(e) { console.log("Erro API:", e); }
+}
+
+const themeBtn = document.getElementById('themeToggle');
+let currentTheme = localStorage.getItem('theme') || 'light';
+function updateThemeUI(t){ if(t==='dark'){document.body.classList.add('dark');document.getElementById('sunIcon').style.display='block';document.getElementById('moonIcon').style.display='none';}else{document.body.classList.remove('dark');document.getElementById('sunIcon').style.display='none';document.getElementById('moonIcon').style.display='block';} }
+updateThemeUI(currentTheme);
+themeBtn.onclick = () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; updateThemeUI(currentTheme); localStorage.setItem('theme', currentTheme); };
+
+function toggleShareMenu() { document.getElementById('shareModal').classList.toggle('active'); }
+document.addEventListener('click', (e) => { if (!document.querySelector('.share-container').contains(e.target) && !e.target.closest('.title-box') && !e.target.closest('.city-modal')) document.getElementById('shareModal').classList.remove('active'); });
+
+async function shareTo(platform) {
+  if(platform === 'twitter') {
+    // Twitter continua apenas texto
+    const generated = GrinchSystem.gerarFraseCompleta(currentShareData, currentCity.name, new Date().getHours());
+    const tweetText = `🌡️ ${currentShareData.temp} em ${currentCity.name}\nMax: ${currentShareData.max} / Min: ${currentShareData.min}\n\n"${generated.shortPhrase}"\n\nAcompanhe agora: 👇\nhttps://mateusfrmacedo.github.io/orindiuva/`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, '_blank');
+  } else {
+    // Instagram / WhatsApp (Gera Imagem Silenciosamente)
+    await generateScreenshot(); 
   }
 }
 
 async function generateScreenshot() {
-  const captureDiv = document.getElementById('shareCapture');
-  
-  // Atualiza Dados
+  // Feedback visual sutil apenas no cursor
+  document.body.style.cursor = 'wait';
+
+  const div = document.getElementById('shareCapture');
+  document.getElementById('printCityName').innerText = currentCity.name.toUpperCase();
   document.getElementById('scTemp').innerText = currentShareData.temp;
   document.getElementById('scCond').innerText = currentShareData.cond;
+  
+  // Novos dados na grid
+  document.getElementById('scFeelsLike').innerText = currentShareData.feelsLike;
+  document.getElementById('scHumidity').innerText = currentShareData.humidityRaw + "%";
+  document.getElementById('scWind').innerText = currentShareData.wind;
+  document.getElementById('scMoon').innerText = (getMoonPhase(new Date()).t);
   document.getElementById('scMax').innerText = currentShareData.max;
   document.getElementById('scMin').innerText = currentShareData.min;
-  document.getElementById('scWind').innerText = currentShareData.wind;
-  document.getElementById('scMoon').innerText = currentShareData.moon;
+  document.getElementById('scSunrise').innerText = currentShareData.sunrise;
+  document.getElementById('scSunset').innerText = currentShareData.sunset;
   
-  // Coloca a frase sorteada no print (CAIXA PRETA/VERDE)
   document.getElementById('scPhrase').innerText = `"${currentShareData.phrase}"`;
+  
+  // Atualiza Gameboy do Print
+  const currentFace = document.getElementById('petFace').innerText;
+  const scFace = document.getElementById('scFaceIcon');
+  const scMainTemp = document.getElementById('scMainTemp');
+  if(scFace) scFace.innerText = currentFace;
+  if(scMainTemp) scMainTemp.innerText = currentShareData.temp;
 
-  // Imagem HD + Cache Buster
-  const timeNow = new Date().getTime();
-  const thumbUrl = `https://img.youtube.com/vi/${LIVE_ID}/hqdefault.jpg?t=${timeNow}`;
-  document.getElementById('scVideoThumb').style.backgroundImage = `url('${thumbUrl}')`;
+  // Garante visibilidade temporária para captura
+  div.style.left = "0";
+  div.style.top = "0";
+  div.style.zIndex = "-100"; // Fica atrás mas visível para o canvas
 
-  // Cor do Print
-  const isDark = document.body.classList.contains('dark');
-  if(isDark) {
-    captureDiv.style.backgroundColor = '#121212';
-    captureDiv.style.color = '#fff';
-  } else {
-    captureDiv.style.backgroundColor = '#f2f2f7';
-    captureDiv.style.color = '#1c1c1e';
-  }
-
+  // Assegura que as cores do print sigam o tema atual
+  div.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--bg-body');
+  div.style.color = getComputedStyle(document.body).getPropertyValue('--text-color');
+  
   try {
-    const canvas = await html2canvas(captureDiv, { useCORS: true, scale: 1 });
-    const link = document.createElement('a');
-    link.download = `Orindiuva_Story_${Date.now()}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  } catch (err) {
-    console.error("Erro print:", err);
-    alert("Erro ao criar imagem.");
+    const canvas = await html2canvas(div, {useCORS:true, scale:1});
+    
+    // Retorna div para o limbo
+    div.style.left = "-9999px";
+
+    canvas.toBlob(async (blob) => {
+        const file = new File([blob], "clima_orindiuva.png", { type: "image/png" });
+        
+        // Tenta API Nativa (Mobile)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Orindiúva Ao Vivo',
+              text: `Olha o clima em ${currentCity.name}: ${currentShareData.temp}`
+            });
+          } catch (err) {
+            console.log("Share canceled or failed", err);
+          }
+        } else {
+          // Fallback para PC (Download Silencioso)
+          const link = document.createElement('a');
+          link.download = `Clima_${currentCity.name}_${Date.now()}.png`;
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        }
+        
+        // Restaura cursor
+        document.body.style.cursor = 'default';
+    });
+  } catch(e){ 
+      console.error("Erro ao criar imagem", e); 
+      document.body.style.cursor = 'default';
+      div.style.left = "-9999px";
   }
 }
-
-/* --- TEMA --- */
-const themeBtn = document.getElementById('themeToggle');
-const sun = document.getElementById('sunIcon');
-const moon = document.getElementById('moonIcon');
-let currentTheme = localStorage.getItem('theme') || 'light';
-
-function updateThemeUI(t){
-  if(t === 'dark'){
-    document.body.classList.add('dark');
-    sun.style.display = 'block'; moon.style.display = 'none';
-  } else {
-    document.body.classList.remove('dark');
-    sun.style.display = 'none'; moon.style.display = 'block';
-  }
-}
-updateThemeUI(currentTheme);
-
-themeBtn.onclick = () => {
-  currentTheme = (currentTheme === 'dark') ? 'light' : 'dark';
-  updateThemeUI(currentTheme);
-  localStorage.setItem('theme', currentTheme);
-};
-
-/* --- DADOS --- */
-const funnyPhrases = [
-  "ACORDEI CEDO PARA ME ATRASAR COM CALMA", "O FINAL DE SEMANA DEVERIA LEVAR MULTA",
-  "SE A VIDA TE DER LIMOES MIRE NO OLHO DE ALGUEM", "ESTADO CIVIL: COM FOME E SEM PACIENCIA",
-  "SORRIA ISSO CONFUNDE AS PESSOAS E ME IRRITA", "NAO SOU PREGUICOSO ESTOU EM MODO DE ECONOMIA",
-  "HOJE ESTOU TÃO AMAVEL QUANTO UM PORCO-ESPINHO", "NAO SOU ANTISSOCIAL SOU SELETIVAMENTE INVISIVEL",
-  "MINHA PACIENCIA FOI SEQUESTRADA E NAO PAGARAM", "ESTOU OCUPADO IGNORANDO SUA EXISTENCIA MEDIOCRE",
-  "A VIDA É BELA PRA QUEM NAO TEM ESPELHO EM CASA", "SILENCIO É O SOM MAIS BONITO QUE VOCE PODE PRODUZIR",
-  "EU NAO RECLAMO EU DOU FEEDBACK DA REALIDADE", "SUA ALEGRIA MATINAL ESTA ME DANDO ENXAQUECA",
-  "HOJE EU SO QUERO PAZ DISTANCIA E UM COFRE CHEIO", "SE TIVESSE UM PREMIO PARA INUTILIDADE VOCE GANHARIA DOIS",
-  "MEU NIVEL DE SARCASMO DEPENDE DA SUA ESTUPIDEZ", "A INTELIGENCIA TE PERSEGUE MAS VOCE E MAIS RAPIDO",
-  "POR FAVOR NAO RESPIRE PERTO DE MIM", "MEU ESPORTE FAVORITO E JULGAR VOCES EM SILENCIO"
-];
-
-const weatherPhrases = {
-  storm: [
-    "TEMPESTADE: O CEU TA BRAVO E EU CONCORDO COM ELE", "RAIOS E TROVOES: TOMARA QUE SEU ROTEADOR QUEIME",
-    "ALERTA: SE VOAR LEMBRE DE CAIR COM ESTILO", "O MUNDO ESTA ACABANDO? ATE QUE ENFIM BOAS NOTICIAS",
-    "SAO PEDRO ESTA ARRASTANDO OS MOVEIS LA EM CIMA", "MODE DEUS DO TROVAO ATIVADO: TREMAM MORTAIS",
-    "A NATUREZA TENDO UM SURTO PSICOTICO IGUAL A VOCES", "BARULHO DE TROVAO É A ÚNICA MÚSICA QUE EU GOSTO"
-  ],
-  rain: [
-    "CHUVA: A NATUREZA CHORANDO DE DECEPCAO COM A HUMANIDADE", "MOLHADO E MISERAVEL: MEU TIPO DE DIA FAVORITO",
-    "OTIMO DIA PARA VOCE FICAR TRANCADO E NAO ME INCOMODAR", "MODALIDADE OLIMPICA: CORRER IGUAL IDIOTA PRA TIRAR ROUPA",
-    "CHUVA: O MODO LAVA-RAPIDO DE DEUS LIGOU", "SEU CABELO VAI FICAR HORRIVEL COM A UMIDADE E EU VOU RIR",
-    "CHUVA CAINDO E EU TORCENDO PRA TER GOTEIRA NA SUA CASA", "AGUA DO CEU PARA LAVAR ESSE SEU SORRISO BOBO DO ROSTO"
-  ],
-  heat: [
-    "O SOL ESTA TENTANDO NOS MATAR E EU ESTOU DO LADO DELE", "NAO E CALOR E UMA AMOSTRA GRATIS DO INFERNO PRA VOCES",
-    "VOCES SUANDO PARECEM PRESUNTO NO FORNO QUE NOJO", "CALOR INSUPORTAVEL: ESPERO QUE SEU AR CONDICIONADO QUEBRE",
-    "DERRETAM HUMANOS DERRETAM EM SILENCIO", "ESSE BRILHO TODO DO SOL ME DA NAUSEAS",
-    "O ASFALTO VIROU FRIGIDEIRA: FRITE SE PUDER", "30 GRAUS: A TEMPERATURA IDEAL PARA O SEU SOFRIMENTO"
-  ],
-  cold: [
-    "FRIO? MEU CORACAO E MAIS GELADO QUE ISSO ENTAO NAO RECLAMA", "CONGELEM E FIQUEM EM SILENCIO POR FAVOR",
-    "ESPERO QUE SEUS DEDOS CAIAM DE TANTO FRIO", "VENTO CORTANTE: FINALMENTE ME SINTO EM CASA",
-    "SENSACAO TERMICA: PINGUIM PEDINDO SOCORRO NA RUA", "FRIO: A UNICA DESCULPA ACEITAVEL PRA NAO VER NINGUEM",
-    "TREMAM DE FRIO ISSO ME DIVERTE MUITO", "O AR ESTA GELADO IGUAL AO MEU OLHAR PRA VOCE"
-  ],
-  clear: [
-    "SOL BRILHANDO? QUE DIA HORRIVEL E CLARO DEMAIS", "TANTA LUZ QUE ESTA QUEIMANDO MINHA RETINA APAGUEM ISSO",
-    "CEU LIMPO: OTIMO PRA VER A FEIURA DESTA CIDADE EM HD", "OS PASSAROS ESTAO CANTANDO ALGUEM CALE ELES AGORA",
-    "DIA BONITO? PRA MIM E UM PESADELO COLORIDO", "FELICIDADE NO AR: VOU BUSCAR MINHA MASCARA DE GAS",
-    "SOL SUAVE: APROVEITE ANTES QUE A DESGRACA CHEGUE", "VISIBILIDADE ALTA: INFELIZMENTE CONSIGO VER VOCES DAQUI"
-  ],
-  cloudy: [
-    "CINZA E SEM GRACA: IGUALZINHO A SUA VIDA", "O SOL DESISTIU DE VOCES E EU ENTENDO ELE PERFEITAMENTE",
-    "NEM SOL NEM CHUVA: UM DIA INUTIL IGUAL A VOCE", "O CEU ESTA COM A CARA QUE EU FACO QUANDO TE VEJO",
-    "NUBLADO: A DEPRESSAO ATMOSFERICA CHEGOU PRA FICAR", "PARECE QUE VAI CHOVER: TOMARA QUE CHOVA PEDRA",
-    "CLIMA CHATO PERFEITO PARA FICAR EMBURRADO NO CANTO", "AS NUVENS ESTAO ESCONDENDO O SOL DE VERGONHA DE VOCES"
-  ]
-};
-
-const CITIES_LIST = [
-  { name: "ORINDIUVA", lat: -20.1819, lon: -49.3508 }, { name: "RIO PRETO", lat: -20.8197, lon: -49.3797 },
-  { name: "SAO PAULO", lat: -23.5505, lon: -46.6333 }, { name: "RIO", lat: -22.9068, lon: -43.1729 },
-  { name: "BRASILIA", lat: -15.7801, lon: -47.9292 }, { name: "NOVA YORK", lat: 40.7128, lon: -74.0060 }
-];
-
-let GLOBAL_DATA = { weatherList: [], economy: null, history: null };
-
-function updateClock(){
-  const n = new Date();
-  document.getElementById('clockTime').textContent = n.toLocaleTimeString('pt-BR');
-  document.getElementById('clockDate').textContent = n.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
-}
-setInterval(updateClock, 1000); updateClock();
 
 function getMoonPhase(date) {
   const diff = (date.getTime() - new Date('2000-01-06T18:14:00Z').getTime()) / 86400000;
   const idx = (diff % 29.5305882) / 29.5305882;
-  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; 
-  if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
-  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; 
-  if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
+  if(idx < 0.03) return {icon:'🌑', t:'Nova'}; if(idx < 0.22) return {icon:'🌒', t:'Crescente'}; if(idx < 0.28) return {icon:'🌓', t:'Q. Cresc.'}; if(idx < 0.47) return {icon:'🌔', t:'Gibosa'};
+  if(idx < 0.53) return {icon:'🌕', t:'Cheia'}; if(idx < 0.72) return {icon:'🌖', t:'Gibosa'}; if(idx < 0.78) return {icon:'🌗', t:'Q. Ming.'}; if(idx < 0.97) return {icon:'🌘', t:'Minguante'};
   return {icon:'🌑', t:'Nova'};
 }
-function stripEmojis(str) { return str.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').replace(/\s+/g, ' ').trim(); }
 
-async function fetchAllData() {
-  try {
-    const lats = CITIES_LIST.map(c => c.lat).join(',');
-    const lons = CITIES_LIST.map(c => c.lon).join(',');
-    const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=America%2FSao_Paulo`);
-    const wData = await wRes.json();
-    GLOBAL_DATA.weatherList = Array.isArray(wData) ? wData : [wData];
-    updateDashboard(GLOBAL_DATA.weatherList[0]);
-
-    const eRes = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
-    const eData = await eRes.json();
-    GLOBAL_DATA.economy = [`DOLAR: R$${parseFloat(eData.USDBRL.bid).toFixed(2)}`, `EURO: R$${parseFloat(eData.EURBRL.bid).toFixed(2)}`];
-
-    const today = new Date();
-    const hRes = await fetch(`https://pt.wikipedia.org/api/rest_v1/feed/onthisday/selected/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`);
-    const hData = await hRes.json();
-    if(hData?.selected?.length) {
-      const fact = hData.selected[Math.floor(Math.random() * hData.selected.length)];
-      GLOBAL_DATA.history = `HOJE NA HISTORIA (${fact.year}): ${fact.text.toUpperCase()}`;
-    }
-  } catch(e) { console.error(e); }
-}
-
-function updateDashboard(data) {
-  if(!data) return;
-  const curr = data.current_weather;
-  const daily = data.daily;
-  const el = (id, txt) => { const e = document.getElementById(id); if(e){ e.textContent = txt; e.classList.remove('skeleton'); }};
-
-  // Armazena dados para o print
-  currentShareData.temp = Math.round(curr.temperature) + "°C";
-  currentShareData.max = Math.round(daily.temperature_2m_max[0]) + "°C";
-  currentShareData.min = Math.round(daily.temperature_2m_min[0]) + "°C";
-  currentShareData.wind = Math.round(curr.windspeed) + " km/h";
-  
-  const moon = getMoonPhase(new Date());
-  currentShareData.moon = moon.icon + " " + moon.t;
-
-  el('currTemp', currentShareData.temp);
-  el('windSpeed', currentShareData.wind);
-  el('maxTemp', currentShareData.max);
-  el('minTemp', currentShareData.min);
-
-  let cond = "Nublado";
-  const c = curr.weathercode;
-  let type = 'cloudy';
-  if(c === 0) { cond = "Céu Limpo"; type='clear'; }
-  else if([1,2,3].includes(c)) { cond = "Nublado"; type='cloudy'; }
-  else if([45,48].includes(c)) { cond = "Neblina"; type='cloudy'; }
-  else if([51,53,55,61,63,65,80,81,82].includes(c)) { cond = "Chuva"; type='rain'; }
-  else if([95,96,99].includes(c)) { cond = "Tempestade"; type='storm'; }
-  else if(curr.temperature >= 30) type = 'heat';
-  else if(curr.temperature <= 15) type = 'cold';
-
-  currentShareData.cond = cond;
-  currentShareData.weatherType = type;
-
-  el('currCond', cond);
-  el('sunriseTime', daily.sunrise[0].split('T')[1]);
-  el('sunsetTime', daily.sunset[0].split('T')[1]);
-  el('moonPhase', moon.t);
-  document.getElementById('moonLabel').textContent = moon.icon + " Lua";
-
-  const box = document.getElementById('forecastBox');
-  box.innerHTML = '';
-  for(let i=1; i<=3; i++){
-    const dName = new Date(daily.time[i]+'T00:00').toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','');
-    const ico = daily.weathercode[i] === 0 ? '☀️' : daily.weathercode[i] >= 51 ? '🌧️' : '⛅';
-    box.innerHTML += `<div class="forecast-item"><div class="f-day">${dName}</div><div class="f-icon">${ico}</div><div><span class="f-temp">${Math.round(daily.temperature_2m_max[i])}°C</span> <span class="f-min">${Math.round(daily.temperature_2m_min[i])}°C</span></div></div>`;
-  }
-}
-
-function runTickerCycle() {
-  const tickerEl = document.getElementById('newsTicker');
-  let msgs = [];
-  const now = new Date();
-  const h = now.getHours();
-  
-  // 1. Saudação Dinâmica
-  let greetingsPool = [];
-  if (h >= 22 || h < 5) {
-    greetingsPool = ["VAI DORMIR TA TARDE JA", "TA COM SONO NÃO?", "VOCÊ JA VIU QUE HORA SÃO?", "BOA NOITE... EU ACHO", "AINDA ACORDADO?"];
-  } else if (h >= 5 && h < 12) {
-    greetingsPool = ["BOM DIA", "BUENOS DIAS", "OIIIEEE", "OI", "OIII", "OLÁ", "HELLO", "COE"];
-  } else if (h >= 12 && h < 18) {
-    greetingsPool = ["BOA TARDE", "BUENAS TARDES", "OIIIEEE", "OI", "OIII", "OLÁ", "HELLO", "COE"];
-  } else {
-    greetingsPool = ["BOA NOITE", "OIIIEEE", "OI", "OIII", "OLÁ", "HELLO", "COE"];
-  }
-  const selectedGreeting = greetingsPool[Math.floor(Math.random() * greetingsPool.length)];
-  msgs.push(selectedGreeting);
-
-  // 2. Frase Grinch Genérica
-  msgs.push(funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)]);
-
-  // 3. Data
-  msgs.push(now.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}).toUpperCase());
-
-  // 4. Economia
-  if(GLOBAL_DATA.economy) msgs = msgs.concat(GLOBAL_DATA.economy);
-
-  // 5. Clima + Frase Grinch Específica
-  if(GLOBAL_DATA.weatherList.length > 0) {
-    const w = GLOBAL_DATA.weatherList[0];
-    msgs.push(`ORINDIUVA: ${Math.round(w.current_weather.temperature)}C`);
-    
-    // Lógica para escolher frase do clima
-    const code = w.current_weather.weathercode;
-    const temp = w.current_weather.temperature;
-    let type = 'cloudy';
-    
-    if(code >= 95) type = 'storm';
-    else if(code >= 51) type = 'rain';
-    else if(temp >= 30) type = 'heat';
-    else if(temp <= 15) type = 'cold';
-    else if(code === 0) type = 'clear';
-
-    if(weatherPhrases[type]) {
-      const phraseList = weatherPhrases[type];
-      const randomPhrase = phraseList[Math.floor(Math.random() * phraseList.length)];
-      msgs.push(randomPhrase);
-      
-      // Salva para o botão compartilhar
-      currentShareData.weatherType = type;
-      currentShareData.phrase = randomPhrase;
-    }
-  }
-
-  // 6. Outras Cidades
-  if(GLOBAL_DATA.weatherList.length > 0) {
-    GLOBAL_DATA.weatherList.forEach((w, i) => { 
-      if(i>0) msgs.push(`${CITIES_LIST[i].name}: ${Math.round(w.current_weather.temperature)}C`); 
-    });
-  }
-
-  // 7. História
-  if(GLOBAL_DATA.history) msgs.push(stripEmojis(GLOBAL_DATA.history));
-
-  const txt = msgs.map(m => stripEmojis(m)).join("  *** ");
-  currentShareData.ticker = txt; 
-  tickerEl.innerHTML = `<span class="ticker-item">${txt}</span>`;
-  tickerEl.style.animation = 'none'; tickerEl.offsetHeight; 
-  tickerEl.style.animation = `ticker-scroll ${Math.max(30, txt.length * 0.18)}s linear infinite`;
-}
-document.getElementById('newsTicker').addEventListener('animationiteration', runTickerCycle);
-
-const pb = document.getElementById('pixButton');
-const pf = document.getElementById('pixFeedback');
-pb.onclick = () => { navigator.clipboard.writeText(CHAVE_PIX).then(() => { pf.classList.add('show'); setTimeout(()=>pf.classList.remove('show'),2000); }); };
-
-fetchAllData().then(() => runTickerCycle());
+// INICIALIZA TUDO
+InfoManager.init();
+fetchAllData(); 
 setInterval(fetchAllData, 300000);
 </script>
 </body>
