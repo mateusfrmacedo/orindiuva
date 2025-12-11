@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;700;800&family=Share+Tech+Mono&family=Silkscreen&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@300;400;600;800&family=Share+Tech+Mono&family=Silkscreen&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <meta property="og:type" content="website">
@@ -29,7 +29,12 @@
   
   --bg-body: #f2f2f7; --text-color: #1c1c1e;
   --card-bg: #ffffff; --card-border: rgba(0,0,0,0.05); --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  --pill-bg: #f5f5f7; --pill-border: transparent;
+  --pill-bg: #f5f5f7; 
+  
+  /* Glass Effect Colors */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
   
   /* Cores Console */
   --console-body: #2b2b2b;
@@ -40,7 +45,12 @@
 body.dark {
   --bg-body: #121212; --text-color: #ffffff;
   --card-bg: #1c1c1e; --card-border: rgba(255,255,255,0.1); --card-shadow: 0 4px 20px rgba(0,0,0,0.7);
-  --pill-bg: rgba(255,255,255,0.05); --pill-border: transparent;
+  --pill-bg: rgba(255,255,255,0.05);
+  
+  /* Glass Dark */
+  --glass-bg: rgba(28, 28, 30, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
   
   --console-body: #1a1a1a;
   --screen-bg: #051405; --screen-on: #2b3805; --screen-pixel: #ccffcc;
@@ -58,6 +68,9 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .title-box:hover { opacity: 0.7; }
 .city-search-icon { width: 24px; height: 24px; color: #007AFF; }
 .title-box h1 { margin: 0; font-size: clamp(28px, 5vw, 42px); font-weight: 800; letter-spacing: -1px; line-height: 1.1; }
+
+/* HEADER CONTROLS */
+.header-controls { display: flex; gap: 12px; }
 
 /* MODAL */
 .city-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
@@ -77,11 +90,81 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .video-container iframe { width: 100%; height: 100%; border: 0; }
 .dashboard-card { background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow); border-radius: 30px; padding: 30px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 24px; }
 
-/* Theme Toggle */
+/* Theme Toggle & Settings Toggle */
 .theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--card-border); cursor: pointer; background: var(--card-bg); box-shadow: var(--card-shadow); display: flex; align-items: center; justify-content: center; transition: 0.3s; color: var(--text-color); }
 .theme-icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* --- ORINDI-CYBERDECK --- */
+/* --- PAINEL ÚNICO (LIQUID GLASS / APPLE STYLE) --- */
+.simple-display-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 0px;
+    padding: 30px 40px;
+    border-radius: 30px;
+    
+    /* Liquid Glass Effect */
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    
+    transition: all 0.3s ease;
+}
+
+/* Lado Esquerdo: Temperatura */
+.sim-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.sim-main-temp {
+    font-size: 80px;
+    font-weight: 200; /* Apple Thin style */
+    line-height: 1;
+    letter-spacing: -4px;
+    color: var(--text-color);
+}
+.sim-max-min-box {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+    background: rgba(128, 128, 128, 0.15);
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+.sim-sub-val {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+/* Lado Direito: Hora e Data */
+.sim-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+.sim-time-val {
+    font-size: 28px; /* Reduzido e discreto */
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+    opacity: 0.9;
+}
+.sim-date-val {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-top: 2px;
+}
+
+
+/* --- ORINDI-CYBERDECK (GAMEBOY - INICIALMENTE OCULTO) --- */
 .retro-console {
   background-color: var(--console-body); 
   background-image: var(--console-texture);
@@ -90,7 +173,10 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
   border: 1px solid #000;
   display: flex; flex-wrap: wrap; align-items: stretch; gap: 20px; position: relative;
   overflow: hidden;
+  /* Oculto por padrão */
+  display: none; 
 }
+.retro-console.active { display: flex; }
 
 .caution-stripe {
   position: absolute; top: 20px; right: -30px; width: 100px; height: 20px;
@@ -115,19 +201,10 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
   font-family: var(--retro-font); color: var(--screen-pixel); 
   transition: background-color 0.2s;
 }
-/* Estilo LIGADO */
 .gb-screen.on { background-color: var(--screen-on); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
 .gb-screen.on::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; pointer-events: none; z-index: 10; }
-
-/* Estilo DESLIGADO (Preto) */
-.gb-screen:not(.on) {
-    background-color: #080a08;
-    box-shadow: inset 0 0 20px #000;
-}
-.gb-screen:not(.on) * {
-    opacity: 0;
-    transition: opacity 0.1s;
-}
+.gb-screen:not(.on) { background-color: #080a08; box-shadow: inset 0 0 20px #000; }
+.gb-screen:not(.on) * { opacity: 0; transition: opacity 0.1s; }
 
 @keyframes tvOff { 0% { transform: scale(1, 1); filter: brightness(1); } 40% { transform: scale(1, 0.01); filter: brightness(5); } 80% { transform: scale(0.01, 0.01); } 100% { transform: scale(0, 0); opacity: 0; } }
 .gb-screen.off-anim > * { animation: tvOff 0.4s forwards; }
@@ -151,11 +228,7 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .status-left {
   position: absolute; top: 8px; left: 10px; z-index: 15;
   display: flex; gap: 8px; align-items: center;
-  font-family: var(--retro-font);
-  color: var(--screen-pixel);
-  font-size: 11px;
-  opacity: 0.9;
-  letter-spacing: 0.5px;
+  font-family: var(--retro-font); color: var(--screen-pixel); font-size: 11px; opacity: 0.9; letter-spacing: 0.5px;
 }
 .retro-date { font-weight: 400; }
 .retro-clock { font-weight: 400; }
@@ -167,26 +240,13 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 /* MODO PET */
 .pet-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
 .pet-face { font-size: 65px; line-height: 1; white-space: nowrap; margin-bottom: 0px; transition: transform 0.2s; }
-
-/* ÁREA DE TEXTO DO PET */
 .pet-text-area {
-    font-family: var(--retro-font);
-    font-size: 15px;
-    color: var(--screen-pixel);
-    text-transform: uppercase;
-    text-align: center;
-    min-height: 40px;
-    width: 90%;
-    margin-top: 15px;
-    line-height: 1.2;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-family: var(--retro-font); font-size: 15px; color: var(--screen-pixel);
+    text-transform: uppercase; text-align: center; min-height: 40px; width: 90%;
+    margin-top: 15px; line-height: 1.2; opacity: 0; transition: opacity 0.5s ease-in-out;
+    display: flex; align-items: center; justify-content: center;
 }
 .pet-text-area.visible { opacity: 1; }
-
 .pet-zzz { position: absolute; top: -15px; right: -25px; font-size: 24px; font-weight: bold; animation: zzz 2s infinite; display: none; }
 
 /* MODO TEMPO */
@@ -195,15 +255,9 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
   width: 100%; height: 100%; position: relative; z-index: 2;
   text-align: center;
 }
-.wm-icon { 
-  width: 42px; height: 42px; margin-bottom: 2px; 
-  animation: floatIcon 3s ease-in-out infinite; 
-}
+.wm-icon { width: 42px; height: 42px; margin-bottom: 2px; animation: floatIcon 3s ease-in-out infinite; }
 .wm-icon svg { fill: var(--screen-pixel); width: 100%; height: 100%; }
-.wm-temp { 
-  font-size: 52px; font-weight: bold; line-height: 1; 
-  margin: 0; z-index: 2; letter-spacing: -2px;
-}
+.wm-temp { font-size: 52px; font-weight: bold; line-height: 1; margin: 0; z-index: 2; letter-spacing: -2px; }
 .wm-cond { font-size: 14px; text-transform: uppercase; margin-top: 2px; }
 .wm-city { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-top: 5px; }
 @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
@@ -256,42 +310,17 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 /* --- LETREIRO INTEGRADO --- */
 .console-ticker-area { width: 100%; border-top: 2px solid #000; padding-top: 5px; }
 .ticker-bezel { background: #111; padding: 6px 4px; border-radius: 4px; border: 2px solid #444; box-shadow: inset 0 0 10px #000; }
-
-/* TELA DO TICKER */
-.ticker-screen { 
-    background-color: var(--screen-bg); 
-    color: var(--screen-on);
-    height: 26px; overflow: hidden; display: flex; align-items: center; border-radius: 2px; 
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.5); 
-    transition: background-color 0.2s, color 0.2s;
-}
-
-/* ESTADO DESLIGADO DO TICKER */
-.ticker-screen.off {
-    background-color: #080a08 !important;
-    box-shadow: inset 0 0 10px #000 !important;
-}
+.ticker-screen { background-color: var(--screen-bg); color: var(--screen-on); height: 26px; overflow: hidden; display: flex; align-items: center; border-radius: 2px; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); transition: background-color 0.2s, color 0.2s; }
+.ticker-screen.off { background-color: #080a08 !important; box-shadow: inset 0 0 10px #000 !important; }
 .ticker-screen.off .ticker-wrap { opacity: 0; transition: opacity 0.2s; }
-
 .ticker-wrap { width: 100%; white-space: nowrap; transition: opacity 0.5s; }
-.ticker-item { 
-  padding: 0 30px; 
-  font-family: var(--retro-font); 
-  font-size: 14px; 
-  text-transform: uppercase; 
-  letter-spacing: 2px; 
-  /* ESTILO DIGITAL GLOSS/GLOW */
-  color: #ccffcc; 
-  text-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41;
-}
+.ticker-item { padding: 0 30px; font-family: var(--retro-font); font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #ccffcc; text-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41; }
 @keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 .ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
 
 /* Animações */
 @keyframes zzz { 0% { transform: translate(0,0) scale(0.5); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(10px,-15px) scale(1.2); opacity: 0; } }
 @keyframes shake { 0% { transform: translate(0,0); } 25% { transform: translate(-2px,0); } 75% { transform: translate(2px,0); } }
-
-/* Animações SEM CORES ESPECIFICAS (Usa a cor padrão do elemento) */
 .anim-angry { animation: shake 0.2s infinite; }
 .anim-bounce { animation: bounce 0.6s infinite; }
 .anim-shiver { animation: shiver 0.2s infinite; }
@@ -331,31 +360,31 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
 .sc-header { display: flex; align-items: center; margin-bottom: 40px; justify-content: center; }
 .sc-title { font-size: 64px; font-weight: 800; letter-spacing: -2px; }
 
-/* CONSOLA NO PRINT (Cópia da estrutura visual) */
+/* CONSOLA NO PRINT */
 .sc-console-box {
-    background-color: #2b2b2b;
-    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px);
-    border-radius: 30px;
     padding: 40px;
     box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.1);
     border: 4px solid #000;
     margin-bottom: 40px;
+    background-color: #2b2b2b;
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px);
+    border-radius: 30px;
     position: relative;
 }
 .sc-bezel { background: #111; border-radius: 20px; padding: 50px 30px; border: 4px solid #444; box-shadow: inset 0 0 30px #000; }
 .sc-screen {
-    background-color: #8bac0f; /* Verde GameBoy */
-    height: 400px; /* Altura fixa grande */
-    border-radius: 8px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+    height: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: 'Silkscreen', cursive;
-    color: #0f380f;
     position: relative;
     overflow: hidden;
+    background-color: #8bac0f; 
+    color: #0f380f;
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
 }
 .sc-screen::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 6px; pointer-events: none; }
 .sc-status-top {
@@ -368,7 +397,6 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
 .sc-main-temp { font-size: 70px; font-weight: bold; letter-spacing: -2px; }
 .sc-status-label { font-size: 20px; margin-top: 10px; opacity: 0.8; text-transform: uppercase; }
 
-/* Dados em baixo */
 .sc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 50px; }
 .sc-item { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
 .sc-lbl { font-size: 22px; opacity: 0.6; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
@@ -455,10 +483,15 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
       <h1 id="headerCityName">Orindiúva</h1>
     </div>
     
-    <button id="themeToggle" class="theme-toggle">
-      <svg id="moonIcon" class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-      <svg id="sunIcon" class="theme-icon" style="display:none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-    </button>
+    <div class="header-controls">
+        <button id="settingsToggle" class="theme-toggle">
+            <svg class="theme-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd"/></svg>
+        </button>
+        <button id="themeToggle" class="theme-toggle">
+          <svg id="moonIcon" class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <svg id="sunIcon" class="theme-icon" style="display:none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+    </div>
   </header>
 
   <section class="video-container" id="videoContainer">
@@ -467,7 +500,20 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
 
   <div class="dashboard-card">
     
-    <div class="retro-console">
+    <div class="simple-display-panel" id="simpleDisplay">
+      <div class="sim-left">
+          <div class="sim-main-temp" id="simTemp">--°C</div>
+          <div class="sim-max-min-box">
+             <div class="sim-sub-val" id="simMaxMin">MÁX: --° / MÍN: --°</div>
+          </div>
+      </div>
+      <div class="sim-right">
+          <div class="sim-time-val" id="simTime">--:--:--</div>
+          <div class="sim-date-val" id="simDate">--/--/--</div>
+      </div>
+    </div>
+
+    <div class="retro-console" id="consoleArea">
       <div class="caution-stripe"></div>
       <div class="screw tl"></div><div class="screw tr"></div>
       <div class="screw bl"></div><div class="screw br"></div>
@@ -600,6 +646,7 @@ let weatherCode = 0;
 let tempVal = 25;
 let isPoweredOn = true;
 let isWeatherMode = false;
+let isConsoleVisible = false; // Controle de visibilidade do console
 
 /* --- VARIÁVEIS GLOBAIS DE INFORMAÇÃO --- */
 let infoCache = {
@@ -750,14 +797,12 @@ const GrinchSystem = {
         const part5 = this.getDadosTecnicos(data.max.replace('°C',''), data.min.replace('°C',''));
         const part6 = this.getSensacao(parseFloat(data.feelsLike), parseFloat(data.temp));
         const part7 = this.getDespedida();
-        // ALTERAÇÃO DE ORDEM AQUI: SAUDAÇÃO -> GRINCH -> RESTO
         const fullPhrase = `${part1} *** ${part4} *** ${part2} ${part3} *** ${part5} *** ${part6} *** ${part7}`;
         return { text: fullPhrase, shortPhrase: part4 }; 
     }
 };
 
 /* --- FRASES E EXPRESSÕES DO PET (SEM EMOJIS, APENAS KAOMOJI) --- */
-/* Helper para não repetir frases */
 let lastRandomIndex = -1;
 function getUniqueRandomPair(arr) {
     let index;
@@ -829,7 +874,6 @@ function showReaction(type) {
         pair = INTERACTION_PAIRS.angry[Math.floor(Math.random() * INTERACTION_PAIRS.angry.length)];
         tamaState = 'angry';
     } else {
-        // Usa função anti-repetição
         pair = getUniqueRandomPair(INTERACTION_PAIRS.random);
         tamaState = 'talking'; 
     }
@@ -855,7 +899,6 @@ function updateTamagotchi() {
   const zzzEl = document.getElementById('petZzz');
   const screenText = document.getElementById('petScreenText');
   
-  // Limpa classes de animação anteriores
   faceEl.classList.remove('anim-angry', 'anim-bounce', 'anim-shiver', 'anim-melt');
 
   if (currentFaceOverride) {
@@ -990,12 +1033,18 @@ function updateRetroClock() {
   const scDate = document.getElementById('scDateTop');
   if(scTime) scTime.innerText = `${h}:${m}`;
   if(scDate) scDate.innerText = `${day}/${month}`;
+
+  // Atualiza Relógio Simples
+  const simTime = document.getElementById('simTime');
+  const simDate = document.getElementById('simDate');
+  if(simTime) simTime.innerText = `${h}:${m}:${s}`;
+  if(simDate) simDate.innerText = `${day}/${month}/${year.toString().slice(-2)}`;
 }
 setInterval(updateRetroClock, 1000);
 updateRetroClock();
 
 /* TICKER COM ROTAÇÃO DE CANAIS (CLIMA, FINANCEIRO, NEWS, CURIOSIDADES) */
-let tickerChannel = 0; // 0: Clima, 1: Financeiro, 2: News, 3: Feriado/Curiosidade
+let tickerChannel = 0; 
 
 function runTickerCycle() {
   const tickerEl = document.getElementById('newsTicker');
@@ -1003,48 +1052,55 @@ function runTickerCycle() {
   
   let displayText = "";
   
-  // Lógica de Rotação
   if (tickerChannel === 0) {
-      // CANAL 0: CLIMA (Grinch)
       const generated = GrinchSystem.gerarFraseCompleta(currentShareData, currentCity.name, new Date().getHours());
       displayText = generated.text;
-      currentShareData.phrase = generated.shortPhrase; // Atualiza para o print
+      currentShareData.phrase = generated.shortPhrase; 
   } 
   else if (tickerChannel === 1) {
-      // CANAL 1: FINANCEIRO
       displayText = infoCache.finance || "ATUALIZANDO DADOS FINANCEIROS...";
   }
   else if (tickerChannel === 2) {
-      // CANAL 2: NOTÍCIAS
       displayText = infoCache.news || "SEM NOTICIAS NO MOMENTO.";
   }
   else {
-      // CANAL 3: MISTO (Feriado ou Curiosidade)
       if(Math.random() > 0.5) displayText = infoCache.holiday;
       else displayText = infoCache.curiosity;
   }
 
-  // Avança para o próximo canal
   tickerChannel++;
   if(tickerChannel > 3) tickerChannel = 0;
 
-  // Renderiza
   tickerEl.innerHTML = `<span class="ticker-item">${displayText}</span>`;
   tickerEl.style.animation = 'none'; 
   tickerEl.offsetHeight; 
   
-  // Velocidade ajustada baseada no tamanho do texto
   const speed = Math.max(15, displayText.length * 0.18);
   tickerEl.style.animation = `ticker-scroll ${speed}s linear infinite`;
 }
 
-// IMPORTANTE: Remove listeners antigos para evitar conflitos e adiciona novo
 const tickerElement = document.getElementById('newsTicker');
 if(tickerElement) {
     const newTicker = tickerElement.cloneNode(true);
     tickerElement.parentNode.replaceChild(newTicker, tickerElement);
     newTicker.addEventListener('animationiteration', runTickerCycle);
 }
+
+/* SETTINGS TOGGLE (ALTERNAR MODO SIMPLES/GAMEBOY) */
+const settingsBtn = document.getElementById('settingsToggle');
+const consoleArea = document.getElementById('consoleArea');
+const simpleDisplay = document.getElementById('simpleDisplay');
+
+settingsBtn.onclick = () => {
+    isConsoleVisible = !isConsoleVisible;
+    if (isConsoleVisible) {
+        consoleArea.classList.add('active');
+        simpleDisplay.style.display = 'none';
+    } else {
+        consoleArea.classList.remove('active');
+        simpleDisplay.style.display = 'flex';
+    }
+};
 
 /* CIDADE & GEO */
 function openSearchModal() { document.getElementById('searchModalOverlay').classList.add('active'); document.getElementById('cityInput').focus(); }
@@ -1138,6 +1194,10 @@ async function fetchAllData() {
     // Console Update
     document.getElementById('gbTemp').innerText = currentShareData.temp;
     document.getElementById('gbCond').innerText = cond;
+
+    // Simple Display Update
+    document.getElementById('simTemp').innerText = currentShareData.temp;
+    document.getElementById('simMaxMin').innerText = `MÁX: ${currentShareData.max.replace('C','')} / MÍN: ${currentShareData.min.replace('C','')}`;
     
     // Details
     document.getElementById('windSpeed').innerText = currentShareData.wind;
@@ -1153,10 +1213,8 @@ async function fetchAllData() {
 
     document.querySelectorAll('.skeleton').forEach(el => el.classList.remove('skeleton'));
     
-    // Inicializa Ticker se for a primeira vez
     if (tickerChannel === 0) runTickerCycle();
     
-    // Forecast 5 Dias
     const box = document.getElementById('forecastBox');
     box.innerHTML = '';
     for(let i=1; i<=5; i++){
@@ -1188,23 +1246,22 @@ document.addEventListener('click', (e) => { if (!document.querySelector('.share-
 
 async function shareTo(platform) {
   if(platform === 'twitter') {
-    // Twitter continua apenas texto
     const generated = GrinchSystem.gerarFraseCompleta(currentShareData, currentCity.name, new Date().getHours());
     const tweetText = `🌡️ ${currentShareData.temp} em ${currentCity.name}\nMax: ${currentShareData.max} / Min: ${currentShareData.min}\n\n"${generated.shortPhrase}"\n\nAcompanhe agora: 👇\nhttps://mateusfrmacedo.github.io/orindiuva/`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, '_blank');
   } else {
-    // Instagram / WhatsApp (Gera Imagem Silenciosamente)
     await generateScreenshot(); 
   }
 }
 
 async function generateScreenshot() {
+  document.body.style.cursor = 'wait';
+
   const div = document.getElementById('shareCapture');
   document.getElementById('printCityName').innerText = currentCity.name.toUpperCase();
   document.getElementById('scTemp').innerText = currentShareData.temp;
   document.getElementById('scCond').innerText = currentShareData.cond;
   
-  // Novos dados na grid
   document.getElementById('scFeelsLike').innerText = currentShareData.feelsLike;
   document.getElementById('scHumidity').innerText = currentShareData.humidityRaw + "%";
   document.getElementById('scWind').innerText = currentShareData.wind;
@@ -1216,32 +1273,25 @@ async function generateScreenshot() {
   
   document.getElementById('scPhrase').innerText = `"${currentShareData.phrase}"`;
   
-  // Atualiza Gameboy do Print
   const currentFace = document.getElementById('petFace').innerText;
   const scFace = document.getElementById('scFaceIcon');
   const scMainTemp = document.getElementById('scMainTemp');
   if(scFace) scFace.innerText = currentFace;
   if(scMainTemp) scMainTemp.innerText = currentShareData.temp;
 
-  // Garante visibilidade temporária para captura
   div.style.left = "0";
   div.style.top = "0";
-  div.style.zIndex = "-100"; // Fica atrás mas visível para o canvas
+  div.style.zIndex = "-100"; 
 
-  // Assegura que as cores do print sigam o tema atual
   div.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--bg-body');
   div.style.color = getComputedStyle(document.body).getPropertyValue('--text-color');
   
   try {
     const canvas = await html2canvas(div, {useCORS:true, scale:1});
-    
-    // Retorna div para o limbo
     div.style.left = "-9999px";
 
     canvas.toBlob(async (blob) => {
         const file = new File([blob], "clima_orindiuva.png", { type: "image/png" });
-        
-        // Tenta API Nativa (Mobile)
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           try {
             await navigator.share({
@@ -1253,15 +1303,16 @@ async function generateScreenshot() {
             console.log("Share canceled or failed", err);
           }
         } else {
-          // Fallback para PC (Download Silencioso)
           const link = document.createElement('a');
           link.download = `Clima_${currentCity.name}_${Date.now()}.png`;
           link.href = canvas.toDataURL("image/png");
           link.click();
         }
+        document.body.style.cursor = 'default';
     });
   } catch(e){ 
       console.error("Erro ao criar imagem", e); 
+      document.body.style.cursor = 'default';
       div.style.left = "-9999px";
   }
 }
@@ -1274,7 +1325,6 @@ function getMoonPhase(date) {
   return {icon:'🌑', t:'Nova'};
 }
 
-// INICIALIZA TUDO
 InfoManager.init();
 fetchAllData(); 
 setInterval(fetchAllData, 300000);
