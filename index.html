@@ -81,8 +81,8 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--card-border); cursor: pointer; background: var(--card-bg); box-shadow: var(--card-shadow); display: flex; align-items: center; justify-content: center; transition: 0.3s; color: var(--text-color); }
 .theme-icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* --- ORINDI-CYBERDECK (USADO NO SITE E NO PRINT) --- */
-.retro-console, .sc-console-box {
+/* --- ORINDI-CYBERDECK --- */
+.retro-console {
   background-color: var(--console-body); 
   background-image: var(--console-texture);
   padding: 20px; border-radius: 15px;
@@ -102,13 +102,13 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .screw.bl { bottom: 10px; left: 10px; } .screw.br { bottom: 10px; right: 10px; }
 
 /* TELA */
-.gb-bezel, .sc-bezel { 
+.gb-bezel { 
   background: #111; border-radius: 8px; padding: 30px 15px 15px 15px;
   box-shadow: inset 0 0 20px #000; flex: 2; min-width: 260px; position: relative;
   border: 2px solid #444;
 }
 
-.gb-screen, .sc-screen { 
+.gb-screen { 
   background-color: var(--screen-bg); 
   height: 160px; border-radius: 4px; position: relative; overflow: hidden; 
   display: flex; justify-content: center; align-items: center; 
@@ -116,8 +116,8 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
   transition: background-color 0.2s;
 }
 /* Estilo LIGADO */
-.gb-screen.on, .sc-screen.on { background-color: var(--screen-on); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
-.gb-screen.on::after, .sc-screen.on::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; pointer-events: none; z-index: 10; }
+.gb-screen.on { background-color: var(--screen-on); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
+.gb-screen.on::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; pointer-events: none; z-index: 10; }
 
 /* Estilo DESLIGADO (Preto) */
 .gb-screen:not(.on) {
@@ -287,10 +287,11 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 @keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 .ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
 
-/* Animações - SEM CORES VERMELHAS/AZUIS */
+/* Animações */
 @keyframes zzz { 0% { transform: translate(0,0) scale(0.5); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(10px,-15px) scale(1.2); opacity: 0; } }
 @keyframes shake { 0% { transform: translate(0,0); } 25% { transform: translate(-2px,0); } 75% { transform: translate(2px,0); } }
 
+/* Animações SEM CORES ESPECIFICAS (Usa a cor padrão do elemento) */
 .anim-angry { animation: shake 0.2s infinite; }
 .anim-bounce { animation: bounce 0.6s infinite; }
 .anim-shiver { animation: shiver 0.2s infinite; }
@@ -325,74 +326,53 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .share-option.x:hover { background: #000; color: #fff; border:none; transform: scale(1.15); }
 body.dark .share-option.x:hover { border: 1px solid #333; } 
 
-/* Print Styles - ATUALIZADO PARA O NOVO DESIGN DO PRINT */
-#shareCapture { 
-    position: fixed; left: -9999px; top: 0; 
-    width: 1080px; height: 1920px; 
-    box-sizing: border-box; 
-    display: flex; flex-direction: column; 
-    padding: 80px 60px; 
-    font-family: var(--sf); 
-    /* Usa cores do tema atual */
-    background-color: var(--bg-body);
-    color: var(--text-color);
-}
+/* Print Styles */
+#shareCapture { position: fixed; left: -9999px; top: 0; width: 1080px; height: 1920px; box-sizing: border-box; display: flex; flex-direction: column; padding: 80px 60px; font-family: var(--sf); background-color: #121212; color: #fff; }
 .sc-header { display: flex; align-items: center; margin-bottom: 40px; justify-content: center; }
 .sc-title { font-size: 64px; font-weight: 800; letter-spacing: -2px; }
 
-/* CONSOLA NO PRINT (Reutiliza estilos do site principal) */
+/* CONSOLA NO PRINT (Cópia da estrutura visual) */
 .sc-console-box {
-    /* Padding e Borda da moldura externa */
+    background-color: #2b2b2b;
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px);
+    border-radius: 30px;
     padding: 40px;
     box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.1);
-    border: 4px solid #000; /* Borda mais grossa no print */
+    border: 4px solid #000;
     margin-bottom: 40px;
+    position: relative;
 }
-/* Moldura da tela no print */
-.sc-bezel {
-    border-radius: 20px;
-    padding: 50px 30px;
-    border: 6px solid #333; /* Borda da tela interna mais grossa */
-}
-/* Tela no print */
+.sc-bezel { background: #111; border-radius: 20px; padding: 50px 30px; border: 4px solid #444; box-shadow: inset 0 0 30px #000; }
 .sc-screen {
+    background-color: #8bac0f; /* Verde GameBoy */
     height: 400px; /* Altura fixa grande */
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: 'Silkscreen', cursive;
+    color: #0f380f;
     position: relative;
     overflow: hidden;
 }
-/* Efeito de scanline no print */
 .sc-screen::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 6px; pointer-events: none; }
-
-/* Elementos dentro da tela do print */
 .sc-status-top {
     position: absolute; top: 25px; width: 100%; padding: 0 30px;
     display: flex; justify-content: space-between;
     font-size: 24px; letter-spacing: 1px; opacity: 0.8;
 }
-.sc-face-container {
-    display: flex; flex-direction: column; align-items: center;
-}
-.sc-face-icon {
-    font-size: 140px; line-height: 1; margin-bottom: 20px;
-}
-.sc-main-temp {
-    font-size: 70px; font-weight: bold; letter-spacing: -2px;
-}
-.sc-status-label {
-    font-size: 20px; margin-top: 10px; opacity: 0.8; text-transform: uppercase;
-}
+.sc-face-container { display: flex; flex-direction: column; align-items: center; }
+.sc-face-icon { font-size: 140px; line-height: 1; margin-bottom: 20px; }
+.sc-main-temp { font-size: 70px; font-weight: bold; letter-spacing: -2px; }
+.sc-status-label { font-size: 20px; margin-top: 10px; opacity: 0.8; text-transform: uppercase; }
 
 /* Dados em baixo */
 .sc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 50px; }
-.sc-item { background: var(--pill-bg); padding: 30px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--card-border); }
+.sc-item { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
 .sc-lbl { font-size: 22px; opacity: 0.6; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
 .sc-val { font-size: 40px; font-weight: 800; }
-
 .sc-phrase-box { 
     margin-top: auto; margin-bottom: 30px;
     background: #000; color: #00ff41; 
@@ -438,14 +418,15 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
       <div class="screw br" style="bottom:20px; right:20px; width:12px; height:12px;"></div>
 
       <div class="sc-bezel">
-          <div class="sc-screen on"> <div class="sc-status-top">
+          <div class="sc-screen on">
+              <div class="sc-status-top">
                   <span id="scTimeTop">--:--</span>
                   <span id="scDateTop">--/--</span>
               </div>
               <div class="sc-face-container">
                   <div class="sc-face-icon" id="scFaceIcon">(-.-)</div>
                   <div class="sc-main-temp" id="scMainTemp">--°C</div>
-                  <div class="sc-status-label" id="scStatusLabel">STATUS: ONLINE</div>
+                  <div class="sc-status-label" id="scStatusLabel">MODO PET</div>
               </div>
           </div>
       </div>
@@ -463,10 +444,10 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
       <div class="sc-item"><div class="sc-lbl">PÔR DO SOL</div><div class="sc-val" id="scSunset">--:--</div></div>
     </div>
   </div>
-  
   <div class="sc-phrase-box" id="scPhrase">"..."</div>
   <div class="sc-footer">mateusfrmacedo.github.io/orindiuva</div>
 </div>
+
 <div class="site">
   <header class="header">
     <div class="title-box" onclick="openSearchModal()">
@@ -481,7 +462,7 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
   </header>
 
   <section class="video-container" id="videoContainer">
-    <iframe src="https://www.youtube.com/embed/RBrOmuGw6Mg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1" title="Câmera ao vivo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <iframe src="https://www.youtube.com/embed/Rn5PtHfriws?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1" title="Câmera ao vivo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </section>
 
   <div class="dashboard-card">
@@ -596,7 +577,7 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
 </div>
 
 <script>
-const LIVE_ID = "RBrOmuGw6Mg";
+const LIVE_ID = "Rn5PtHfriws";
 const DEFAULT_CITY = { name: "Orindiúva", lat: -20.1819, lon: -49.3508 };
 
 let currentCity = { ...DEFAULT_CITY };
@@ -1218,9 +1199,6 @@ async function shareTo(platform) {
 }
 
 async function generateScreenshot() {
-  // Feedback visual sutil apenas no cursor
-  document.body.style.cursor = 'wait';
-
   const div = document.getElementById('shareCapture');
   document.getElementById('printCityName').innerText = currentCity.name.toUpperCase();
   document.getElementById('scTemp').innerText = currentShareData.temp;
@@ -1281,13 +1259,9 @@ async function generateScreenshot() {
           link.href = canvas.toDataURL("image/png");
           link.click();
         }
-        
-        // Restaura cursor
-        document.body.style.cursor = 'default';
     });
   } catch(e){ 
       console.error("Erro ao criar imagem", e); 
-      document.body.style.cursor = 'default';
       div.style.left = "-9999px";
   }
 }
