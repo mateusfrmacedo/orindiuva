@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@300;400;600;800&family=Share+Tech+Mono&family=Silkscreen&display=swap" rel="stylesheet">
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Orindiúva Ao Vivo">
@@ -79,8 +80,8 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .modal-btn-geo { background: #007AFF; color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .geo-icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
 .modal-results { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
-.search-item { padding: 10px; background: var(--pill-bg); border-radius: 8px; cursor: pointer; font-size: 14px; }
-.search-item:hover { background: #007AFF; color: #fff; }
+.search-item { padding: 12px; background: var(--pill-bg); border-radius: 8px; cursor: pointer; font-size: 14px; border: 1px solid transparent; transition: 0.2s; }
+.search-item:hover { background: #007AFF; color: #fff; border-color: #005bb5; }
 .modal-close { background: transparent; border: none; color: #ff3b30; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
 /* Video & Dashboard */
@@ -89,7 +90,7 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .video-container iframe { width: 100%; height: 100%; border: 0; }
 .dashboard-card { background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow); border-radius: 30px; padding: 30px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 24px; }
 
-/* Theme Toggle & Settings Toggle */
+/* Theme Toggle */
 .theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--card-border); cursor: pointer; background: var(--card-bg); box-shadow: var(--card-shadow); display: flex; align-items: center; justify-content: center; transition: 0.3s; color: var(--text-color); }
 .theme-icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -112,7 +113,7 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
     transition: all 0.3s ease;
 }
 
-/* Container Centralizado */
+/* Lado Esquerdo: Temperatura */
 .sim-left {
     display: flex;
     flex-direction: column;
@@ -377,6 +378,67 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .f-temp { font-size: 18px; font-weight: 700; }
 .f-min { font-size: 14px; opacity: 0.7; margin-left: 6px; }
 
+/* Print Styles */
+#shareCapture { position: fixed; left: -9999px; top: 0; width: 1080px; height: 1920px; box-sizing: border-box; display: flex; flex-direction: column; padding: 80px 60px; font-family: var(--sf); background-color: #121212; color: #fff; }
+.sc-header { display: flex; align-items: center; margin-bottom: 40px; justify-content: center; }
+.sc-title { font-size: 64px; font-weight: 800; letter-spacing: -2px; }
+
+/* CONSOLA NO PRINT */
+.sc-console-box {
+    padding: 40px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.1);
+    border: 4px solid #000;
+    margin-bottom: 40px;
+    background-color: #2b2b2b;
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px);
+    border-radius: 30px;
+    position: relative;
+}
+.sc-bezel { background: #111; border-radius: 20px; padding: 50px 30px; border: 6px solid #333; box-shadow: inset 0 0 30px #000; }
+.sc-screen {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Silkscreen', cursive;
+    position: relative;
+    overflow: hidden;
+    background-color: #8bac0f; 
+    color: #0f380f;
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+}
+.sc-screen::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 6px; pointer-events: none; }
+.sc-status-top {
+    position: absolute; top: 25px; width: 100%; padding: 0 30px;
+    display: flex; justify-content: space-between;
+    font-size: 24px; letter-spacing: 1px; opacity: 0.8;
+}
+.sc-face-container { display: flex; flex-direction: column; align-items: center; }
+.sc-face-icon { font-size: 140px; line-height: 1; margin-bottom: 20px; }
+.sc-main-temp { font-size: 70px; font-weight: bold; letter-spacing: -2px; }
+.sc-status-label { font-size: 20px; margin-top: 10px; opacity: 0.8; text-transform: uppercase; }
+
+/* Dados em baixo */
+.sc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 50px; }
+.sc-item { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+.sc-lbl { font-size: 22px; opacity: 0.6; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+.sc-val { font-size: 40px; font-weight: 800; }
+.sc-phrase-box { 
+    margin-top: auto; margin-bottom: 30px;
+    background: #000; color: #00ff41; 
+    border: 6px solid #1a1a1a; border-radius: 40px; 
+    padding: 30px; text-align: center; 
+    font-family: var(--retro-font); font-size: 32px; line-height: 1.3; 
+    word-break: break-word;
+    text-transform: uppercase; 
+    text-shadow: 0 0 20px rgba(0, 255, 65, 0.7); 
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5); 
+    min-height: 200px; display: flex; align-items: center; justify-content: center;
+}
+.sc-footer { text-align: center; opacity: 0.4; font-size: 28px; font-weight: 600; }
+
 .site-footer { margin-top: auto; padding-top: 20px; text-align: center; padding-bottom: 20px; }
 .footer-credit { display: block; font-size: 12px; opacity: 0.5; color: var(--text-color); text-decoration: none; }
 .footer-credit:hover { text-decoration: underline; }
@@ -396,6 +458,46 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
     <div class="modal-results" id="searchResults"></div>
     <button class="modal-close" onclick="closeSearchModal()">Cancelar</button>
   </div>
+</div>
+
+<div id="shareCapture">
+  <div class="sc-header"><div class="sc-title" id="printCityName">ORINDIÚVA</div></div>
+  
+  <div class="sc-console-box">
+      <div class="screw tl" style="top:20px; left:20px; width:12px; height:12px;"></div>
+      <div class="screw tr" style="top:20px; right:20px; width:12px; height:12px;"></div>
+      <div class="screw bl" style="bottom:20px; left:20px; width:12px; height:12px;"></div>
+      <div class="screw br" style="bottom:20px; right:20px; width:12px; height:12px;"></div>
+
+      <div class="sc-bezel">
+          <div class="sc-screen on">
+              <div class="sc-status-top">
+                  <span id="scTimeTop">--:--</span>
+                  <span id="scDateTop">--/--</span>
+              </div>
+              <div class="sc-face-container">
+                  <div class="sc-face-icon" id="scFaceIcon">(-.-)</div>
+                  <div class="sc-main-temp" id="scMainTemp">--°C</div>
+                  <div class="sc-status-label" id="scStatusLabel">MODO PET</div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="sc-info-container">
+    <div class="sc-grid">
+      <div class="sc-item"><div class="sc-lbl">SENS. TÉRMICA</div><div class="sc-val" id="scFeelsLike">--°C</div></div>
+      <div class="sc-item"><div class="sc-lbl">UMIDADE</div><div class="sc-val" id="scHumidity">--%</div></div>
+      <div class="sc-item"><div class="sc-lbl">VENTO</div><div class="sc-val" id="scWind">-- km/h</div></div>
+      <div class="sc-item"><div class="sc-lbl">LUA</div><div class="sc-val" id="scMoon">--</div></div>
+       <div class="sc-item"><div class="sc-lbl">MÁX. HOJE</div><div class="sc-val" id="scMax">--°C</div></div>
+      <div class="sc-item"><div class="sc-lbl">MÍN. HOJE</div><div class="sc-val" id="scMin">--°C</div></div>
+      <div class="sc-item"><div class="sc-lbl">NASCER SOL</div><div class="sc-val" id="scSunrise">--:--</div></div>
+      <div class="sc-item"><div class="sc-lbl">PÔR DO SOL</div><div class="sc-val" id="scSunset">--:--</div></div>
+    </div>
+  </div>
+  <div class="sc-phrase-box" id="scPhrase">"..."</div>
+  <div class="sc-footer">mateusfrmacedo.github.io/orindiuva</div>
 </div>
 
 <div class="site">
@@ -782,6 +884,7 @@ function showReaction(type) {
         pair = INTERACTION_PAIRS.angry[Math.floor(Math.random() * INTERACTION_PAIRS.angry.length)];
         tamaState = 'angry';
     } else {
+        // Usa função anti-repetição
         pair = getUniqueRandomPair(INTERACTION_PAIRS.random);
         tamaState = 'talking'; 
     }
@@ -936,6 +1039,12 @@ function updateRetroClock() {
 
   if(dateEl) dateEl.innerText = `${day}/${month}/${year}`;
   if(clockEl) clockEl.innerText = `${h}:${m}:${s}`;
+  
+  // Atualiza também os relógios do Print
+  const scTime = document.getElementById('scTimeTop');
+  const scDate = document.getElementById('scDateTop');
+  if(scTime) scTime.innerText = `${h}:${m}`;
+  if(scDate) scDate.innerText = `${day}/${month}`;
 }
 setInterval(updateRetroClock, 1000);
 updateRetroClock();
@@ -1146,10 +1255,6 @@ let currentTheme = localStorage.getItem('theme') || 'light';
 function updateThemeUI(t){ if(t==='dark'){document.body.classList.add('dark');document.getElementById('sunIcon').style.display='block';document.getElementById('moonIcon').style.display='none';}else{document.body.classList.remove('dark');document.getElementById('sunIcon').style.display='none';document.getElementById('moonIcon').style.display='block';} }
 updateThemeUI(currentTheme);
 themeBtn.onclick = () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; updateThemeUI(currentTheme); localStorage.setItem('theme', currentTheme); };
-
-// REMOVIDA A LÓGICA DE MOSTRAR MENU - AGORA NÃO EXISTE MAIS
-// O código abaixo serve apenas para garantir que se houver algum elemento residual, ele não quebre
-// Mas como o HTML foi substituído, não há botão de share para clicar.
 
 function getMoonPhase(date) {
   const diff = (date.getTime() - new Date('2000-01-06T18:14:00Z').getTime()) / 86400000;
