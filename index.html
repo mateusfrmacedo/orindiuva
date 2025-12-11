@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@300;400;600;800&family=Share+Tech+Mono&family=Silkscreen&display=swap" rel="stylesheet">
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Orindiúva Ao Vivo">
@@ -31,7 +30,7 @@
   --card-bg: #ffffff; --card-border: rgba(0,0,0,0.05); --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
   --pill-bg: #f5f5f7; 
   
-  /* Glass Effect Colors */
+  /* Glass Effect */
   --glass-bg: rgba(255, 255, 255, 0.65);
   --glass-border: rgba(255, 255, 255, 0.4);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
@@ -94,17 +93,16 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--card-border); cursor: pointer; background: var(--card-bg); box-shadow: var(--card-shadow); display: flex; align-items: center; justify-content: center; transition: 0.3s; color: var(--text-color); }
 .theme-icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* --- PAINEL ÚNICO (LIQUID GLASS / APPLE STYLE) --- */
+/* --- PAINEL ÚNICO (LIQUID GLASS) - SIMPLIFICADO --- */
 .simple-display-panel {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Centralizado */
     align-items: center;
     width: 100%;
     margin-bottom: 0px;
-    padding: 30px 40px;
+    padding: 25px 30px;
     border-radius: 30px;
     
-    /* Liquid Glass Effect */
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -114,55 +112,34 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
     transition: all 0.3s ease;
 }
 
-/* Lado Esquerdo: Temperatura */
+/* Container Centralizado */
 .sim-left {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center; /* Alinhado ao centro */
+    text-align: center;
 }
 .sim-main-temp {
-    font-size: 80px;
-    font-weight: 200; /* Apple Thin style */
+    /* FONTE MENOR E RESPONSIVA */
+    font-size: clamp(36px, 10vw, 60px); 
+    font-weight: 300; 
     line-height: 1;
-    letter-spacing: -4px;
+    letter-spacing: -2px;
     color: var(--text-color);
 }
 .sim-max-min-box {
     display: flex;
     gap: 10px;
-    margin-top: 5px;
+    margin-top: 8px;
     background: rgba(128, 128, 128, 0.15);
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 20px;
 }
 .sim-sub-val {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     opacity: 0.8;
 }
-
-/* Lado Direito: Hora e Data */
-.sim-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    text-align: right;
-}
-.sim-time-val {
-    font-size: 28px; /* Reduzido e discreto */
-    font-weight: 300;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -1px;
-    opacity: 0.9;
-}
-.sim-date-val {
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    opacity: 0.5;
-    margin-top: 2px;
-}
-
 
 /* --- ORINDI-CYBERDECK (GAMEBOY - INICIALMENTE OCULTO) --- */
 .retro-console {
@@ -201,10 +178,19 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
   font-family: var(--retro-font); color: var(--screen-pixel); 
   transition: background-color 0.2s;
 }
+/* Estilo LIGADO */
 .gb-screen.on { background-color: var(--screen-on); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
 .gb-screen.on::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; pointer-events: none; z-index: 10; }
-.gb-screen:not(.on) { background-color: #080a08; box-shadow: inset 0 0 20px #000; }
-.gb-screen:not(.on) * { opacity: 0; transition: opacity 0.1s; }
+
+/* Estilo DESLIGADO (Preto) */
+.gb-screen:not(.on) {
+    background-color: #080a08;
+    box-shadow: inset 0 0 20px #000;
+}
+.gb-screen:not(.on) * {
+    opacity: 0;
+    transition: opacity 0.1s;
+}
 
 @keyframes tvOff { 0% { transform: scale(1, 1); filter: brightness(1); } 40% { transform: scale(1, 0.01); filter: brightness(5); } 80% { transform: scale(0.01, 0.01); } 100% { transform: scale(0, 0); opacity: 0; } }
 .gb-screen.off-anim > * { animation: tvOff 0.4s forwards; }
@@ -228,7 +214,11 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .status-left {
   position: absolute; top: 8px; left: 10px; z-index: 15;
   display: flex; gap: 8px; align-items: center;
-  font-family: var(--retro-font); color: var(--screen-pixel); font-size: 11px; opacity: 0.9; letter-spacing: 0.5px;
+  font-family: var(--retro-font);
+  color: var(--screen-pixel);
+  font-size: 11px;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
 }
 .retro-date { font-weight: 400; }
 .retro-clock { font-weight: 400; }
@@ -240,13 +230,26 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 /* MODO PET */
 .pet-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
 .pet-face { font-size: 65px; line-height: 1; white-space: nowrap; margin-bottom: 0px; transition: transform 0.2s; }
+
+/* ÁREA DE TEXTO DO PET */
 .pet-text-area {
-    font-family: var(--retro-font); font-size: 15px; color: var(--screen-pixel);
-    text-transform: uppercase; text-align: center; min-height: 40px; width: 90%;
-    margin-top: 15px; line-height: 1.2; opacity: 0; transition: opacity 0.5s ease-in-out;
-    display: flex; align-items: center; justify-content: center;
+    font-family: var(--retro-font);
+    font-size: 15px;
+    color: var(--screen-pixel);
+    text-transform: uppercase;
+    text-align: center;
+    min-height: 40px;
+    width: 90%;
+    margin-top: 15px;
+    line-height: 1.2;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .pet-text-area.visible { opacity: 1; }
+
 .pet-zzz { position: absolute; top: -15px; right: -25px; font-size: 24px; font-weight: bold; animation: zzz 2s infinite; display: none; }
 
 /* MODO TEMPO */
@@ -255,9 +258,15 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
   width: 100%; height: 100%; position: relative; z-index: 2;
   text-align: center;
 }
-.wm-icon { width: 42px; height: 42px; margin-bottom: 2px; animation: floatIcon 3s ease-in-out infinite; }
+.wm-icon { 
+  width: 42px; height: 42px; margin-bottom: 2px; 
+  animation: floatIcon 3s ease-in-out infinite; 
+}
 .wm-icon svg { fill: var(--screen-pixel); width: 100%; height: 100%; }
-.wm-temp { font-size: 52px; font-weight: bold; line-height: 1; margin: 0; z-index: 2; letter-spacing: -2px; }
+.wm-temp { 
+  font-size: 52px; font-weight: bold; line-height: 1; 
+  margin: 0; z-index: 2; letter-spacing: -2px;
+}
 .wm-cond { font-size: 14px; text-transform: uppercase; margin-top: 2px; }
 .wm-city { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-top: 5px; }
 @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
@@ -310,17 +319,42 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 /* --- LETREIRO INTEGRADO --- */
 .console-ticker-area { width: 100%; border-top: 2px solid #000; padding-top: 5px; }
 .ticker-bezel { background: #111; padding: 6px 4px; border-radius: 4px; border: 2px solid #444; box-shadow: inset 0 0 10px #000; }
-.ticker-screen { background-color: var(--screen-bg); color: var(--screen-on); height: 26px; overflow: hidden; display: flex; align-items: center; border-radius: 2px; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); transition: background-color 0.2s, color 0.2s; }
-.ticker-screen.off { background-color: #080a08 !important; box-shadow: inset 0 0 10px #000 !important; }
+
+/* TELA DO TICKER */
+.ticker-screen { 
+    background-color: var(--screen-bg); 
+    color: var(--screen-on);
+    height: 26px; overflow: hidden; display: flex; align-items: center; border-radius: 2px; 
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5); 
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* ESTADO DESLIGADO DO TICKER */
+.ticker-screen.off {
+    background-color: #080a08 !important;
+    box-shadow: inset 0 0 10px #000 !important;
+}
 .ticker-screen.off .ticker-wrap { opacity: 0; transition: opacity 0.2s; }
+
 .ticker-wrap { width: 100%; white-space: nowrap; transition: opacity 0.5s; }
-.ticker-item { padding: 0 30px; font-family: var(--retro-font); font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #ccffcc; text-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41; }
+.ticker-item { 
+  padding: 0 30px; 
+  font-family: var(--retro-font); 
+  font-size: 14px; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
+  /* ESTILO DIGITAL GLOSS/GLOW */
+  color: #ccffcc; 
+  text-shadow: 0 0 4px #00ff41, 0 0 10px #00ff41;
+}
 @keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 .ticker { display: inline-block; white-space: nowrap; padding-left: 100%; }
 
 /* Animações */
 @keyframes zzz { 0% { transform: translate(0,0) scale(0.5); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(10px,-15px) scale(1.2); opacity: 0; } }
 @keyframes shake { 0% { transform: translate(0,0); } 25% { transform: translate(-2px,0); } 75% { transform: translate(2px,0); } }
+
+/* Animações SEM CORES ESPECIFICAS */
 .anim-angry { animation: shake 0.2s infinite; }
 .anim-bounce { animation: bounce 0.6s infinite; }
 .anim-shiver { animation: shiver 0.2s infinite; }
@@ -343,78 +377,6 @@ body { margin: 0; padding: 0; height: 100%; font-family: var(--sf); background-c
 .f-temp { font-size: 18px; font-weight: 700; }
 .f-min { font-size: 14px; opacity: 0.7; margin-left: 6px; }
 
-/* Share */
-.share-container { width: fit-content; margin: 0 auto 24px auto; position: relative; z-index: 50; }
-.btn-share-main { background: #007AFF; border: none; color: #fff; padding: 12px 28px; border-radius: 30px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,122,255,0.4); transition: 0.2s; }
-.share-modal { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); width: auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 50px; padding: 10px 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: none; flex-direction: row; gap: 15px; z-index: 100; animation: fadeUp 0.2s ease-out; }
-.share-modal.active { display: flex; }
-@keyframes fadeUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); }}
-.share-option { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 50%; background: var(--pill-bg); cursor: pointer; transition: 0.2s; color: var(--text-color); border: 1px solid var(--card-border); }
-.share-option.insta:hover { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); color: #fff; border:none; transform: scale(1.15); }
-.share-option.whatsapp:hover { background: #25D366; color: #fff; border:none; transform: scale(1.15); }
-.share-option.x:hover { background: #000; color: #fff; border:none; transform: scale(1.15); }
-body.dark .share-option.x:hover { border: 1px solid #333; } 
-
-/* Print Styles */
-#shareCapture { position: fixed; left: -9999px; top: 0; width: 1080px; height: 1920px; box-sizing: border-box; display: flex; flex-direction: column; padding: 80px 60px; font-family: var(--sf); background-color: #121212; color: #fff; }
-.sc-header { display: flex; align-items: center; margin-bottom: 40px; justify-content: center; }
-.sc-title { font-size: 64px; font-weight: 800; letter-spacing: -2px; }
-
-/* CONSOLA NO PRINT */
-.sc-console-box {
-    padding: 40px;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.1);
-    border: 4px solid #000;
-    margin-bottom: 40px;
-    background-color: #2b2b2b;
-    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px);
-    border-radius: 30px;
-    position: relative;
-}
-.sc-bezel { background: #111; border-radius: 20px; padding: 50px 30px; border: 4px solid #444; box-shadow: inset 0 0 30px #000; }
-.sc-screen {
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Silkscreen', cursive;
-    position: relative;
-    overflow: hidden;
-    background-color: #8bac0f; 
-    color: #0f380f;
-    border-radius: 8px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
-}
-.sc-screen::after { content: " "; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 6px; pointer-events: none; }
-.sc-status-top {
-    position: absolute; top: 25px; width: 100%; padding: 0 30px;
-    display: flex; justify-content: space-between;
-    font-size: 24px; letter-spacing: 1px; opacity: 0.8;
-}
-.sc-face-container { display: flex; flex-direction: column; align-items: center; }
-.sc-face-icon { font-size: 140px; line-height: 1; margin-bottom: 20px; }
-.sc-main-temp { font-size: 70px; font-weight: bold; letter-spacing: -2px; }
-.sc-status-label { font-size: 20px; margin-top: 10px; opacity: 0.8; text-transform: uppercase; }
-
-.sc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 50px; }
-.sc-item { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-.sc-lbl { font-size: 22px; opacity: 0.6; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-.sc-val { font-size: 40px; font-weight: 800; }
-.sc-phrase-box { 
-    margin-top: auto; margin-bottom: 30px;
-    background: #000; color: #00ff41; 
-    border: 6px solid #1a1a1a; border-radius: 40px; 
-    padding: 30px; text-align: center; 
-    font-family: var(--retro-font); font-size: 32px; line-height: 1.3; 
-    word-break: break-word;
-    text-transform: uppercase; 
-    text-shadow: 0 0 20px rgba(0, 255, 65, 0.7); 
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5); 
-    min-height: 200px; display: flex; align-items: center; justify-content: center;
-}
-.sc-footer { text-align: center; opacity: 0.4; font-size: 28px; font-weight: 600; }
-
 .site-footer { margin-top: auto; padding-top: 20px; text-align: center; padding-bottom: 20px; }
 .footer-credit { display: block; font-size: 12px; opacity: 0.5; color: var(--text-color); text-decoration: none; }
 .footer-credit:hover { text-decoration: underline; }
@@ -436,46 +398,6 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
   </div>
 </div>
 
-<div id="shareCapture">
-  <div class="sc-header"><div class="sc-title" id="printCityName">ORINDIÚVA</div></div>
-  
-  <div class="sc-console-box">
-      <div class="screw tl" style="top:20px; left:20px; width:12px; height:12px;"></div>
-      <div class="screw tr" style="top:20px; right:20px; width:12px; height:12px;"></div>
-      <div class="screw bl" style="bottom:20px; left:20px; width:12px; height:12px;"></div>
-      <div class="screw br" style="bottom:20px; right:20px; width:12px; height:12px;"></div>
-
-      <div class="sc-bezel">
-          <div class="sc-screen on">
-              <div class="sc-status-top">
-                  <span id="scTimeTop">--:--</span>
-                  <span id="scDateTop">--/--</span>
-              </div>
-              <div class="sc-face-container">
-                  <div class="sc-face-icon" id="scFaceIcon">(-.-)</div>
-                  <div class="sc-main-temp" id="scMainTemp">--°C</div>
-                  <div class="sc-status-label" id="scStatusLabel">MODO PET</div>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="sc-info-container">
-    <div class="sc-grid">
-      <div class="sc-item"><div class="sc-lbl">SENS. TÉRMICA</div><div class="sc-val" id="scFeelsLike">--°C</div></div>
-      <div class="sc-item"><div class="sc-lbl">UMIDADE</div><div class="sc-val" id="scHumidity">--%</div></div>
-      <div class="sc-item"><div class="sc-lbl">VENTO</div><div class="sc-val" id="scWind">-- km/h</div></div>
-      <div class="sc-item"><div class="sc-lbl">LUA</div><div class="sc-val" id="scMoon">--</div></div>
-       <div class="sc-item"><div class="sc-lbl">MÁX. HOJE</div><div class="sc-val" id="scMax">--°C</div></div>
-      <div class="sc-item"><div class="sc-lbl">MÍN. HOJE</div><div class="sc-val" id="scMin">--°C</div></div>
-      <div class="sc-item"><div class="sc-lbl">NASCER SOL</div><div class="sc-val" id="scSunrise">--:--</div></div>
-      <div class="sc-item"><div class="sc-lbl">PÔR DO SOL</div><div class="sc-val" id="scSunset">--:--</div></div>
-    </div>
-  </div>
-  <div class="sc-phrase-box" id="scPhrase">"..."</div>
-  <div class="sc-footer">mateusfrmacedo.github.io/orindiuva</div>
-</div>
-
 <div class="site">
   <header class="header">
     <div class="title-box" onclick="openSearchModal()">
@@ -485,7 +407,7 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
     
     <div class="header-controls">
         <button id="settingsToggle" class="theme-toggle">
-            <svg class="theme-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd"/></svg>
+            <svg class="theme-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v2H6v-2H4v-2h2V9h2v2h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
         </button>
         <button id="themeToggle" class="theme-toggle">
           <svg id="moonIcon" class="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -506,10 +428,6 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
           <div class="sim-max-min-box">
              <div class="sim-sub-val" id="simMaxMin">MÁX: --° / MÍN: --°</div>
           </div>
-      </div>
-      <div class="sim-right">
-          <div class="sim-time-val" id="simTime">--:--:--</div>
-          <div class="sim-date-val" id="simDate">--/--/--</div>
       </div>
     </div>
 
@@ -603,17 +521,6 @@ body.dark .share-option.x:hover { border: 1px solid #333; }
 
     <div class="forecast-row" id="forecastBox">
       <div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div><div class="forecast-item skeleton">...</div>
-    </div>
-  </div>
-
-  <div class="share-container">
-    <button class="btn-share-main" onclick="toggleShareMenu()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Compartilhar
-    </button>
-    <div class="share-modal" id="shareModal">
-      <div class="share-option insta" onclick="shareTo('instagram')"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"/></svg></div>
-      <div class="share-option whatsapp" onclick="shareTo('whatsapp')"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M8.53 7.33C8.37 7.33 8.1 7.39 7.87 7.64C7.65 7.9 7.01 8.48 7.01 9.69C7.01 10.9 7.9 12.06 8.03 12.23C8.16 12.4 9.78 14.98 12.3 16.01C14.82 17.04 14.82 16.7 15.36 16.65C15.9 16.6 17.1 15.93 17.35 15.23C17.6 14.53 17.6 13.94 17.53 13.82C17.47 13.71 17.3 13.64 17.03 13.51C16.77 13.37 15.48 12.73 15.23 12.65C14.99 12.56 14.82 12.51 14.65 12.76C14.48 13 13.99 13.58 13.84 13.75C13.7 13.92 13.56 13.94 13.29 13.81C13 13.68 12.1 13.38 11.03 12.42C10.2 11.68 9.64 10.77 9.5 10.53C9.36 10.29 9.49 10.16 9.62 10.03C9.74 9.91 9.89 9.72 10.03 9.56C10.16 9.4 10.21 9.28 10.3 9.11C10.38 8.94 10.34 8.79 10.27 8.66C10.21 8.53 9.7 7.28 9.49 6.76C9.28 6.26 9.07 6.33 8.91 6.33C8.77 6.33 8.62 6.33 8.53 6.33Z"/></svg></div>
-      <div class="share-option x" onclick="shareTo('twitter')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></div>
     </div>
   </div>
 
@@ -797,6 +704,7 @@ const GrinchSystem = {
         const part5 = this.getDadosTecnicos(data.max.replace('°C',''), data.min.replace('°C',''));
         const part6 = this.getSensacao(parseFloat(data.feelsLike), parseFloat(data.temp));
         const part7 = this.getDespedida();
+        // ALTERAÇÃO DE ORDEM AQUI: SAUDAÇÃO -> GRINCH -> RESTO
         const fullPhrase = `${part1} *** ${part4} *** ${part2} ${part3} *** ${part5} *** ${part6} *** ${part7}`;
         return { text: fullPhrase, shortPhrase: part4 }; 
     }
@@ -899,6 +807,7 @@ function updateTamagotchi() {
   const zzzEl = document.getElementById('petZzz');
   const screenText = document.getElementById('petScreenText');
   
+  // Limpa classes de animação anteriores
   faceEl.classList.remove('anim-angry', 'anim-bounce', 'anim-shiver', 'anim-melt');
 
   if (currentFaceOverride) {
@@ -1027,24 +936,12 @@ function updateRetroClock() {
 
   if(dateEl) dateEl.innerText = `${day}/${month}/${year}`;
   if(clockEl) clockEl.innerText = `${h}:${m}:${s}`;
-  
-  // Atualiza também os relógios do Print
-  const scTime = document.getElementById('scTimeTop');
-  const scDate = document.getElementById('scDateTop');
-  if(scTime) scTime.innerText = `${h}:${m}`;
-  if(scDate) scDate.innerText = `${day}/${month}`;
-
-  // Atualiza Relógio Simples
-  const simTime = document.getElementById('simTime');
-  const simDate = document.getElementById('simDate');
-  if(simTime) simTime.innerText = `${h}:${m}:${s}`;
-  if(simDate) simDate.innerText = `${day}/${month}/${year.toString().slice(-2)}`;
 }
 setInterval(updateRetroClock, 1000);
 updateRetroClock();
 
 /* TICKER COM ROTAÇÃO DE CANAIS (CLIMA, FINANCEIRO, NEWS, CURIOSIDADES) */
-let tickerChannel = 0; 
+let tickerChannel = 0; // 0: Clima, 1: Financeiro, 2: News, 3: Feriado/Curiosidade
 
 function runTickerCycle() {
   const tickerEl = document.getElementById('newsTicker');
@@ -1052,33 +949,42 @@ function runTickerCycle() {
   
   let displayText = "";
   
+  // Lógica de Rotação
   if (tickerChannel === 0) {
+      // CANAL 0: CLIMA (Grinch)
       const generated = GrinchSystem.gerarFraseCompleta(currentShareData, currentCity.name, new Date().getHours());
       displayText = generated.text;
-      currentShareData.phrase = generated.shortPhrase; 
+      currentShareData.phrase = generated.shortPhrase; // Atualiza para o print
   } 
   else if (tickerChannel === 1) {
+      // CANAL 1: FINANCEIRO
       displayText = infoCache.finance || "ATUALIZANDO DADOS FINANCEIROS...";
   }
   else if (tickerChannel === 2) {
+      // CANAL 2: NOTÍCIAS
       displayText = infoCache.news || "SEM NOTICIAS NO MOMENTO.";
   }
   else {
+      // CANAL 3: MISTO (Feriado ou Curiosidade)
       if(Math.random() > 0.5) displayText = infoCache.holiday;
       else displayText = infoCache.curiosity;
   }
 
+  // Avança para o próximo canal
   tickerChannel++;
   if(tickerChannel > 3) tickerChannel = 0;
 
+  // Renderiza
   tickerEl.innerHTML = `<span class="ticker-item">${displayText}</span>`;
   tickerEl.style.animation = 'none'; 
   tickerEl.offsetHeight; 
   
+  // Velocidade ajustada baseada no tamanho do texto
   const speed = Math.max(15, displayText.length * 0.18);
   tickerEl.style.animation = `ticker-scroll ${speed}s linear infinite`;
 }
 
+// IMPORTANTE: Remove listeners antigos para evitar conflitos e adiciona novo
 const tickerElement = document.getElementById('newsTicker');
 if(tickerElement) {
     const newTicker = tickerElement.cloneNode(true);
@@ -1241,81 +1147,9 @@ function updateThemeUI(t){ if(t==='dark'){document.body.classList.add('dark');do
 updateThemeUI(currentTheme);
 themeBtn.onclick = () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; updateThemeUI(currentTheme); localStorage.setItem('theme', currentTheme); };
 
-function toggleShareMenu() { document.getElementById('shareModal').classList.toggle('active'); }
-document.addEventListener('click', (e) => { if (!document.querySelector('.share-container').contains(e.target) && !e.target.closest('.title-box') && !e.target.closest('.city-modal')) document.getElementById('shareModal').classList.remove('active'); });
-
-async function shareTo(platform) {
-  if(platform === 'twitter') {
-    const generated = GrinchSystem.gerarFraseCompleta(currentShareData, currentCity.name, new Date().getHours());
-    const tweetText = `🌡️ ${currentShareData.temp} em ${currentCity.name}\nMax: ${currentShareData.max} / Min: ${currentShareData.min}\n\n"${generated.shortPhrase}"\n\nAcompanhe agora: 👇\nhttps://mateusfrmacedo.github.io/orindiuva/`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, '_blank');
-  } else {
-    await generateScreenshot(); 
-  }
-}
-
-async function generateScreenshot() {
-  document.body.style.cursor = 'wait';
-
-  const div = document.getElementById('shareCapture');
-  document.getElementById('printCityName').innerText = currentCity.name.toUpperCase();
-  document.getElementById('scTemp').innerText = currentShareData.temp;
-  document.getElementById('scCond').innerText = currentShareData.cond;
-  
-  document.getElementById('scFeelsLike').innerText = currentShareData.feelsLike;
-  document.getElementById('scHumidity').innerText = currentShareData.humidityRaw + "%";
-  document.getElementById('scWind').innerText = currentShareData.wind;
-  document.getElementById('scMoon').innerText = (getMoonPhase(new Date()).t);
-  document.getElementById('scMax').innerText = currentShareData.max;
-  document.getElementById('scMin').innerText = currentShareData.min;
-  document.getElementById('scSunrise').innerText = currentShareData.sunrise;
-  document.getElementById('scSunset').innerText = currentShareData.sunset;
-  
-  document.getElementById('scPhrase').innerText = `"${currentShareData.phrase}"`;
-  
-  const currentFace = document.getElementById('petFace').innerText;
-  const scFace = document.getElementById('scFaceIcon');
-  const scMainTemp = document.getElementById('scMainTemp');
-  if(scFace) scFace.innerText = currentFace;
-  if(scMainTemp) scMainTemp.innerText = currentShareData.temp;
-
-  div.style.left = "0";
-  div.style.top = "0";
-  div.style.zIndex = "-100"; 
-
-  div.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--bg-body');
-  div.style.color = getComputedStyle(document.body).getPropertyValue('--text-color');
-  
-  try {
-    const canvas = await html2canvas(div, {useCORS:true, scale:1});
-    div.style.left = "-9999px";
-
-    canvas.toBlob(async (blob) => {
-        const file = new File([blob], "clima_orindiuva.png", { type: "image/png" });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({
-              files: [file],
-              title: 'Orindiúva Ao Vivo',
-              text: `Olha o clima em ${currentCity.name}: ${currentShareData.temp}`
-            });
-          } catch (err) {
-            console.log("Share canceled or failed", err);
-          }
-        } else {
-          const link = document.createElement('a');
-          link.download = `Clima_${currentCity.name}_${Date.now()}.png`;
-          link.href = canvas.toDataURL("image/png");
-          link.click();
-        }
-        document.body.style.cursor = 'default';
-    });
-  } catch(e){ 
-      console.error("Erro ao criar imagem", e); 
-      document.body.style.cursor = 'default';
-      div.style.left = "-9999px";
-  }
-}
+// REMOVIDA A LÓGICA DE MOSTRAR MENU - AGORA NÃO EXISTE MAIS
+// O código abaixo serve apenas para garantir que se houver algum elemento residual, ele não quebre
+// Mas como o HTML foi substituído, não há botão de share para clicar.
 
 function getMoonPhase(date) {
   const diff = (date.getTime() - new Date('2000-01-06T18:14:00Z').getTime()) / 86400000;
@@ -1325,6 +1159,7 @@ function getMoonPhase(date) {
   return {icon:'🌑', t:'Nova'};
 }
 
+// INICIALIZA TUDO
 InfoManager.init();
 fetchAllData(); 
 setInterval(fetchAllData, 300000);
